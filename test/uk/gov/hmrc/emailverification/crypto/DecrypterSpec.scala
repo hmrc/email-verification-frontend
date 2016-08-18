@@ -18,7 +18,6 @@ package uk.gov.hmrc.emailverification.crypto
 
 import java.util.UUID
 
-import org.joda.time.DateTime._
 import org.mockito.Mockito._
 import tools.MockitoSugarRush
 import uk.gov.hmrc.crypto.{Crypted, PlainText, Decrypter => HmrcDecrypter}
@@ -30,24 +29,23 @@ class DecrypterSpec extends UnitSpec with MockitoSugarRush {
   "decryptAs" should {
     "deserialize an encrypted value in to desired type" in new Setup {
       when(hmrcDecrypterMock.decrypt(Crypted(encryptedJson))).thenReturn(PlainText(json))
-      decrypter.decryptAs[Token](encryptedJson) shouldBe Token(email, continueUrl, expiryTime)
+      decrypter.decryptAs[Token](encryptedJson) shouldBe Token(token, continueUrl)
+      verify(hmrcDecrypterMock).decrypt(Crypted(encryptedJson))
+      verifyNoMoreInteractions(hmrcDecrypterMock)
     }
   }
 
   trait Setup {
 
     val encryptedJson = "encrypted json"
-    val email = "john@doe.com"
     val continueUrl = "/continue-url"
-    val expiryTime = now()
+    val token = UUID.randomUUID().toString
 
     val json =
       s"""
          |{
-         | "nonce": "${UUID.randomUUID()}",
-         | "email": "$email",
-         | "continueUrl": "$continueUrl",
-         | "expiration" : "$expiryTime"
+         | "token": "$token",
+         | "continueUrl": "$continueUrl"
          |}
         """.stripMargin
 

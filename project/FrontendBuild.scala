@@ -27,6 +27,7 @@ private object AppDependencies {
   private val scalaTestVersion = "2.2.6"
   private val pegdownVersion = "1.6.0"
   private val scalaTestPlusVersion = "1.2.0"
+  private val wiremockVersion = "2.1.11"
 
   val compile = Seq(
     ws,
@@ -47,7 +48,8 @@ private object AppDependencies {
       "org.pegdown" % "pegdown" % pegdownVersion % scope,
       "org.jsoup" % "jsoup" % "1.8.1" % scope,
       "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-      "org.scalatestplus" %% "play" % scalaTestPlusVersion % scope
+      "org.scalatestplus" %% "play" % scalaTestPlusVersion % "it",
+      "com.github.tomakehurst" % "wiremock" % wiremockVersion % "it"
     )
   }
 

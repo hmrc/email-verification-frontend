@@ -19,30 +19,29 @@ package uk.gov.hmrc.emailverification.controllers
 import org.joda.time.DateTime
 import play.api.libs.json.{Json, Reads}
 import play.api.mvc.Action
+import uk.gov.hmrc.emailverification.connectors.EmailVerificationConnector
 import uk.gov.hmrc.emailverification.crypto.Decrypter
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
-case class Token(email: String, continueUrl: String, expiration: DateTime)
+import scala.concurrent.ExecutionContext.Implicits.global
+
+case class Token(token: String, continueUrl: String)
 
 object Token {
-  implicit val dateTimeReads: Reads[DateTime] = Reads.jodaDateReads("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
   implicit val tokenReads: Reads[Token] = Json.reads[Token]
 }
 
 trait EmailVerificationController extends FrontendController {
+  def emailVerificationConnector: EmailVerificationConnector
 
   def decrypter: Decrypter
 
   def dateTimeProvider: () => DateTime
 
-  private object ExpiredToken {
-    def unapply(token: Token) = token.expiration.isBefore(dateTimeProvider())
-  }
-
-  def verify(encryptedToken: String) = Action { _ =>
-    decrypter.decryptAs[Token](encryptedToken) match {
-      case ExpiredToken() => Redirect(routes.ErrorController.showErrorPage())
-      case token => Redirect(token.continueUrl)
+  def verify(encryptedToken: String) = Action.async {implicit request =>
+    val verificationToken = decrypter.decryptAs[Token](encryptedToken)
+    emailVerificationConnector.verifyEmailAddress(verificationToken.token).map(_ => Redirect(verificationToken.continueUrl)).recover {
+      case _ => Redirect(routes.ErrorController.showErrorPage())
     }
   }
 }
@@ -50,4 +49,5 @@ trait EmailVerificationController extends FrontendController {
 object EmailVerificationController extends EmailVerificationController {
   override lazy val decrypter: Decrypter = Decrypter
   override val dateTimeProvider = () => DateTime.now()
+  override lazy val emailVerificationConnector = EmailVerificationConnector
 }
