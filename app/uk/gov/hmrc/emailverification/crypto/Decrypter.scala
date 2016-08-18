@@ -16,12 +16,16 @@
 
 package uk.gov.hmrc.emailverification.crypto
 
-sealed trait DecryptionError
-
-object DecryptionError extends DecryptionError
+import play.api.libs.json.{Json, Reads}
+import uk.gov.hmrc.crypto.ApplicationCrypto._
+import uk.gov.hmrc.crypto.{Crypted, Decrypter => HmrcDecrypter}
 
 trait Decrypter {
-  def decryptAs[T](crypted: String): Either[DecryptionError,T] = ???
+  def crypto: HmrcDecrypter
+
+  def decryptAs[T](crypted: String)(implicit reads: Reads[T]): T = Json.parse(crypto.decrypt(Crypted(crypted)).value).as
 }
 
-object Decrypter extends Decrypter
+object Decrypter extends Decrypter {
+  override lazy val crypto= QueryParameterCrypto
+}
