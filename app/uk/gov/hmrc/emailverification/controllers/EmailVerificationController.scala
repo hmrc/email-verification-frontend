@@ -17,11 +17,17 @@
 package uk.gov.hmrc.emailverification.controllers
 
 import org.joda.time.DateTime
+import play.api.libs.json.{Json, Reads}
 import play.api.mvc.Action
 import uk.gov.hmrc.emailverification.crypto.{Decrypter, DecryptionError}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
-case class Token(email: String, continueUrl: String, expiryTime: String)
+case class Token(email: String, continueUrl: String, expiration: DateTime)
+
+object Token {
+  implicit val dateTimeReads: Reads[DateTime] = Reads.jodaDateReads("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+  implicit val tokenReads: Reads[Token] = Json.reads[Token]
+}
 
 trait EmailVerificationController extends FrontendController {
 
@@ -30,8 +36,9 @@ trait EmailVerificationController extends FrontendController {
   def dateTimeProvider: () => DateTime
 
   private object ExpiredToken {
-    def unapply(right: Right[DecryptionError, Token]) = DateTime.parse(right.b.expiryTime).isBefore(dateTimeProvider())
+    def unapply(right: Right[DecryptionError, Token]) = right.b.expiration.isBefore(dateTimeProvider())
   }
+
   def verify(encryptedToken: String) = Action { _ =>
     val errorPage = Redirect(routes.ErrorController.showErrorPage())
     decrypter.decryptAs[Token](encryptedToken) match {

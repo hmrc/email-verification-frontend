@@ -14,7 +14,7 @@ class EmailVerificationControllerSpec extends UnitSpec with WithFakeApplication 
   "verify" should {
     "redirect to continue url if expiry time is now" in new Setup {
 
-      when(decrypterMock.decryptAs[Token](encryptedToken)).thenReturn(Right(Token(email, continueUrl, currentTime.toString)))
+      when(decrypterMock.decryptAs[Token](encryptedToken)).thenReturn(Right(Token(email, continueUrl, currentTime)))
 
       val result = controller.verify(encryptedToken)(request)
 
@@ -23,7 +23,7 @@ class EmailVerificationControllerSpec extends UnitSpec with WithFakeApplication 
     }
 
     "redirect to continue url if expiry time is in future" in new Setup {
-      when(decrypterMock.decryptAs[Token](encryptedToken)).thenReturn(Right(Token(email, continueUrl, currentTime.plusDays(1).toString)))
+      when(decrypterMock.decryptAs[Token](encryptedToken)).thenReturn(Right(Token(email, continueUrl, currentTime.plusDays(1))))
 
       val result = controller.verify(encryptedToken)(request)
 
@@ -32,7 +32,7 @@ class EmailVerificationControllerSpec extends UnitSpec with WithFakeApplication 
     }
 
     "redirect to error page if expiry time is in past" in new Setup {
-      when(decrypterMock.decryptAs[Token](encryptedToken)).thenReturn(Right(Token(email, continueUrl, currentTime.minusDays(1).toString)))
+      when(decrypterMock.decryptAs[Token](encryptedToken)).thenReturn(Right(Token(email, continueUrl, currentTime.minusDays(1))))
 
       val result = controller.verify(encryptedToken)(request)
 

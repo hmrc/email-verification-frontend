@@ -24,10 +24,10 @@ class VerifyEmailIntegrationSpec extends FeatureSpec with GivenWhenThen with One
       val jsonToken =
         s"""
            |{
-           | "token": s"${UUID.randomUUID()}",
+           | "nonce": s"${UUID.randomUUID()}",
            | "email": "$email",
            | "continueUrl": "$continueUrl",
-           | "expiryTime" : s"$expiryTime"
+           | "expiration" : s"$expiryTime"
            |}
         """.stripMargin
       val encryptedJsonToken = Crypto.encryptAES(jsonToken)
@@ -51,10 +51,10 @@ class VerifyEmailIntegrationSpec extends FeatureSpec with GivenWhenThen with One
       val jsonToken =
         s"""
            |{
-           | "token": s"${UUID.randomUUID()}",
+           | "nonce": s"${UUID.randomUUID()}",
            | "email": "$email",
            | "continueUrl": "$continueUrl",
-           | "expiryTime" : s"$expiryTime"
+           | "expiration" : s"$expiryTime"
            |}
         """.stripMargin
       val encryptedJsonToken = Crypto.encryptAES(jsonToken)
