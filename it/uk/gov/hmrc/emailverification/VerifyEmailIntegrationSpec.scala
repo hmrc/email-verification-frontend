@@ -31,7 +31,7 @@ class VerifyEmailIntegrationSpec extends FeatureSpec with GivenWhenThen with One
 
     scenario("link is not expired") {
 
-      Given("an encrypted payload containing a nonce token, email, expiry time and a continue url")
+      Given("an encrypted payload containing a nonce token, email, expiry time in future and a continue url")
       val expiryTime = now().plusDays(1)
       val encryptedJsonToken = encrypt(jsonToken(expiryTime))
 
@@ -46,7 +46,7 @@ class VerifyEmailIntegrationSpec extends FeatureSpec with GivenWhenThen with One
     }
 
     scenario("link is expired") {
-      Given("an encrypted payload containing a nonce token, email, expiry time and a continue url")
+      Given("an encrypted payload containing a nonce token, email, expiry time in past and a continue url")
       val expiryTime = now().minusDays(1)
       val encryptedJsonToken = encrypt(jsonToken(expiryTime))
 
@@ -56,7 +56,7 @@ class VerifyEmailIntegrationSpec extends FeatureSpec with GivenWhenThen with One
       Then("response status should be 303 redirect")
       response.status shouldBe 303
 
-      And("response Location header should be the continue url")
+      And("response Location header should be the error url")
       response.header(HeaderNames.LOCATION) should contain("/email-verification/error")
     }
   }
