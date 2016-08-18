@@ -1,3 +1,4 @@
 # microservice specific routes
 
-GET        /hello-world             uk.gov.hmrc.emailverification.controllers.HelloWorld.helloWorld
+GET        /verify             uk.gov.hmrc.emailverification.controllers.EmailVerificationController.verify(token : String)
+GET        /error              uk.gov.hmrc.emailverification.controllers.ErrorController.showErrorPage

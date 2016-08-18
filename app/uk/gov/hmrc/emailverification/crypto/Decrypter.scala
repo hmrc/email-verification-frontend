@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.emailverification.controllers
+package uk.gov.hmrc.emailverification.crypto
 
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.mvc._
-import scala.concurrent.Future
+sealed trait DecryptionError
 
+object DecryptionError extends DecryptionError
 
-object HelloWorld extends HelloWorld
-
-trait HelloWorld extends FrontendController {
-  val helloWorld = Action.async { implicit request =>
-		Future.successful(Ok(uk.gov.hmrc.emailverification.views.html.helloworld.hello_world()))
-  }
+trait Decrypter {
+  def decryptAs[T](crypted: String): Either[DecryptionError,T] = ???
 }
+
+object Decrypter extends Decrypter
