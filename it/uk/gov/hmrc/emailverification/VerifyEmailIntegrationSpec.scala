@@ -2,6 +2,8 @@ package uk.gov.hmrc.emailverification
 
 import java.util.UUID
 
+import org.scalatest.prop.TableDrivenPropertyChecks._
+import org.scalatest.prop.Tables.Table
 import play.api.http.HeaderNames
 import play.api.libs.ws.WS
 import play.api.test.FakeApplication
@@ -63,8 +65,32 @@ class VerifyEmailIntegrationSpec extends IntegrationSpecBase {
       And("response Location header should be the error url")
       response.header(HeaderNames.LOCATION) should contain("/email-verification/error")
     }
-  }
 
+    val invalidTokenScenarios = Table(
+      ("scenarioName", "encryptedJsonToken"),
+      ("invalid json", () => encrypt("this is an invalid json")),
+      ("unexpected json", () => encrypt( """{"unexpectedField":"some-value"}""")),
+      ("invalid encrypted payload", () => "asdfghjkl")
+    )
+
+    forAll(invalidTokenScenarios) { (scenarioName: String, encryptedJsonToken: () => String) =>
+
+      scenario(scenarioName) {
+        Given(s"an encrypted payload containing a $scenarioName")
+        val token = UUID.randomUUID().toString
+        stubCreateVerifiedEmail(token, 201)
+
+        When("call GET on verify url passing the encrypted payload as token")
+        val response = client("/verify").withQueryString("token" -> encryptedJsonToken()).get().futureValue
+
+        Then("response status should be 303 redirect")
+        response.status shouldBe 303
+
+        And("response Location header should be the error url")
+        response.header(HeaderNames.LOCATION) should contain("/email-verification/error")
+      }
+    }
+  }
 
   private def client(path: String) = WS.url(s"http://localhost:$port/email-verification$path").withFollowRedirects(false)
 

@@ -3,8 +3,8 @@ package uk.gov.hmrc.emailverification
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest._
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.OneServerPerSuite
 
 

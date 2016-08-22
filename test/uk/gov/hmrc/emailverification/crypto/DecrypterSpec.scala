@@ -18,29 +18,29 @@ package uk.gov.hmrc.emailverification.crypto
 
 import java.util.UUID
 
-import org.mockito.Mockito._
+import play.api.test.FakeApplication
 import tools.MockitoSugarRush
-import uk.gov.hmrc.crypto.{Crypted, PlainText, Decrypter => HmrcDecrypter}
+import uk.gov.hmrc.crypto.{CryptoWithKeysFromConfig, PlainText}
 import uk.gov.hmrc.emailverification.controllers.Token
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
-class DecrypterSpec extends UnitSpec with MockitoSugarRush {
+class DecrypterSpec extends UnitSpec with MockitoSugarRush with WithFakeApplication {
+
+  override lazy val fakeApplication = FakeApplication(additionalConfiguration = Map(
+    "queryParameter.encryption.key" -> "P5xsJ9Nt+quxGZzB3DeLfw=="
+  ))
 
   "decryptAs" should {
     "deserialize an encrypted value in to desired type" in new Setup {
-      when(hmrcDecrypterMock.decrypt(Crypted(encryptedJson))).thenReturn(PlainText(json))
       decrypter.decryptAs[Token](encryptedJson) shouldBe Token(token, continueUrl)
-      verify(hmrcDecrypterMock).decrypt(Crypted(encryptedJson))
-      verifyNoMoreInteractions(hmrcDecrypterMock)
     }
   }
 
   trait Setup {
 
-    val encryptedJson = "encrypted json"
+    val theCrypto = CryptoWithKeysFromConfig("queryParameter.encryption")
     val continueUrl = "/continue-url"
     val token = UUID.randomUUID().toString
-
     val json =
       s"""
          |{
@@ -48,11 +48,10 @@ class DecrypterSpec extends UnitSpec with MockitoSugarRush {
          | "continueUrl": "$continueUrl"
          |}
         """.stripMargin
+    val encryptedJson = theCrypto.encrypt(PlainText(json)).value
 
-
-    val hmrcDecrypterMock: HmrcDecrypter = mock[HmrcDecrypter]
     val decrypter = new Decrypter {
-      override val crypto: HmrcDecrypter = hmrcDecrypterMock
+      override val crypto = theCrypto
     }
   }
 

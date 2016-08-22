@@ -21,6 +21,7 @@ import uk.gov.hmrc.emailverification.WSHttp
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.ws.WSPost
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 case class VerificationToken(token: String)

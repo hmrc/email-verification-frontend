@@ -17,8 +17,7 @@
 package uk.gov.hmrc.emailverification.crypto
 
 import play.api.libs.json.{Json, Reads}
-import uk.gov.hmrc.crypto.ApplicationCrypto._
-import uk.gov.hmrc.crypto.{Crypted, Decrypter => HmrcDecrypter}
+import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig, Decrypter => HmrcDecrypter}
 
 trait Decrypter {
   def crypto: HmrcDecrypter
@@ -27,5 +26,5 @@ trait Decrypter {
 }
 
 object Decrypter extends Decrypter {
-  override lazy val crypto= QueryParameterCrypto
+  override lazy val crypto = CryptoWithKeysFromConfig("queryParameter.encryption")
 }

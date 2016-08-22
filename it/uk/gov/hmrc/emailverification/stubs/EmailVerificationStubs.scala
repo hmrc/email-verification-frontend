@@ -8,7 +8,7 @@ object EmailVerificationStubs {
       post(
         urlEqualTo("/email-verification/verified-email-addresses"))
         .willReturn(aResponse()
-          .withBody(s"""{"token":"$token"}""")
+          .withBody( s"""{"token":"$token"}""")
           .withStatus(status)))
   }
 

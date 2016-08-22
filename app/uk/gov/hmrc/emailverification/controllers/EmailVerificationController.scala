@@ -23,7 +23,7 @@ import uk.gov.hmrc.emailverification.connectors.EmailVerificationConnector
 import uk.gov.hmrc.emailverification.crypto.Decrypter
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 case class Token(token: String, continueUrl: String)
 
@@ -38,9 +38,10 @@ trait EmailVerificationController extends FrontendController {
 
   def dateTimeProvider: () => DateTime
 
-  def verify(encryptedToken: String) = Action.async {implicit request =>
-    val verificationToken = decrypter.decryptAs[Token](encryptedToken)
-    emailVerificationConnector.verifyEmailAddress(verificationToken.token).map(_ => Redirect(verificationToken.continueUrl)).recover {
+  def verify(encryptedToken: String) = Action.async { implicit request =>
+    Future(decrypter.decryptAs[Token](encryptedToken)).flatMap { decrypted =>
+      emailVerificationConnector.verifyEmailAddress(decrypted.token).map(_ => Redirect(decrypted.continueUrl))
+    } recover {
       case _ => Redirect(routes.ErrorController.showErrorPage())
     }
   }
