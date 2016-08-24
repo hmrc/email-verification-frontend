@@ -38,8 +38,8 @@ trait EmailVerificationController extends FrontendController {
 
   def dateTimeProvider: () => DateTime
 
-  def verify(encryptedToken: String) = Action.async { implicit request =>
-    Future(decrypter.decryptAs[Token](encryptedToken)).flatMap { decrypted =>
+  def verify(token: String) = Action.async { implicit request =>
+    Future(decrypter.decodeAndDecryptAs[Token](token)).flatMap { decrypted =>
       emailVerificationConnector.verifyEmailAddress(decrypted.token).map(_ => Redirect(decrypted.continueUrl))
     } recover {
       case _ => Redirect(routes.ErrorController.showErrorPage())

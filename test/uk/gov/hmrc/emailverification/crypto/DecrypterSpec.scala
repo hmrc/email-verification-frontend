@@ -30,9 +30,9 @@ class DecrypterSpec extends UnitSpec with MockitoSugarRush with WithFakeApplicat
     "queryParameter.encryption.key" -> "P5xsJ9Nt+quxGZzB3DeLfw=="
   ))
 
-  "decryptAs" should {
-    "deserialize an encrypted value in to desired type" in new Setup {
-      decrypter.decryptAs[Token](encryptedJson) shouldBe Token(token, continueUrl)
+  "decodeAndDecryptAs" should {
+    "deserialize an encoded encrypted value in to desired type" in new Setup {
+      decrypter.decodeAndDecryptAs[Token](encryptAndEncodedJson) shouldBe Token(token, continueUrl)
     }
   }
 
@@ -48,7 +48,7 @@ class DecrypterSpec extends UnitSpec with MockitoSugarRush with WithFakeApplicat
          | "continueUrl": "$continueUrl"
          |}
         """.stripMargin
-    val encryptedJson = theCrypto.encrypt(PlainText(json)).value
+    val encryptAndEncodedJson = new String(theCrypto.encrypt(PlainText(json)).toBase64)
 
     val decrypter = new Decrypter {
       override val crypto = theCrypto

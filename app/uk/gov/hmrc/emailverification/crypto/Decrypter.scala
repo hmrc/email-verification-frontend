@@ -17,12 +17,13 @@
 package uk.gov.hmrc.emailverification.crypto
 
 import play.api.libs.json.{Json, Reads}
-import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig, Decrypter => HmrcDecrypter}
+import uk.gov.hmrc.crypto.Crypted.fromBase64
+import uk.gov.hmrc.crypto.{CryptoWithKeysFromConfig, Decrypter => HmrcDecrypter}
 
 trait Decrypter {
   def crypto: HmrcDecrypter
 
-  def decryptAs[T](crypted: String)(implicit reads: Reads[T]): T = Json.parse(crypto.decrypt(Crypted(crypted)).value).as
+  def decodeAndDecryptAs[T](encodedCrypted: String)(implicit reads: Reads[T]): T = Json.parse(crypto.decrypt(fromBase64(encodedCrypted)).value).as
 }
 
 object Decrypter extends Decrypter {

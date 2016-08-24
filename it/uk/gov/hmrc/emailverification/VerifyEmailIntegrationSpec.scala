@@ -29,12 +29,12 @@ class VerifyEmailIntegrationSpec extends IntegrationSpecBase {
          | "continueUrl": "$continueUrl"
          |}
         """.stripMargin
-    def encrypt(value: String) = QueryParameterCrypto.encrypt(PlainText(value)).value
+    def encryptAndEncode(value: String) = new String(QueryParameterCrypto.encrypt(PlainText(value)).toBase64)
 
     scenario("link is verified") {
       Given("an encrypted payload containing a token and a continue url")
       val token = UUID.randomUUID().toString
-      val encryptedJsonToken = encrypt(jsonToken(token))
+      val encryptedJsonToken = encryptAndEncode(jsonToken(token))
 
       stubCreateVerifiedEmail(token, 201)
 
@@ -53,7 +53,7 @@ class VerifyEmailIntegrationSpec extends IntegrationSpecBase {
     scenario("link is not verified") {
       Given("an encrypted payload containing an invalid token and continue url")
       val token = UUID.randomUUID().toString
-      val encryptedJsonToken = encrypt(jsonToken(token))
+      val encryptedJsonToken = encryptAndEncode(jsonToken(token))
       stubCreateVerifiedEmail(token, 400)
 
       When("call GET on verify url passing the encrypted payload as token")
@@ -68,8 +68,8 @@ class VerifyEmailIntegrationSpec extends IntegrationSpecBase {
 
     val invalidTokenScenarios = Table(
       ("scenarioName", "encryptedJsonToken"),
-      ("invalid json", () => encrypt("this is an invalid json")),
-      ("unexpected json", () => encrypt( """{"unexpectedField":"some-value"}""")),
+      ("invalid json", () => encryptAndEncode("this is an invalid json")),
+      ("unexpected json", () => encryptAndEncode( """{"unexpectedField":"some-value"}""")),
       ("invalid encrypted payload", () => "asdfghjkl")
     )
 

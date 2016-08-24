@@ -35,25 +35,25 @@ class EmailVerificationControllerSpec extends UnitSpec with WithFakeApplication 
   "verify" should {
     "redirect to continue url if link is verified" in new Setup {
 
-      when(decrypterMock.decryptAs[Token](encryptedToken)).thenReturn(Token(token, continueUrl))
+      when(decrypterMock.decodeAndDecryptAs[Token](encryptedToken)).thenReturn(Token(token, continueUrl))
       when(emailVerificationConnectorMock.verifyEmailAddress(eqTo(token))(any[HeaderCarrier])).thenReturn(Future.successful {})
       val result = controller.verify(encryptedToken)(request)
 
       status(result) shouldBe 303
       redirectLocation(result) should contain(continueUrl)
-      verify(decrypterMock).decryptAs[Token](encryptedToken)
+      verify(decrypterMock).decodeAndDecryptAs[Token](encryptedToken)
       verify(emailVerificationConnectorMock).verifyEmailAddress(eqTo(token))(any[HeaderCarrier])
       verifyNoMoreInteractions(decrypterMock, emailVerificationConnectorMock)
     }
 
     "redirect to error page if link is not verified" in new Setup {
-      when(decrypterMock.decryptAs[Token](encryptedToken)).thenReturn(Token(token, continueUrl))
+      when(decrypterMock.decodeAndDecryptAs[Token](encryptedToken)).thenReturn(Token(token, continueUrl))
       when(emailVerificationConnectorMock.verifyEmailAddress(eqTo(token))(any[HeaderCarrier])).thenReturn(Future.failed(new RuntimeException))
       val result = controller.verify(encryptedToken)(request)
 
       status(result) shouldBe 303
       redirectLocation(result) should contain(errorUrl)
-      verify(decrypterMock).decryptAs[Token](encryptedToken)
+      verify(decrypterMock).decodeAndDecryptAs[Token](encryptedToken)
       verify(emailVerificationConnectorMock).verifyEmailAddress(eqTo(token))(any[HeaderCarrier])
       verifyNoMoreInteractions(decrypterMock, emailVerificationConnectorMock)
     }
