@@ -2,6 +2,7 @@ package uk.gov.hmrc.emailverification
 
 import java.util.UUID
 
+import org.jsoup.Jsoup
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.prop.Tables.Table
 import play.api.http.HeaderNames
@@ -10,6 +11,8 @@ import play.api.test.FakeApplication
 import uk.gov.hmrc.crypto.ApplicationCrypto._
 import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.emailverification.stubs.EmailVerificationStubs.{stubCreateVerifiedEmail, verifyCreateVerifiedEmail}
+
+import scala.collection.JavaConverters._
 
 class VerifyEmailIntegrationSpec extends IntegrationSpecBase {
 
@@ -89,6 +92,18 @@ class VerifyEmailIntegrationSpec extends IntegrationSpecBase {
         And("response Location header should be the error url")
         response.header(HeaderNames.LOCATION) should contain("/email-verification/error")
       }
+    }
+
+    scenario("navigating to error page") {
+      When("user hits the error page")
+      val response = client("/error").get().futureValue
+
+      Then("the title should be the expected one")
+      val html = Jsoup.parse(response.body)
+      html.select("h1").first().text() shouldBe "This link has expired"
+
+      And("there should be a message after the title")
+      html.select("p").iterator().asScala.toList.map(_.text()) should contain("For security reasons the link must be used within a time limit.")
     }
   }
 

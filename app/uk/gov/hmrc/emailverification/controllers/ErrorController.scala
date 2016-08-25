@@ -20,7 +20,7 @@ import play.api.mvc.Action
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 trait ErrorController extends FrontendController {
-  def showErrorPage = Action { _ => Ok }
+  def showErrorPage = Action { implicit request => Ok(uk.gov.hmrc.emailverification.views.html.verify_error()) }
 }
 
 object ErrorController extends ErrorController
