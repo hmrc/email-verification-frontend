@@ -19,6 +19,7 @@ package uk.gov.hmrc.emailverification.controllers
 import org.joda.time.DateTime
 import play.api.libs.json.{Json, Reads}
 import play.api.mvc.Action
+import uk.gov.hmrc.crypto.Crypted._
 import uk.gov.hmrc.emailverification.connectors.EmailVerificationConnector
 import uk.gov.hmrc.emailverification.crypto.Decrypter
 import uk.gov.hmrc.play.frontend.controller.FrontendController
@@ -39,12 +40,14 @@ trait EmailVerificationController extends FrontendController {
   def dateTimeProvider: () => DateTime
 
   def verify(token: String) = Action.async { implicit request =>
-    Future(decrypter.decodeAndDecryptAs[Token](token)).flatMap { decrypted =>
-      emailVerificationConnector.verifyEmailAddress(decrypted.token).map(_ => Redirect(decrypted.continueUrl))
-    } recover {
-      case _ => Redirect(routes.ErrorController.showErrorPage())
-    }
+    val success = for {
+      decryptedToken <- decrypter.decryptAs[Token](fromBase64(token)) : Future[Token]
+      _ <- emailVerificationConnector.verifyEmailAddress(decryptedToken.token)
+    } yield Redirect(decryptedToken.continueUrl)
+
+    success.recover { case _ => Redirect(routes.ErrorController.showErrorPage()) }
   }
+
 }
 
 object EmailVerificationController extends EmailVerificationController {

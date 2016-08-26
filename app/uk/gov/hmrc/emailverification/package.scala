@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.emailverification.crypto
+package uk.gov.hmrc
 
-import play.api.libs.json.{Json, Reads}
-import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig, Decrypter => HmrcDecrypter}
+import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
 
-import scala.util.Try
+package object emailverification {
 
-trait Decrypter {
-  def crypto: HmrcDecrypter
-
-  def decryptAs[T](crypted: Crypted)(implicit reads: Reads[T]): Try[T] = Try(Json.parse(crypto.decrypt(crypted).value).as)
-}
-
-object Decrypter extends Decrypter {
-  override lazy val crypto = CryptoWithKeysFromConfig("queryParameter.encryption")
+  implicit def tryToFuture[T](tryObj: Try[T]): Future[T] = tryObj match {
+    case Success(value) => Future.successful(value)
+    case Failure(exception) => Future.failed(exception)
+  }
 }

@@ -24,6 +24,8 @@ import uk.gov.hmrc.crypto.{CryptoWithKeysFromConfig, PlainText}
 import uk.gov.hmrc.emailverification.controllers.Token
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
+import scala.util.Success
+
 class DecrypterSpec extends UnitSpec with MockitoSugarRush with WithFakeApplication {
 
   override lazy val fakeApplication = FakeApplication(additionalConfiguration = Map(
@@ -32,7 +34,7 @@ class DecrypterSpec extends UnitSpec with MockitoSugarRush with WithFakeApplicat
 
   "decodeAndDecryptAs" should {
     "deserialize an encoded encrypted value in to desired type" in new Setup {
-      decrypter.decodeAndDecryptAs[Token](encryptAndEncodedJson) shouldBe Token(token, continueUrl)
+      decrypter.decryptAs[Token](encryptedJson) shouldBe Success(Token(token, continueUrl))
     }
   }
 
@@ -48,7 +50,7 @@ class DecrypterSpec extends UnitSpec with MockitoSugarRush with WithFakeApplicat
          | "continueUrl": "$continueUrl"
          |}
         """.stripMargin
-    val encryptAndEncodedJson = new String(theCrypto.encrypt(PlainText(json)).toBase64)
+    val encryptedJson = theCrypto.encrypt(PlainText(json))
 
     val decrypter = new Decrypter {
       override val crypto = theCrypto
