@@ -18,9 +18,10 @@ package uk.gov.hmrc.emailverification.crypto
 
 import java.util.UUID
 
+import play.api.LoggerLike
 import play.api.test.FakeApplication
 import tools.MockitoSugarRush
-import uk.gov.hmrc.crypto.{CryptoWithKeysFromConfig, PlainText}
+import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig, PlainText}
 import uk.gov.hmrc.emailverification.controllers.Token
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
@@ -36,6 +37,11 @@ class DecrypterSpec extends UnitSpec with MockitoSugarRush with WithFakeApplicat
     "deserialize an encoded encrypted value in to desired type" in new Setup {
       decrypter.decryptAs[Token](encryptedJson) shouldBe Success(Token(token, continueUrl))
     }
+
+    "add a warning logging when deserialization fails" in new Setup {
+      decrypter.decryptAs[Token](Crypted("foobar")).isFailure shouldBe true
+      loggerStub.warnMessages shouldBe Seq(s"Decryption failed when decrypting email verification token")
+    }
   }
 
   trait Setup {
@@ -43,6 +49,16 @@ class DecrypterSpec extends UnitSpec with MockitoSugarRush with WithFakeApplicat
     val theCrypto = CryptoWithKeysFromConfig("queryParameter.encryption")
     val continueUrl = "/continue-url"
     val token = UUID.randomUUID().toString
+
+    val loggerStub = new LoggerLike {
+
+      val warnMessages = collection.mutable.MutableList.empty[String]
+
+      override def warn(message: => String): Unit = warnMessages += message
+
+      override lazy val logger = ???
+    }
+
     val json =
       s"""
          |{
@@ -53,7 +69,10 @@ class DecrypterSpec extends UnitSpec with MockitoSugarRush with WithFakeApplicat
     val encryptedJson = theCrypto.encrypt(PlainText(json))
 
     val decrypter = new Decrypter {
+
       override val crypto = theCrypto
+
+      override val logger = loggerStub
     }
   }
 
