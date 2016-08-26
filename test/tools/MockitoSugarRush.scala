@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.emailverification.controllers
+package tools
 
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.mvc._
-import scala.concurrent.Future
+import org.mockito.Mockito._
+import org.scalatest.mock.MockitoSugar
 
-
-object HelloWorld extends HelloWorld
-
-trait HelloWorld extends FrontendController {
-  val helloWorld = Action.async { implicit request =>
-		Future.successful(Ok(uk.gov.hmrc.emailverification.views.html.helloworld.hello_world()))
-  }
+trait MockitoSugarRush extends MockitoSugar {
+  override def mock[T <: AnyRef](implicit manifest: Manifest[T]) = super.mock(defaultAnswer = RETURNS_SMART_NULLS)
 }
