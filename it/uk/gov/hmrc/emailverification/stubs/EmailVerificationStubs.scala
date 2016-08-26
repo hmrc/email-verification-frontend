@@ -13,6 +13,4 @@ object EmailVerificationStubs {
   }
 
   def verifyCreateVerifiedEmail() = verify(postRequestedFor(urlEqualTo("/email-verification/verified-email-addresses")))
-
-
 }

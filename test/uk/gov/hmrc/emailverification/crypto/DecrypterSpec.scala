@@ -51,11 +51,8 @@ class DecrypterSpec extends UnitSpec with MockitoSugarRush with WithFakeApplicat
     val token = UUID.randomUUID().toString
 
     val loggerStub = new LoggerLike {
-
       val warnMessages = collection.mutable.MutableList.empty[String]
-
       override def warn(message: => String): Unit = warnMessages += message
-
       override lazy val logger = ???
     }
 
@@ -69,11 +66,8 @@ class DecrypterSpec extends UnitSpec with MockitoSugarRush with WithFakeApplicat
     val encryptedJson = theCrypto.encrypt(PlainText(json))
 
     val decrypter = new Decrypter {
-
       override val crypto = theCrypto
-
       override val logger = loggerStub
     }
   }
-
 }

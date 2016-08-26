@@ -20,9 +20,8 @@ import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.emailverification.WSHttp
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.play.http.ws.WSPost
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 case class VerificationToken(token: String)
 
@@ -32,14 +31,11 @@ object VerificationToken {
 
 trait EmailVerificationConnector {
   def http: WSPost
-
   def serviceUrl: String
-
   def verifyEmailAddress(token: String)(implicit headerCarrier: HeaderCarrier) = http.POST(s"$serviceUrl/email-verification/verified-email-addresses", VerificationToken(token), Nil).map(_ => {})
 }
 
 object EmailVerificationConnector extends EmailVerificationConnector with ServicesConfig {
   override lazy val http = WSHttp
-
   override val serviceUrl = baseUrl("email-verification")
 }

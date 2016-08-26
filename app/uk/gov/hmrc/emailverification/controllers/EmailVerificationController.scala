@@ -33,25 +33,24 @@ object Token {
 }
 
 trait EmailVerificationController extends FrontendController {
+
   def emailVerificationConnector: EmailVerificationConnector
-
   def decrypter: Decrypter
-
   def dateTimeProvider: () => DateTime
 
   def verify(token: String) = Action.async { implicit request =>
-    val success = for {
+    val redirectToContinue = for {
       decryptedToken <- decrypter.decryptAs[Token](fromBase64(token)) : Future[Token]
       _ <- emailVerificationConnector.verifyEmailAddress(decryptedToken.token)
     } yield Redirect(decryptedToken.continueUrl)
 
-    success.recover { case _ => Redirect(routes.ErrorController.showErrorPage()) }
+    redirectToContinue.recover { case _ => Redirect(routes.ErrorController.showErrorPage()) }
   }
 
 }
 
 object EmailVerificationController extends EmailVerificationController {
-  override lazy val decrypter: Decrypter = Decrypter
+  override lazy val decrypter = Decrypter
   override val dateTimeProvider = () => DateTime.now()
   override lazy val emailVerificationConnector = EmailVerificationConnector
 }

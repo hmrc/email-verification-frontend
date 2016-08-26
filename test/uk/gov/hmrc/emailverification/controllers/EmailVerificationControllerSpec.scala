@@ -79,6 +79,4 @@ class EmailVerificationControllerSpec extends UnitSpec with WithFakeApplication 
     }
     implicit val request = FakeRequest()
   }
-
-
 }
