@@ -35,6 +35,6 @@ trait Decrypter {
 }
 
 object Decrypter extends Decrypter {
-  override lazy val crypto = CryptoWithKeysFromConfig("queryParameter.encryption")
+  override lazy val crypto = CryptoWithKeysFromConfig("token.encryption")
   override lazy val logger = Logger
 }
