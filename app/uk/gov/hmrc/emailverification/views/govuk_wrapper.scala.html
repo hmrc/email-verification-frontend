@@ -22,13 +22,11 @@
 }
 
 @headerNavLinks = {
-  <li><a id="homeNavHref" href="http://www.google.com"
-         data-journey-click="primary-navigation:Click:Home">Home</a></li>
 }
 
 @insideHeader = {
     @uiLayouts.header_nav(
-      navTitle = Some("email-verification-frontend"),
+      navTitle = None,
       navTitleLink = None,
       showBetaLink = false,
       navLinks = Some(headerNavLinks))
