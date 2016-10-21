@@ -16,7 +16,7 @@ object WiremockHelper {
 
 trait WiremockHelper {
 
-  import WiremockHelper._
+  import uk.gov.hmrc.emailverification.WiremockHelper._
 
   val wmConfig = wireMockConfig().port(wiremockPort)
   val wireMockServer = new WireMockServer(wmConfig)
