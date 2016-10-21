@@ -20,11 +20,11 @@ import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
-  val assetsPrefix: String
-  val analyticsToken: String
-  val analyticsHost: String
-  val reportAProblemPartialUrl: String
-  val reportAProblemNonJSUrl: String
+  def assetsPrefix: String
+  def analyticsToken: String
+  def analyticsHost: String
+  def reportAProblemPartialUrl: String
+  def reportAProblemNonJSUrl: String
 }
 
 object FrontendAppConfig extends AppConfig with ServicesConfig {
