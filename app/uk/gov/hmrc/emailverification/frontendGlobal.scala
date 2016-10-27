@@ -19,7 +19,7 @@ package uk.gov.hmrc.emailverification
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
 import play.api.mvc.Request
-import play.api.{Application, Configuration, Play}
+import play.api.{Application, Configuration, Logger, Play}
 import play.twirl.api.Html
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.play.audit.filters.FrontendAuditFilter
@@ -38,6 +38,7 @@ object FrontendGlobal
   override def onStart(app: Application) {
     super.onStart(app)
     ApplicationCrypto.verifyConfiguration()
+    Logger.info("*** cookie.encryption value:" + Play.current.configuration.getString(ApplicationCrypto.SessionCookieCrypto.baseConfigKey + ".key").getOrElse("No cookie.encryption found in config!!!") )
   }
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
