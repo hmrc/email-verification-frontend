@@ -20,7 +20,6 @@ import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
-  def assetsPrefix: String
   def analyticsToken: String
   def analyticsHost: String
   def reportAProblemPartialUrl: String
@@ -34,7 +33,6 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   private val contactFrontendUrl = baseUrl("contact-frontend")
   private val contactFormServiceIdentifier = "email-verification-frontend"
 
-  override lazy val assetsPrefix = loadConfig(s"$env.microservice.services.assets.url") + loadConfig(s"$env.microservice.services.assets.version")
   override lazy val analyticsToken = loadConfig(s"$env.google-analytics.token")
   override lazy val analyticsHost = loadConfig(s"$env.google-analytics.host")
   override lazy val reportAProblemPartialUrl = s"$contactFrontendUrl/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
