@@ -1,5 +1,4 @@
-
-@()(implicit request: Request[_])
+@()(implicit request: Request[_], messages: Messages)
 
 @error_template(
     pageTitle = Messages("verify-email-address.error.heading"),
