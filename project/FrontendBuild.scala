@@ -17,7 +17,6 @@ private object AppDependencies {
   private val frontendBootstrapVersion = "7.10.0"
   private val govukTemplateVersion = "5.0.0"
   private val playUiVersion = "5.2.0"
-  private val playPartialsVersion = "5.2.0"
   private val playAuthorisedFrontendVersion = "6.2.0"
   private val playConfigVersion = "3.0.0"
   private val hmrcTestVersion = "2.2.0"
@@ -30,7 +29,6 @@ private object AppDependencies {
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
-    "uk.gov.hmrc" %% "play-partials" % playPartialsVersion,
     "uk.gov.hmrc" %% "play-authorised-frontend" % playAuthorisedFrontendVersion,
     "uk.gov.hmrc" %% "play-config" % playConfigVersion,
     "uk.gov.hmrc" %% "logback-json-logger" % logbackJsonLoggerVersion,
