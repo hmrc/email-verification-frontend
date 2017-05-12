@@ -18,7 +18,7 @@ package uk.gov.hmrc.emailverification.controllers
 
 import org.apache.commons.codec.binary.Base64.encodeBase64String
 import org.joda.time.DateTime
-import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.test.FakeRequest
