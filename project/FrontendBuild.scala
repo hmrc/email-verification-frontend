@@ -9,22 +9,22 @@ object FrontendBuild extends Build with MicroService {
 
 private object AppDependencies {
 
-  import play.sbt.PlayImport._
   import play.core.PlayVersion
+  import play.sbt.PlayImport._
 
   private val playHealthVersion = "2.1.0"
   private val logbackJsonLoggerVersion = "3.1.0"
-  private val frontendBootstrapVersion = "7.22.0"
+  private val frontendBootstrapVersion = "7.23.0"
   private val govukTemplateVersion = "5.2.0"
-  private val playUiVersion = "7.2.0"
+  private val playUiVersion = "7.2.1"
   private val playAuthorisedFrontendVersion = "6.3.0"
   private val playConfigVersion = "4.3.0"
   private val hmrcTestVersion = "2.3.0"
-  private val scalaTestVersion = "2.2.6"
+  private val scalaTestVersion = "3.0.0"
   private val pegdownVersion = "1.6.0"
-  private val scalaTestPlusVersion = "1.5.1"
+  private val scalaTestPlusVersion = "2.0.0"
   private val wiremockVersion = "1.58"
-  private val mockitoVersion = "1.9.5"
+  private val mockitoVersion = "2.6.2"
 
   val compile = Seq(
     ws,
@@ -42,7 +42,7 @@ private object AppDependencies {
       "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
       "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
       "org.pegdown" % "pegdown" % pegdownVersion % scope,
-      "org.jsoup" % "jsoup" % "1.8.1" % scope,
+      "org.jsoup" % "jsoup" % "1.10.2" % scope,
       "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
       "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusVersion % "it",
       "com.github.tomakehurst" % "wiremock" % wiremockVersion % "it",
