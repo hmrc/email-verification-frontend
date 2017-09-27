@@ -20,10 +20,10 @@ private object AppDependencies {
   abstract class TestDependencies(scope: String)(scopeOnlyDependencies: ModuleID*) {
     lazy val dependencies: Seq[ModuleID] = Seq(
       "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-      "org.jsoup" % "jsoup" % "1.10.2" % scope,
+      "org.jsoup" % "jsoup" % "1.10.3" % scope,
       "org.pegdown" % "pegdown" % "1.6.0" % scope,
-      "org.scalatest" %% "scalatest" % "3.0.0" % scope,
-      "uk.gov.hmrc" %% "hmrctest" % "2.3.0" % scope
+      "org.scalatest" %% "scalatest" % "3.0.1" % scope,
+      "uk.gov.hmrc" %% "hmrctest" % "2.4.0" % scope
     ) ++: scopeOnlyDependencies
   }
 
@@ -33,8 +33,8 @@ private object AppDependencies {
 
   object IntegrationTest extends TestDependencies("it")(
     scopeOnlyDependencies =
-      "com.github.tomakehurst" % "wiremock" % "1.58" % "it",
-      "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.0" % "it"
+      "com.github.tomakehurst" % "wiremock" % "2.8.0" % "it",
+      "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % "it"
   )
 
   def apply(): Seq[ModuleID] = compile ++ Test.dependencies ++ IntegrationTest.dependencies

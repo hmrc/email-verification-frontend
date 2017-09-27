@@ -20,14 +20,13 @@ import java.util.UUID
 
 import play.api.LoggerLike
 import play.api.test.FakeApplication
-import tools.MockitoSugarRush
 import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig, PlainText}
 import uk.gov.hmrc.emailverification.controllers.Token
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 import scala.util.Success
 
-class DecrypterSpec extends UnitSpec with MockitoSugarRush with WithFakeApplication {
+class DecrypterSpec extends UnitSpec with WithFakeApplication {
 
   override lazy val fakeApplication = FakeApplication(additionalConfiguration = Map(
     "queryParameter.encryption.key" -> "P5xsJ9Nt+quxGZzB3DeLfw=="
