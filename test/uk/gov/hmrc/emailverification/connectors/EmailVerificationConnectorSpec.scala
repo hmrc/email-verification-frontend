@@ -19,8 +19,7 @@ package uk.gov.hmrc.emailverification.connectors
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import tools.MockitoSugarRush
-import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.http.ws.WSPost
+import uk.gov.hmrc.http.{HeaderCarrier, HttpPost}
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
@@ -29,16 +28,16 @@ class EmailVerificationConnectorSpec extends UnitSpec with MockitoSugarRush {
 
   "verifyEmailAddress" should {
     "verify an email address using a token" in new Setup {
-      when(httpMock.POST[VerificationToken, Unit](eqTo(s"$aServiceUrl/email-verification/verified-email-addresses"), eqTo(VerificationToken(token)), eqTo(Nil))(any(), any(), eqTo(headerCarrier))).thenReturn(Future.successful {})
+      when(httpMock.POST[VerificationToken, Unit](eqTo(s"$aServiceUrl/email-verification/verified-email-addresses"), eqTo(VerificationToken(token)), eqTo(Nil))(any(), any(), eqTo(headerCarrier), any())).thenReturn(Future.successful {})
       connector.verifyEmailAddress(token)
-      verify(httpMock).POST[VerificationToken, Unit](eqTo(s"$aServiceUrl/email-verification/verified-email-addresses"), eqTo(VerificationToken(token)),eqTo(Nil))(any(), any(), eqTo(headerCarrier))
+      verify(httpMock).POST[VerificationToken, Unit](eqTo(s"$aServiceUrl/email-verification/verified-email-addresses"), eqTo(VerificationToken(token)), eqTo(Nil))(any(), any(), eqTo(headerCarrier), any())
       verifyNoMoreInteractions(httpMock)
     }
   }
 
   trait Setup {
     val token = "some token"
-    val httpMock: WSPost = mock[WSPost]
+    val httpMock: HttpPost = mock[HttpPost]
     val aServiceUrl = "aServiceUrl"
     implicit val headerCarrier = HeaderCarrier()
     val connector = new EmailVerificationConnector {

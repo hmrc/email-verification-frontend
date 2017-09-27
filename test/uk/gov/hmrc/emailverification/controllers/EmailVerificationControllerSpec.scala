@@ -27,7 +27,7 @@ import tools.MockitoSugarRush
 import uk.gov.hmrc.crypto.Crypted
 import uk.gov.hmrc.emailverification.connectors.EmailVerificationConnector
 import uk.gov.hmrc.emailverification.crypto.Decrypter
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 import scala.concurrent.Future
