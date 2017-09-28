@@ -18,10 +18,9 @@ package uk.gov.hmrc.emailverification.connectors
 
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.emailverification.WSHttp
+import uk.gov.hmrc.http.{HeaderCarrier, HttpPost}
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
-import uk.gov.hmrc.play.http.ws.WSPost
 
 case class VerificationToken(token: String)
 
@@ -30,9 +29,11 @@ object VerificationToken {
 }
 
 trait EmailVerificationConnector {
-  def http: WSPost
+  def http: HttpPost
   def serviceUrl: String
-  def verifyEmailAddress(token: String)(implicit headerCarrier: HeaderCarrier) = http.POST(s"$serviceUrl/email-verification/verified-email-addresses", VerificationToken(token), Nil).map(_ => {})
+  def verifyEmailAddress(token: String)
+                        (implicit headerCarrier: HeaderCarrier) =
+    http.POST(s"$serviceUrl/email-verification/verified-email-addresses", VerificationToken(token), Nil).map(_ => {})
 }
 
 object EmailVerificationConnector extends EmailVerificationConnector with ServicesConfig {

@@ -16,17 +16,20 @@
 
 package uk.gov.hmrc.emailverification
 
+import uk.gov.hmrc.http.{HttpGet, HttpPost}
 import uk.gov.hmrc.play.audit.http.HttpAuditing
-import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
 import uk.gov.hmrc.play.config.{AppName, RunMode}
+import uk.gov.hmrc.play.frontend.config.LoadAuditingConfig
 import uk.gov.hmrc.play.http.ws._
 
 object FrontendAuditConnector extends Auditing with AppName with RunMode {
   override lazy val auditingConfig = LoadAuditingConfig(s"$env.auditing")
 }
 
-object WSHttp extends WSHttp with AppName with RunMode with HttpAuditing {
+trait WSHttp extends HttpGet with HttpPost with HttpAuditing
+
+object WSHttp extends WSHttp with WSGet with WSPost with AppName {
   val auditConnector = FrontendAuditConnector
   override val hooks = Seq(AuditingHook)
 }

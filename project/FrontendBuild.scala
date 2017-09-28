@@ -12,49 +12,30 @@ private object AppDependencies {
   import play.core.PlayVersion
   import play.sbt.PlayImport._
 
-  private val playHealthVersion = "2.1.0"
-  private val logbackJsonLoggerVersion = "3.1.0"
-  private val frontendBootstrapVersion = "7.23.0"
-  private val govukTemplateVersion = "5.2.0"
-  private val playUiVersion = "7.2.1"
-  private val playAuthorisedFrontendVersion = "6.3.0"
-  private val playConfigVersion = "4.3.0"
-  private val hmrcTestVersion = "2.3.0"
-  private val scalaTestVersion = "3.0.0"
-  private val pegdownVersion = "1.6.0"
-  private val scalaTestPlusVersion = "2.0.0"
-  private val wiremockVersion = "1.58"
-  private val mockitoVersion = "2.6.2"
-
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
-    "uk.gov.hmrc" %% "play-authorised-frontend" % playAuthorisedFrontendVersion,
-    "uk.gov.hmrc" %% "play-config" % playConfigVersion,
-    "uk.gov.hmrc" %% "logback-json-logger" % logbackJsonLoggerVersion,
-    "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
-    "uk.gov.hmrc" %% "play-health" % playHealthVersion,
-    "uk.gov.hmrc" %% "play-ui" % playUiVersion
+    "uk.gov.hmrc" %% "frontend-bootstrap" % "8.6.0"
   )
 
-  abstract class TestDependencies(scope: String) {
-    lazy val test = Seq(
-      "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
-      "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
-      "org.pegdown" % "pegdown" % pegdownVersion % scope,
-      "org.jsoup" % "jsoup" % "1.10.2" % scope,
+  abstract class TestDependencies(scope: String)(scopeOnlyDependencies: ModuleID*) {
+    lazy val dependencies: Seq[ModuleID] = Seq(
       "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-      "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusVersion % "it",
-      "com.github.tomakehurst" % "wiremock" % wiremockVersion % "it",
-      "org.mockito" % "mockito-core" % mockitoVersion % "test"
-    )
+      "org.jsoup" % "jsoup" % "1.10.3" % scope,
+      "org.pegdown" % "pegdown" % "1.6.0" % scope,
+      "org.scalatest" %% "scalatest" % "3.0.1" % scope,
+      "uk.gov.hmrc" %% "hmrctest" % "2.4.0" % scope
+    ) ++: scopeOnlyDependencies
   }
 
-  object Test extends TestDependencies("test")
+  object Test extends TestDependencies(scope = "test")(
+    scopeOnlyDependencies = "org.mockito" % "mockito-core" % "2.6.2" % "test"
+  )
 
-  object IntegrationTest extends TestDependencies("it")
+  object IntegrationTest extends TestDependencies("it")(
+    scopeOnlyDependencies =
+      "com.github.tomakehurst" % "wiremock" % "2.8.0" % "it",
+      "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % "it"
+  )
 
-  def apply() = compile ++ Test.test ++ IntegrationTest.test
+  def apply(): Seq[ModuleID] = compile ++ Test.dependencies ++ IntegrationTest.dependencies
 }
-
-
