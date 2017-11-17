@@ -16,25 +16,24 @@
 
 package uk.gov.hmrc.emailverification
 
-import play.api.Play.{configuration, current}
+import play.api.{Configuration, Play}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
-  def analyticsToken: String
-  def analyticsHost: String
-  def reportAProblemPartialUrl: String
-  def reportAProblemNonJSUrl: String
+
+  protected def configuration: Configuration
+  protected def env: String
+
+  lazy val analyticsToken: String = loadConfig(s"$env.google-analytics.token")
+  lazy val analyticsHost: String = loadConfig(s"$env.google-analytics.host")
+  lazy val reportAProblemPartialUrl: String = s"/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  lazy val reportAProblemNonJSUrl: String = s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+
+  private lazy val contactFormServiceIdentifier = "email-verification-frontend"
+
+  private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 }
 
 object FrontendAppConfig extends AppConfig with ServicesConfig {
-
-  private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
-
-  private val contactFrontendUrl = baseUrl("contact-frontend")
-  private val contactFormServiceIdentifier = "email-verification-frontend"
-
-  override lazy val analyticsToken = loadConfig(s"$env.google-analytics.token")
-  override lazy val analyticsHost = loadConfig(s"$env.google-analytics.host")
-  override lazy val reportAProblemPartialUrl = s"$contactFrontendUrl/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override lazy val reportAProblemNonJSUrl = s"$contactFrontendUrl/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  override protected lazy val configuration = Play.current.configuration
 }
