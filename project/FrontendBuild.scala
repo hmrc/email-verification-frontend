@@ -14,7 +14,7 @@ private object AppDependencies {
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "frontend-bootstrap" % "8.6.0"
+    "uk.gov.hmrc" %% "frontend-bootstrap" % "8.12.0"
   )
 
   abstract class TestDependencies(scope: String)(scopeOnlyDependencies: ModuleID*) {
