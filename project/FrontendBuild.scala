@@ -14,7 +14,7 @@ private object AppDependencies {
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "frontend-bootstrap" % "8.12.0"
+    "uk.gov.hmrc" %% "frontend-bootstrap" % "8.24.0"
   )
 
   abstract class TestDependencies(scope: String)(scopeOnlyDependencies: ModuleID*) {
@@ -23,7 +23,7 @@ private object AppDependencies {
       "org.jsoup" % "jsoup" % "1.10.3" % scope,
       "org.pegdown" % "pegdown" % "1.6.0" % scope,
       "org.scalatest" %% "scalatest" % "3.0.1" % scope,
-      "uk.gov.hmrc" %% "hmrctest" % "2.4.0" % scope
+      "uk.gov.hmrc" %% "hmrctest" % "3.0.0" % scope
     ) ++: scopeOnlyDependencies
   }
 
