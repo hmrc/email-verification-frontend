@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.emailverification.controllers
+package uk.gov.hmrc.emailverification
 
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
-import play.api.mvc.Action
+import javax.inject.Inject
+import play.Configuration
+import play.api.i18n.MessagesApi
+import play.api.mvc.Request
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 
-trait ErrorController extends FrontendController {
-  def showErrorPage = Action { implicit request => Ok(uk.gov.hmrc.emailverification.views.html.verify_error() }
+class EmailVerifyErrorHandler @Inject()(val messagesApi: MessagesApi, val configuration: Configuration)(implicit val feConfig: FrontendAppConfig) extends FrontendErrorHandler {
+
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]) =
+    uk.gov.hmrc.emailverification.views.html.error_template (pageTitle, heading, message)
 }
-
-object ErrorController extends ErrorController

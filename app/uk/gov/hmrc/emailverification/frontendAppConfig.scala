@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,41 @@
 
 package uk.gov.hmrc.emailverification
 
-import play.api.{Configuration, Play}
+import javax.inject.{Inject, Singleton}
+import play.api.{Configuration, Environment, Play}
 import uk.gov.hmrc.play.config.ServicesConfig
 
-trait AppConfig {
+//trait AppConfig {
+//
+//  protected def configuration: Configuration
+//  protected def env: String
+//
+//  lazy val analyticsToken: String = loadConfig(s"$env.google-analytics.token")
+//  lazy val analyticsHost: String = loadConfig(s"$env.google-analytics.host")
+//  lazy val reportAProblemPartialUrl: String = s"/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+//  lazy val reportAProblemNonJSUrl: String = s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+//
+//  private lazy val contactFormServiceIdentifier = "email-verification-frontend"
+//
+//  private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+//}
+//
+//object FrontendAppConfig extends AppConfig with ServicesConfig {
+//  override protected lazy val configuration = Play.current.configuration
+//}
 
-  protected def configuration: Configuration
-  protected def env: String
+@Singleton
+class FrontendAppConfig @Inject() (configuration: Configuration, environment: Environment) extends ServicesConfig {
+  override protected def mode = environment.mode
+
+  override protected def runModeConfiguration = configuration
+
+  private def loadConfig(key: String) = runModeConfiguration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+
+  private lazy val contactFormServiceIdentifier = "email-verification-frontend"
 
   lazy val analyticsToken: String = loadConfig(s"$env.google-analytics.token")
   lazy val analyticsHost: String = loadConfig(s"$env.google-analytics.host")
   lazy val reportAProblemPartialUrl: String = s"/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   lazy val reportAProblemNonJSUrl: String = s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-
-  private lazy val contactFormServiceIdentifier = "email-verification-frontend"
-
-  private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
-}
-
-object FrontendAppConfig extends AppConfig with ServicesConfig {
-  override protected lazy val configuration = Play.current.configuration
 }
