@@ -2,13 +2,16 @@ package uk.gov.hmrc.emailverification
 
 import java.util.UUID
 
+import javax.inject.Inject
 import org.jsoup.Jsoup
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.prop.Tables.Table
+import play.api.Play
 import play.api.http.HeaderNames
 import play.api.libs.ws.WS
 import play.api.test.FakeApplication
-import uk.gov.hmrc.crypto.ApplicationCrypto._
+//import uk.gov.hmrc.crypto.ApplicationCrypto._
+import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.emailverification.stubs.EmailVerificationStubs.{stubCreateVerifiedEmail, verifyCreateVerifiedEmail}
 
@@ -32,7 +35,7 @@ class VerifyEmailIntegrationSpec extends IntegrationSpecBase {
          | "continueUrl": "$continueUrl"
          |}
         """.stripMargin
-    def encryptAndEncode(value: String) = new String(QueryParameterCrypto.encrypt(PlainText(value)).toBase64)
+    def encryptAndEncode(value: String) = new String(new ApplicationCrypto(Play.current.configuration.underlying).QueryParameterCrypto.encrypt(PlainText(value)).toBase64)
 
     scenario("link is verified") {
       Given("an encrypted payload containing a token and a continue url")

@@ -53,4 +53,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, environment: En
   lazy val analyticsHost: String = loadConfig(s"$env.google-analytics.host")
   lazy val reportAProblemPartialUrl: String = s"/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   lazy val reportAProblemNonJSUrl: String = s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+
+  lazy val emailUrl = baseUrl("email-verification")
 }

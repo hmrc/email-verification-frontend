@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.emailverification.controllers
 
+import javax.inject.{Inject, Singleton}
 import org.joda.time.DateTime
 import play.api.libs.json.{Json, Reads}
 import play.api.mvc.Action
@@ -32,11 +33,10 @@ object Token {
   implicit val tokenReads: Reads[Token] = Json.reads[Token]
 }
 
-trait EmailVerificationController extends FrontendController {
+@Singleton
+class EmailVerificationController @Inject()(emailVerificationConnector: EmailVerificationConnector, decrypter: Decrypter) extends FrontendController {
 
-  def emailVerificationConnector: EmailVerificationConnector
-  def decrypter: Decrypter
-  def dateTimeProvider: () => DateTime
+  def dateTimeProvider: DateTime = DateTime.now()
 
   def verify(token: String) = Action.async { implicit request =>
     val redirectToContinue = for {
@@ -47,10 +47,4 @@ trait EmailVerificationController extends FrontendController {
     redirectToContinue.recover { case _ => Redirect(routes.ErrorController.showErrorPage()) }
   }
 
-}
-
-object EmailVerificationController extends EmailVerificationController {
-  override lazy val decrypter = Decrypter
-  override val dateTimeProvider = () => DateTime.now()
-  override lazy val emailVerificationConnector = EmailVerificationConnector
 }

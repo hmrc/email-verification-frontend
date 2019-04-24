@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.emailverification.controllers
 
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
+import javax.inject.{Inject, Singleton}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Action
+import uk.gov.hmrc.emailverification.FrontendAppConfig
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-trait ErrorController extends FrontendController {
-  def showErrorPage = Action { implicit request => Ok(uk.gov.hmrc.emailverification.views.html.verify_error() }
+@Singleton
+class ErrorController @Inject()()(implicit config:FrontendAppConfig, val messagesApi:MessagesApi) extends FrontendController with I18nSupport {
+  def showErrorPage = Action { implicit request => Ok(uk.gov.hmrc.emailverification.views.html.verify_error()) }
 }
-
-object ErrorController extends ErrorController

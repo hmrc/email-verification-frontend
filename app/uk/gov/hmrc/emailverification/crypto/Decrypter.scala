@@ -16,25 +16,22 @@
 
 package uk.gov.hmrc.emailverification.crypto
 
+import javax.inject.{Singleton}
 import play.api.libs.json.{Json, Reads}
-import play.api.{Logger, LoggerLike}
-import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig, Decrypter => HmrcDecrypter}
+import play.api.{Logger, Play}
+import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig}
 
 import scala.util.{Failure, Try}
 
-trait Decrypter {
-  def crypto: HmrcDecrypter
-
-  def logger: LoggerLike
+@Singleton
+class Decrypter(){
+  private val config = Play.current.configuration.underlying
+  val crypto = new CryptoWithKeysFromConfig("token.encryption",config)
 
   def decryptAs[T](crypted: Crypted)(implicit reads: Reads[T]): Try[T] = Try(Json.parse(crypto.decrypt(crypted).value).as).recoverWith {
     case e: SecurityException =>
-      logger.warn("Decryption failed when decrypting email verification token")
+      Logger.warn("Decryption failed when decrypting email verification token")
       Failure(e)
   }
 }
 
-object Decrypter extends Decrypter {
-  override lazy val crypto = CryptoWithKeysFromConfig("token.encryption")
-  override lazy val logger = Logger
-}
