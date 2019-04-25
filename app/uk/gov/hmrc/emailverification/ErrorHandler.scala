@@ -17,13 +17,12 @@
 package uk.gov.hmrc.emailverification
 
 import javax.inject.Inject
-import play.Configuration
+import play.api.Configuration
 import play.api.i18n.MessagesApi
 import play.api.mvc.Request
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 
-class EmailVerifyErrorHandler @Inject()(val messagesApi: MessagesApi, val configuration: Configuration)(implicit val feConfig: FrontendAppConfig) extends FrontendErrorHandler {
+class ErrorHandler @Inject()(val messagesApi: MessagesApi, val configuration: Configuration)(implicit val feConfig: FrontendAppConfig) extends FrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]) =
     uk.gov.hmrc.emailverification.views.html.error_template (pageTitle, heading, message)

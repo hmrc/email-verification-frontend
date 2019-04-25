@@ -20,25 +20,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.{Configuration, Environment, Play}
 import uk.gov.hmrc.play.config.ServicesConfig
 
-//trait AppConfig {
-//
-//  protected def configuration: Configuration
-//  protected def env: String
-//
-//  lazy val analyticsToken: String = loadConfig(s"$env.google-analytics.token")
-//  lazy val analyticsHost: String = loadConfig(s"$env.google-analytics.host")
-//  lazy val reportAProblemPartialUrl: String = s"/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-//  lazy val reportAProblemNonJSUrl: String = s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-//
-//  private lazy val contactFormServiceIdentifier = "email-verification-frontend"
-//
-//  private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
-//}
-//
-//object FrontendAppConfig extends AppConfig with ServicesConfig {
-//  override protected lazy val configuration = Play.current.configuration
-//}
-
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration, environment: Environment) extends ServicesConfig {
   override protected def mode = environment.mode

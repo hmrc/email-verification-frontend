@@ -25,11 +25,37 @@ trait MicroService {
   lazy val plugins: Seq[Plugins] = Seq.empty
   lazy val playSettings: Seq[Setting[_]] = Seq.empty
 
+  lazy val excludedPackages = Seq(
+    "<empty>",
+    "Reverse*",
+    "models/.data/..*",
+    "view.*",
+    ".*standardError*.*",
+    ".*govuk_wrapper*.*",
+    ".*main_template*.*",
+    "uk.gov.hmrc.BuildInfo",
+    "com.kenshoo.play.metrics*",
+    "testOnlyDoNotUseInAppConf.*",
+    "uk.gov.hmrc",
+    "uk.gov.hmrc.emailverification.controllers.javascript*",
+    "app.*",
+    "prod.*"
+  )
+
+  lazy val scoverageSettings = {
+    import scoverage._
+    Seq(
+      ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
+      ScoverageKeys.coverageMinimum := 80,
+      ScoverageKeys.coverageFailOnMinimum := false,
+      ScoverageKeys.coverageHighlighting := true
+    )
+  }
 
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(Seq(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory) ++ plugins: _*)
     .settings(majorVersion := 0)
-    .settings(playSettings: _*)
+    .settings(playSettings ++ scoverageSettings : _*)
     .settings(scalaSettings: _*)
     .settings(publishingSettings: _*)
     .settings(defaultSettings(): _*)
