@@ -18,15 +18,14 @@ package uk.gov.hmrc.emailverification.crypto
 
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{Json, Reads}
-import play.api.{Logger, LoggerLike, Play}
+import play.api.{Configuration, Logger, LoggerLike}
 import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig}
 
 import scala.util.{Failure, Try}
 
 @Singleton
-class Decrypter @Inject()(){
-  private val config = Play.current.configuration.underlying
-  val crypto = new CryptoWithKeysFromConfig("token.encryption",config)
+class Decrypter @Inject()(config: Configuration){
+  val crypto = new CryptoWithKeysFromConfig("token.encryption",config.underlying)
   val logger: LoggerLike = Logger(this.getClass)
   def decryptAs[T](crypted: Crypted)(implicit reads: Reads[T]): Try[T] = Try(Json.parse(crypto.decrypt(crypted).value).as).recoverWith {
     case e: SecurityException =>

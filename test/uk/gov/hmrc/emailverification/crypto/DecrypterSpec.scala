@@ -18,7 +18,8 @@ package uk.gov.hmrc.emailverification.crypto
 
 import java.util.UUID
 
-import play.api.{LoggerLike, Play}
+import com.typesafe.config.ConfigFactory
+import play.api.{Configuration, LoggerLike, Play}
 import play.api.test.FakeApplication
 import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig, PlainText}
 import uk.gov.hmrc.emailverification.controllers.Token
@@ -44,8 +45,8 @@ class DecrypterSpec extends UnitSpec with WithFakeApplication {
   }
 
   trait Setup {
-    private val config = Play.current.configuration.underlying
-    val theCrypto = new CryptoWithKeysFromConfig("queryParameter.encryption", config)
+    val configuration = new Configuration(ConfigFactory.load("application.conf"))
+    val theCrypto = new CryptoWithKeysFromConfig("queryParameter.encryption", configuration.underlying)
     val continueUrl = "/continue-url"
     val token = UUID.randomUUID().toString
 
@@ -64,7 +65,7 @@ class DecrypterSpec extends UnitSpec with WithFakeApplication {
         """.stripMargin
     val encryptedJson = theCrypto.encrypt(PlainText(json))
 
-    val decrypter = new Decrypter() {
+    val decrypter = new Decrypter(configuration) {
       override val crypto = theCrypto
       override val logger: LoggerLike = loggerStub
     }
