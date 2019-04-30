@@ -1,4 +1,4 @@
 # microservice specific routes
 
-GET        /verify             uk.gov.hmrc.emailverification.controllers.EmailVerificationController.verify(token : String)
-GET        /error              uk.gov.hmrc.emailverification.controllers.ErrorController.showErrorPage
+GET        /verify             @uk.gov.hmrc.emailverification.controllers.EmailVerificationController.verify(token : String)
+GET        /error              @uk.gov.hmrc.emailverification.controllers.ErrorController.showErrorPage

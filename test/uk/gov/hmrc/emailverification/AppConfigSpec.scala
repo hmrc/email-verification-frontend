@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,55 +16,60 @@
 
 package uk.gov.hmrc.emailverification
 
-import play.api.Configuration
+import com.typesafe.config.ConfigFactory
+import org.mockito.Mockito.when
+import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.{Configuration, Environment, Mode}
 import uk.gov.hmrc.play.test.UnitSpec
 
-class AppConfigSpec extends UnitSpec {
+import scala.concurrent.Future
+
+class AppConfigSpec extends UnitSpec with MockitoSugar with GuiceOneAppPerSuite {
+
+  val configuration = new Configuration(ConfigFactory.load("application.conf"))
+  val environment   = new Environment(app.path, app.classloader, Mode.Test)
+  val appConfig     = new FrontendAppConfig(configuration,environment)
 
   "analyticsToken" should {
-    "be read as it is from configuration" in new Setup {
+    "be read as it is from configuration" in {
       val analyticsTokenValue = "some-analytics-token"
-      override val testConfigurationMap = Map(s"$testEnv.google-analytics.token" -> analyticsTokenValue)
+      val appConfig     = new FrontendAppConfig(configuration ++ Configuration(s"${environment.mode}.google-analytics.token" -> analyticsTokenValue),environment)
       appConfig.analyticsToken shouldBe analyticsTokenValue
     }
-    "throw exception if not configured" in new Setup {
+    "throw exception if not configured" in {
+      val configuration = mock[Configuration]
+      val appConfig     = new FrontendAppConfig(configuration,environment)
+      when(configuration.getString(s"${environment.mode}.google-analytics.token")) thenReturn Future.successful(None)
       val exception = intercept[Exception](appConfig.analyticsToken)
-      exception.getMessage shouldBe s"Missing configuration key: $testEnv.google-analytics.token"
+      exception.getMessage shouldBe s"Missing configuration key: ${environment.mode}.google-analytics.token"
     }
   }
 
   "analyticsHost" should {
-    "be read as it is from configuration" in new Setup {
+    "be read as it is from configuration" in {
       val analyticsHostValue = "some-analytics-host"
-      override val testConfigurationMap = Map(s"$testEnv.google-analytics.host" -> analyticsHostValue)
+      val appConfig     = new FrontendAppConfig(configuration ++ Configuration(s"${environment.mode}.google-analytics.host" -> analyticsHostValue),environment)
       appConfig.analyticsHost shouldBe analyticsHostValue
     }
-    "throw exception if not configured" in new Setup {
+    "throw exception if not configured" in {
+      val configuration = mock[Configuration]
+      val appConfig     = new FrontendAppConfig(configuration,environment)
+      when(configuration.getString(s"${environment.mode}.google-analytics.host")) thenReturn Future.successful(None)
       val exception = intercept[Exception](appConfig.analyticsHost)
-      exception.getMessage shouldBe s"Missing configuration key: $testEnv.google-analytics.host"
+      exception.getMessage shouldBe s"Missing configuration key: ${environment.mode}.google-analytics.host"
     }
   }
 
   "reportAProblemPartialUrl" should {
-    "return relative problem reporting url for js" in new Setup {
+    "return relative problem reporting url for js" in {
       appConfig.reportAProblemPartialUrl shouldBe "/contact/problem_reports_ajax?service=email-verification-frontend"
     }
   }
 
   "reportAProblemNonJSUrl" should {
-    "return relative problem reporting url for non js" in new Setup {
+    "return relative problem reporting url for non js" in {
       appConfig.reportAProblemNonJSUrl shouldBe "/contact/problem_reports_nonjs?service=email-verification-frontend"
-    }
-  }
-
-  trait Setup {
-
-    val testConfigurationMap = Map.empty[String,Any]
-    val testEnv = "Test"
-
-    lazy val appConfig = new AppConfig {
-      override protected val configuration = Configuration.from(testConfigurationMap)
-      override protected val env = testEnv
     }
   }
 

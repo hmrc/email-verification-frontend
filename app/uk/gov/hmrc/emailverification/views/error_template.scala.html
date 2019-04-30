@@ -1,5 +1,5 @@
 @*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,8 @@
  * limitations under the License.
  *@
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
+@import uk.gov.hmrc.emailverification.FrontendAppConfig
+@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages, config:FrontendAppConfig)
 
 @contentHeader = {
   <h1 class="heading-xlarge">@heading</h1>
@@ -24,4 +25,4 @@
   <p>@message</p>
 }
 
-@govuk_wrapper(appConfig = uk.gov.hmrc.emailverification.FrontendAppConfig, title = pageTitle, contentHeader = Some(contentHeader), mainContent = mainContent)
+@govuk_wrapper(title = pageTitle, contentHeader = Some(contentHeader), mainContent = mainContent)

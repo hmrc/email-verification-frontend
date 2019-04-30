@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.emailverification.controllers
 
+import javax.inject.{Inject, Singleton}
 import org.joda.time.DateTime
 import play.api.libs.json.{Json, Reads}
 import play.api.mvc.Action
 import uk.gov.hmrc.crypto.Crypted._
 import uk.gov.hmrc.emailverification.connectors.EmailVerificationConnector
 import uk.gov.hmrc.emailverification.crypto.Decrypter
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
 
@@ -32,11 +33,10 @@ object Token {
   implicit val tokenReads: Reads[Token] = Json.reads[Token]
 }
 
-trait EmailVerificationController extends FrontendController {
+@Singleton
+class EmailVerificationController @Inject()(emailVerificationConnector: EmailVerificationConnector, decrypter: Decrypter) extends FrontendController {
 
-  def emailVerificationConnector: EmailVerificationConnector
-  def decrypter: Decrypter
-  def dateTimeProvider: () => DateTime
+  def dateTimeProvider: DateTime = DateTime.now()
 
   def verify(token: String) = Action.async { implicit request =>
     val redirectToContinue = for {
@@ -47,10 +47,4 @@ trait EmailVerificationController extends FrontendController {
     redirectToContinue.recover { case _ => Redirect(routes.ErrorController.showErrorPage()) }
   }
 
-}
-
-object EmailVerificationController extends EmailVerificationController {
-  override lazy val decrypter = Decrypter
-  override val dateTimeProvider = () => DateTime.now()
-  override lazy val emailVerificationConnector = EmailVerificationConnector
 }

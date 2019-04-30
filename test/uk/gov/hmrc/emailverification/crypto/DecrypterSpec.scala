@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,8 @@ package uk.gov.hmrc.emailverification.crypto
 
 import java.util.UUID
 
-import play.api.LoggerLike
+import com.typesafe.config.ConfigFactory
+import play.api.{Configuration, LoggerLike, Play}
 import play.api.test.FakeApplication
 import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig, PlainText}
 import uk.gov.hmrc.emailverification.controllers.Token
@@ -44,8 +45,8 @@ class DecrypterSpec extends UnitSpec with WithFakeApplication {
   }
 
   trait Setup {
-
-    val theCrypto = CryptoWithKeysFromConfig("queryParameter.encryption")
+    val configuration = new Configuration(ConfigFactory.load("application.conf"))
+    val theCrypto = new CryptoWithKeysFromConfig("queryParameter.encryption", configuration.underlying)
     val continueUrl = "/continue-url"
     val token = UUID.randomUUID().toString
 
@@ -64,9 +65,9 @@ class DecrypterSpec extends UnitSpec with WithFakeApplication {
         """.stripMargin
     val encryptedJson = theCrypto.encrypt(PlainText(json))
 
-    val decrypter = new Decrypter {
+    val decrypter = new Decrypter(configuration) {
       override val crypto = theCrypto
-      override val logger = loggerStub
+      override val logger: LoggerLike = loggerStub
     }
   }
 }

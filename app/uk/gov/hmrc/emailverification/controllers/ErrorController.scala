@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.emailverification.controllers
 
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
+import javax.inject.{Inject, Singleton}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Action
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.emailverification.FrontendAppConfig
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-trait ErrorController extends FrontendController {
+@Singleton
+class ErrorController @Inject()()(implicit config:FrontendAppConfig, val messagesApi:MessagesApi) extends FrontendController with I18nSupport {
   def showErrorPage = Action { implicit request => Ok(uk.gov.hmrc.emailverification.views.html.verify_error()) }
 }
-
-object ErrorController extends ErrorController

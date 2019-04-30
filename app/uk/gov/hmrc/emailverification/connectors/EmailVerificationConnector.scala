@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,13 @@
 
 package uk.gov.hmrc.emailverification.connectors
 
+import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{Json, Writes}
-import uk.gov.hmrc.emailverification.WSHttp
-import uk.gov.hmrc.http.{HeaderCarrier, HttpPost}
-import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+import uk.gov.hmrc.emailverification.FrontendAppConfig
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
+
+import scala.concurrent.ExecutionContext
 
 case class VerificationToken(token: String)
 
@@ -28,15 +30,10 @@ object VerificationToken {
   implicit val writes: Writes[VerificationToken] = Json.writes[VerificationToken]
 }
 
-trait EmailVerificationConnector {
-  def http: HttpPost
-  def serviceUrl: String
+@Singleton
+class EmailVerificationConnector @Inject()(http: HttpClient, frontendAppConfig: FrontendAppConfig) {
+  val serviceUrl = frontendAppConfig.emailUrl
   def verifyEmailAddress(token: String)
-                        (implicit headerCarrier: HeaderCarrier) =
+                        (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext) =
     http.POST(s"$serviceUrl/email-verification/verified-email-addresses", VerificationToken(token), Nil).map(_ => {})
-}
-
-object EmailVerificationConnector extends EmailVerificationConnector with ServicesConfig {
-  override lazy val http = WSHttp
-  override val serviceUrl = baseUrl("email-verification")
 }

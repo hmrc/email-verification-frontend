@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc
+package uk.gov.hmrc.emailverification
 
-import scala.concurrent.Future
-import scala.util.{Failure, Success, Try}
+import javax.inject.Inject
+import play.api.Configuration
+import play.api.i18n.MessagesApi
+import play.api.mvc.Request
+import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 
-package object emailverification {
+class ErrorHandler @Inject()(val messagesApi: MessagesApi, val configuration: Configuration)(implicit val feConfig: FrontendAppConfig) extends FrontendErrorHandler {
 
-  implicit def tryToFuture[T](tryObj: Try[T]): Future[T] = tryObj match {
-    case Success(value) => Future.successful(value)
-    case Failure(exception) => Future.failed(exception)
-  }
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]) =
+    uk.gov.hmrc.emailverification.views.html.error_template (pageTitle, heading, message)
 }

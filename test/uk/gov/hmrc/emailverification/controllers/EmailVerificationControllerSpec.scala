@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import uk.gov.hmrc.emailverification.crypto.Decrypter
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Success
 
 class EmailVerificationControllerSpec extends UnitSpec with WithFakeApplication with ScalaFutures with IntegrationPatience with MockitoSugarRush {
@@ -39,25 +39,25 @@ class EmailVerificationControllerSpec extends UnitSpec with WithFakeApplication 
     "redirect to continue url if link is verified" in new Setup {
 
       when(decrypterMock.decryptAs[Token](Crypted(encryptedToken))).thenReturn(Success(Token(token, continueUrl)))
-      when(emailVerificationConnectorMock.verifyEmailAddress(eqTo(token))(any[HeaderCarrier])).thenReturn(Future.successful {})
+      when(emailVerificationConnectorMock.verifyEmailAddress(eqTo(token))(any[HeaderCarrier],any[ExecutionContext])).thenReturn(Future.successful {})
       val result = controller.verify(encryptedAndEncodedToken)(request)
 
       status(result) shouldBe 303
       redirectLocation(result) should contain(continueUrl)
       verify(decrypterMock).decryptAs[Token](Crypted(encryptedToken))
-      verify(emailVerificationConnectorMock).verifyEmailAddress(eqTo(token))(any[HeaderCarrier])
+      verify(emailVerificationConnectorMock).verifyEmailAddress(eqTo(token))(any[HeaderCarrier],any[ExecutionContext])
       verifyNoMoreInteractions(decrypterMock, emailVerificationConnectorMock)
     }
 
     "redirect to error page if link is not verified" in new Setup {
       when(decrypterMock.decryptAs[Token](Crypted(encryptedToken))).thenReturn(Success(Token(token, continueUrl)))
-      when(emailVerificationConnectorMock.verifyEmailAddress(eqTo(token))(any[HeaderCarrier])).thenReturn(Future.failed(new RuntimeException))
+      when(emailVerificationConnectorMock.verifyEmailAddress(eqTo(token))(any[HeaderCarrier],any[ExecutionContext])).thenReturn(Future.failed(new RuntimeException))
       val result = controller.verify(encryptedAndEncodedToken)(request)
 
       status(result) shouldBe 303
       redirectLocation(result) should contain(errorUrl)
       verify(decrypterMock).decryptAs[Token](Crypted(encryptedToken))
-      verify(emailVerificationConnectorMock).verifyEmailAddress(eqTo(token))(any[HeaderCarrier])
+      verify(emailVerificationConnectorMock).verifyEmailAddress(eqTo(token))(any[HeaderCarrier],any[ExecutionContext])
       verifyNoMoreInteractions(decrypterMock, emailVerificationConnectorMock)
     }
   }
@@ -72,11 +72,7 @@ class EmailVerificationControllerSpec extends UnitSpec with WithFakeApplication 
     val token = "some token"
     val decrypterMock: Decrypter = mock[Decrypter]
     val emailVerificationConnectorMock: EmailVerificationConnector = mock[EmailVerificationConnector]
-    val controller = new EmailVerificationController {
-      override val decrypter = decrypterMock
-      override lazy val dateTimeProvider = () => currentTime
-      override lazy val emailVerificationConnector = emailVerificationConnectorMock
-    }
+    val controller = new EmailVerificationController(emailVerificationConnectorMock,decrypterMock)
     implicit val request = FakeRequest()
   }
 }
