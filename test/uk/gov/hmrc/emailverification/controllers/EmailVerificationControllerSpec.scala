@@ -20,6 +20,7 @@ import org.apache.commons.codec.binary.Base64.encodeBase64String
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.Mockito._
+import org.scalatest.{Matchers, WordSpecLike}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -28,12 +29,11 @@ import uk.gov.hmrc.crypto.Crypted
 import uk.gov.hmrc.emailverification.connectors.EmailVerificationConnector
 import uk.gov.hmrc.emailverification.crypto.Decrypter
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Success
 
-class EmailVerificationControllerSpec extends UnitSpec with WithFakeApplication with ScalaFutures with IntegrationPatience with MockitoSugarRush {
+class EmailVerificationControllerSpec extends ScalaFutures with IntegrationPatience with MockitoSugarRush with Matchers with WordSpecLike {
 
   "verify" should {
     "redirect to continue url if link is verified" in new Setup {

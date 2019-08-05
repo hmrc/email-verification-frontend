@@ -19,17 +19,17 @@ package uk.gov.hmrc.emailverification.crypto
 import java.util.UUID
 
 import com.typesafe.config.ConfigFactory
-import play.api.{Configuration, LoggerLike, Play}
+import org.scalatest.{Matchers, WordSpecLike}
 import play.api.test.FakeApplication
+import play.api.{Configuration, LoggerLike}
 import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig, PlainText}
 import uk.gov.hmrc.emailverification.controllers.Token
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 import scala.util.Success
 
-class DecrypterSpec extends UnitSpec with WithFakeApplication {
+class DecrypterSpec extends Matchers with WordSpecLike {
 
-  override lazy val fakeApplication = FakeApplication(additionalConfiguration = Map(
+   lazy val fakeApplication = FakeApplication(additionalConfiguration = Map(
     "queryParameter.encryption.key" -> "P5xsJ9Nt+quxGZzB3DeLfw=="
   ))
 
