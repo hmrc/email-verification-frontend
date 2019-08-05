@@ -18,15 +18,12 @@ package uk.gov.hmrc.emailverification
 
 import com.typesafe.config.ConfigFactory
 import org.jsoup.Jsoup
-import org.scalatest.{Matchers, WordSpec, WordSpecLike}
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.MessagesApi
 import play.api.test.FakeRequest
 import play.api.{Configuration, Environment, Mode}
-import tools.MockitoSugarRush
+import tools.UnitSpec
 
-class ErrorHandlerSpec extends GuiceOneAppPerSuite with ScalaFutures with IntegrationPatience with MockitoSugarRush with WordSpecLike with Matchers {
+class ErrorHandlerSpec extends UnitSpec {
   "showErrorPage" should {
     "display the error page" in new Setup {
       val result = connector.standardErrorTemplate("Error Page Title","heading","message")(request)

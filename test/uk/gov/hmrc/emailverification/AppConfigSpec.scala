@@ -18,14 +18,12 @@ package uk.gov.hmrc.emailverification
 
 import com.typesafe.config.ConfigFactory
 import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{GivenWhenThen, Matchers, WordSpecLike}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.{Configuration, Environment, Mode}
+import tools.UnitSpec
 
 import scala.concurrent.Future
 
-class AppConfigSpec extends MockitoSugar with GuiceOneAppPerSuite with Matchers with WordSpecLike {
+class AppConfigSpec extends UnitSpec {
 
   val configuration = new Configuration(ConfigFactory.load("application.conf"))
   val environment   = new Environment(app.path, app.classloader, Mode.Test)
