@@ -17,6 +17,7 @@
 package uk.gov.hmrc.emailverification
 
 import javax.inject.{Inject, Singleton}
+import play.api.i18n.Lang
 import play.api.{Configuration, Environment, Play}
 import uk.gov.hmrc.play.config.ServicesConfig
 
@@ -24,11 +25,19 @@ import uk.gov.hmrc.play.config.ServicesConfig
 class FrontendAppConfig @Inject() (configuration: Configuration, environment: Environment) extends ServicesConfig {
   override protected def mode = environment.mode
 
-  override protected def runModeConfiguration = configuration
+  override def runModeConfiguration = configuration
 
   private def loadConfig(key: String) = runModeConfiguration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   private lazy val contactFormServiceIdentifier = "email-verification-frontend"
+
+  lazy val isWelshEnabled: Boolean = runModeConfiguration.getBoolean("features.welsh-translation").getOrElse(true)
+
+  def getAvailableLanguages: Map[String, Lang] = Map(
+    "english" -> Lang("en"),
+    "cymraeg" -> Lang("cy")
+  )
+
 
   lazy val analyticsToken: String = loadConfig(s"$env.google-analytics.token")
   lazy val analyticsHost: String = loadConfig(s"$env.google-analytics.host")

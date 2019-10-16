@@ -70,7 +70,13 @@
 
 @mainContentHeader = {
     @if(contentHeader.isDefined) {
-        @uiLayouts.main_content_header(contentHeader = contentHeader.get)
+        @uiLayouts.main_content_header(contentHeader.get)
+    }
+    @if(appConfig.isWelshEnabled) {
+        @views.html.language_selection(
+            appConfig.getAvailableLanguages,
+            uk.gov.hmrc.emailverification.controllers.routes.ManageLanguageController.switchToLanguage,
+            Some("label--inline-right"))
     }
 }
 

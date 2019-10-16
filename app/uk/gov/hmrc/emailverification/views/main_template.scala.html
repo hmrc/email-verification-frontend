@@ -32,13 +32,23 @@
         @layouts.sidebar(sidebarLinks.get, Some("sidebar"))
     }
 }
-
+@mainContentHeader = {
+    @if(contentHeader.isDefined) {
+        @layouts.main_content_header(contentHeader.get)
+    }
+    @if(appConfig.isWelshEnabled) {
+        @views.html.language_selection(
+            appConfig.getAvailableLanguages,
+            uk.gov.hmrc.emailverification.controllers.routes.ManageLanguageController.switchToLanguage,
+            Some("label--inline-right"))
+    }
+}
 
 @govuk_wrapper(title = title,
                mainClass = mainClass,
                bodyClasses = bodyClasses,
                sidebar = sidebar,
-               contentHeader = contentHeader,
+               contentHeader = Some(mainContentHeader),
                mainContent = layouts.article(mainContent),
                serviceInfoContent = serviceInfoContent,
                scriptElem = scriptElem
