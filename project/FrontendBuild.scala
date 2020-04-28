@@ -14,11 +14,11 @@ private object AppDependencies {
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "bootstrap-play-25" % "4.12.0",
-    "uk.gov.hmrc" %% "govuk-template" % "5.40.0-play-25",
-    "uk.gov.hmrc" %% "play-ui" % "7.40.0-play-25",
-    "uk.gov.hmrc" %% "crypto" % "5.4.0",
-    "uk.gov.hmrc" %% "play-language"      % "4.1.0"
+    "uk.gov.hmrc" %% "bootstrap-play-25"  % "5.2.0",
+    "uk.gov.hmrc" %% "govuk-template"     % "5.54.0-play-25",
+    "uk.gov.hmrc" %% "play-ui"            % "8.8.0-play-25",
+    "uk.gov.hmrc" %% "crypto"             % "5.6.0",
+    "uk.gov.hmrc" %% "play-language"      % "4.2.0-play-25"
   )
 
   abstract class TestDependencies(scope: String)(scopeOnlyDependencies: ModuleID*) {
@@ -27,8 +27,7 @@ private object AppDependencies {
       "org.jsoup" % "jsoup" % "1.10.3" % scope,
       "org.pegdown" % "pegdown" % "1.6.0" % scope,
       "org.scalatest" %% "scalatest" % "3.0.1" % scope,
-      "uk.gov.hmrc" %% "service-integration-test" % "0.9.0-play-25" % scope,
-
+      "uk.gov.hmrc" %% "service-integration-test" % "0.10.0-play-25" % scope,
       "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % scope
     ) ++: scopeOnlyDependencies
   }
