@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ class EmailVerificationControllerSpec extends ScalaFutures with IntegrationPatie
     val currentTime = DateTime.now
     val email = "john@doe.com"
     val continueUrl = "/continue"
-    val errorUrl = "/email-verification/error"
+    val errorUrl = "/error"
     val encryptedToken = "some-encrypted-string"
     val encryptedAndEncodedToken = encodeBase64String(encryptedToken.getBytes("UTF-8"))
     val token = "some token"
