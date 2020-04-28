@@ -27,8 +27,7 @@ private object AppDependencies {
       "org.jsoup" % "jsoup" % "1.10.3" % scope,
       "org.pegdown" % "pegdown" % "1.6.0" % scope,
       "org.scalatest" %% "scalatest" % "3.0.1" % scope,
-      "uk.gov.hmrc" %% "service-integration-test" % "0.9.0-play-25" % scope,
-
+      "uk.gov.hmrc" %% "service-integration-test" % "0.10.0-play-25" % scope,
       "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % scope
     ) ++: scopeOnlyDependencies
   }
