@@ -66,7 +66,7 @@ class EmailVerificationControllerSpec extends ScalaFutures with IntegrationPatie
     val currentTime = DateTime.now
     val email = "john@doe.com"
     val continueUrl = "/continue"
-    val errorUrl = "/error"
+    val errorUrl = "/email-verification/error"
     val encryptedToken = "some-encrypted-string"
     val encryptedAndEncodedToken = encodeBase64String(encryptedToken.getBytes("UTF-8"))
     val token = "some token"
