@@ -1,8 +1,5 @@
 # email-verification-frontend
 
-[![Build Status](https://travis-ci.org/hmrc/email-verification-frontend.svg)](https://travis-ci.org/hmrc/email-verification-frontend) [ ![Download](https://api.bintray.com/packages/hmrc/releases/email-verification-frontend/images/download.svg) ](https://bintray.com/hmrc/releases/email-verification-frontend/_latestVersion)
-
-
 This is the frontend counterpart of the email-verification backend.
 
 The user can call the GET method with the encrypted token provided in an email to set that email address as verified.

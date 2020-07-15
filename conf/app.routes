@@ -1,5 +1,5 @@
 # microservice specific routes
 
-GET        /verify             @uk.gov.hmrc.emailverification.controllers.EmailVerificationController.verify(token : String)
-GET        /error              @uk.gov.hmrc.emailverification.controllers.ErrorController.showErrorPage
-GET        /language/:lang     @uk.gov.hmrc.emailverification.controllers.ManageLanguageController.switchToLanguage(lang: String)
+GET        /verify             controllers.EmailVerificationController.verify(token : String)
+GET        /error              controllers.ErrorController.showErrorPage
+GET        /language/:lang     controllers.ManageLanguageController.switchToLanguage(lang: String)
