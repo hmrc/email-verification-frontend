@@ -19,8 +19,9 @@ package connectors
 import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{Json, Writes}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -38,5 +39,9 @@ class EmailVerificationConnector @Inject() (
   private lazy val serviceUrl = frontendAppConfig.emailUrl
 
   def verifyEmailAddress(token: String)(implicit headerCarrier: HeaderCarrier): Future[Unit] =
-    http.POST(s"$serviceUrl/email-verification/verified-email-addresses", VerificationToken(token), Nil).map(_ => ())
+    http.POST[VerificationToken, Either[UpstreamErrorResponse, Unit]](s"$serviceUrl/email-verification/verified-email-addresses", VerificationToken(token), Nil)
+      .map {
+        case Left(err) => throw err
+        case Right(_)  => ()
+      }
 }
