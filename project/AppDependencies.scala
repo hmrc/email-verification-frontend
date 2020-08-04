@@ -12,31 +12,10 @@ object AppDependencies {
   )
 
   val test = Seq(
-    "uk.gov.hmrc" %% "government-gateway-test" % "3.1.0",
+    "uk.gov.hmrc" %% "government-gateway-test" % "3.2.0",
     "uk.gov.hmrc" %% "bootstrap-play-26" % "1.9.0" classifier "tests"
   )
 
-  val overrides = {
-    val jettyFromWiremockVersion = "9.4.15.v20190215"
-
-    Seq(
-      // remove these after/during GG-4751
-      "org.eclipse.jetty" % "jetty-client" % jettyFromWiremockVersion % "it",
-      "org.eclipse.jetty" % "jetty-continuation" % jettyFromWiremockVersion % "it",
-      "org.eclipse.jetty" % "jetty-http" % jettyFromWiremockVersion % "it",
-      "org.eclipse.jetty" % "jetty-io" % jettyFromWiremockVersion % "it",
-      "org.eclipse.jetty" % "jetty-security" % jettyFromWiremockVersion % "it",
-      "org.eclipse.jetty" % "jetty-server" % jettyFromWiremockVersion % "it",
-      "org.eclipse.jetty" % "jetty-servlet" % jettyFromWiremockVersion % "it",
-      "org.eclipse.jetty" % "jetty-servlets" % jettyFromWiremockVersion % "it",
-      "org.eclipse.jetty" % "jetty-util" % jettyFromWiremockVersion % "it",
-      "org.eclipse.jetty" % "jetty-webapp" % jettyFromWiremockVersion % "it",
-      "org.eclipse.jetty" % "jetty-xml" % jettyFromWiremockVersion % "it",
-      "org.eclipse.jetty.websocket" % "websocket-api" % jettyFromWiremockVersion % "it",
-      "org.eclipse.jetty.websocket" % "websocket-client" % jettyFromWiremockVersion % "it",
-      "org.eclipse.jetty.websocket" % "websocket-common" % jettyFromWiremockVersion % "it"
-    )
-  }
 
   def apply(): Seq[ModuleID] = compile ++ test
 }

@@ -14,7 +14,6 @@ lazy val microservice = Project("email-verification-frontend", file("."))
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true
   )
-  .settings(dependencyOverrides ++= AppDependencies.overrides)
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(DefaultBuildSettings.integrationTestSettings())
