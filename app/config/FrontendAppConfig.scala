@@ -19,10 +19,10 @@ package config
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.i18n.Lang
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig, runMode: RunMode) {
+class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
   private lazy val contactFormServiceIdentifier = "email-verification-frontend"
 
@@ -33,8 +33,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
     "cymraeg" -> Lang("cy")
   )
 
-  lazy val analyticsToken: String = servicesConfig.getString(s"${runMode.env}.google-analytics.token")
-  lazy val analyticsHost: String = servicesConfig.getString(s"${runMode.env}.google-analytics.host")
+  lazy val analyticsToken: String = servicesConfig.getString("google-analytics.token")
+  lazy val analyticsHost: String = servicesConfig.getString("google-analytics.host")
   lazy val reportAProblemPartialUrl: String = s"/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   lazy val reportAProblemNonJSUrl: String = s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 

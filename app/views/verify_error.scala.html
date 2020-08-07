@@ -15,9 +15,12 @@
  *@
 
 @import config.FrontendAppConfig
+
+@this(errorTemplate: error_template)
+
 @()(implicit request: Request[_], messages: Messages, config:FrontendAppConfig)
 
-@error_template(
+@errorTemplate(
     pageTitle = Messages("verify-email-address.error.heading"),
     heading = Messages("verify-email-address.error.heading"),
     message = Messages("verify-email-address.error.paragraph")

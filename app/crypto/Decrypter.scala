@@ -16,21 +16,19 @@
 
 package crypto
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{Inject, Named, Singleton}
+import play.api.Logging
 import play.api.libs.json.{Json, Reads}
-import play.api.{Configuration, Logger}
 import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig}
 
 import scala.util.{Failure, Try}
 
 @Singleton
-class Decrypter @Inject() (config: Configuration) {
-  val crypto = new CryptoWithKeysFromConfig("token.encryption", config.underlying)
+class Decrypter @Inject() (@Named("tokenEncryption") crypto: CryptoWithKeysFromConfig) extends Logging {
 
   def decryptAs[T](crypted: Crypted)(implicit reads: Reads[T]): Try[T] = Try(Json.parse(crypto.decrypt(crypted).value).as).recoverWith {
     case e: SecurityException =>
-      Logger.warn("Decryption failed when decrypting email verification token")
+      logger.warn("Decryption failed when decrypting email verification token")
       Failure(e)
   }
 }
-

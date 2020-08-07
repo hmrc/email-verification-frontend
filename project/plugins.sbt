@@ -4,7 +4,7 @@ resolvers += "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactor
 
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.12")
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.25")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.7.5")
 
 addSbtPlugin("uk.gov.hmrc" % "sbt-distributables" % "2.0.0")
 
