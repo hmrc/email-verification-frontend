@@ -19,8 +19,7 @@ package connectors
 import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{Json, Writes}
-import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}

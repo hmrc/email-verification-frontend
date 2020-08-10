@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
+package views
 
-@this(govUkWrapper: govuk_wrapper)
+import javax.inject.Inject
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages, config:FrontendAppConfig)
-
-@contentHeader = {
-  <h1 class="heading-xlarge">@heading</h1>
-}
-
-@mainContent = {
-  <p>@message</p>
-}
-
-@govUkWrapper(title = pageTitle, contentHeader = Some(contentHeader), mainContent = mainContent)
+class Views @Inject() (
+  val errorTemplate: views.html.error_template,
+  val verifyError: views.html.verify_error
+)

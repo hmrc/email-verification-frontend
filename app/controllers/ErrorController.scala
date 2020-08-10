@@ -19,13 +19,15 @@ package controllers
 import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.Views
 
 @Singleton
 class ErrorController @Inject() (
+  views: Views,
   mcc: MessagesControllerComponents
 )(implicit config: FrontendAppConfig) extends FrontendController(mcc) {
   def showErrorPage(): Action[AnyContent] = Action { implicit request =>
-    Ok(views.html.verify_error())
+    Ok(views.verifyError())
   }
 }

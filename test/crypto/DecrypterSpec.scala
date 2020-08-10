@@ -22,7 +22,7 @@ import ch.qos.logback.classic.Level
 import com.typesafe.config.ConfigFactory
 import controllers.Token
 import org.scalatest.LoneElement
-import play.api.{Configuration, Logger}
+import play.api.Configuration
 import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig, PlainText}
 import uk.gov.hmrc.gg.test.{LogCapturing, UnitSpec}
 
@@ -36,7 +36,7 @@ class DecrypterSpec extends UnitSpec with LogCapturing with LoneElement {
     }
 
     "add a warning logging when deserialization fails" in new Setup {
-      withCaptureOfLoggingFrom(Logger) { logs =>
+      withCaptureOfLoggingFrom[Decrypter] { logs =>
         decrypter.decryptAs[Token](Crypted("foobar")).isFailure shouldBe true
 
         val warnLog = logs.filter(_.getLevel == Level.WARN).loneElement
@@ -60,8 +60,6 @@ class DecrypterSpec extends UnitSpec with LogCapturing with LoneElement {
         """.stripMargin
     val encryptedJson = theCrypto.encrypt(PlainText(json))
 
-    val decrypter = new Decrypter(configuration) {
-      override val crypto = theCrypto
-    }
+    val decrypter = new Decrypter(theCrypto)
   }
 }
