@@ -14,22 +14,24 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.play.views.html.helpers._
 @import config.FrontendAppConfig
 
 @this(govUkWrapper: govuk_wrapper)
 
-@(pageTitle: String, heading: String, message: String, continue:String="")(implicit request: Request[_], messages: Messages, config:FrontendAppConfig)
+@(continue:String)(implicit request: Request[_], messages: Messages, config:FrontendAppConfig)
 
 @contentHeader = {
-  <h1 class="heading-xlarge">@heading</h1>
+<h1 class="heading-xlarge">@messages("alreadyverified.heading")</h1>
 }
 
 @mainContent = {
-  <p>@message</p>
 
-  @if(!continue.isEmpty) {
-    <p><a class="button" role="button" href="@continue">@messages("error.continue")</a></p>
-  }
+<div class="form-group">
+ <p>@messages("alreadyverified.label")</p>
+ <p><a class="button" role="button" href="@continue">@messages("alreadyverified.continuebutton")</a></p>
+</div>
+
 }
 
-@govUkWrapper(title = pageTitle, contentHeader = Some(contentHeader), mainContent = mainContent)
+@govUkWrapper(title = messages("alreadyverified.title"), contentHeader = Some(contentHeader), mainContent = mainContent)

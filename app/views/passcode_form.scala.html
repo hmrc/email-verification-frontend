@@ -1,0 +1,101 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.play.views.html.helpers._
+@import config.FrontendAppConfig
+@import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
+
+@this(form: FormWithCSRF, govUkWrapper: govuk_wrapper)
+
+@(formData: Form[_])(implicit request: Request[_], messages: Messages, config:FrontendAppConfig)
+
+@contentHeader = {
+<h1 class="heading-xlarge">@messages("passcodeform.heading")</h1>
+}
+
+
+@line2Complete = {
+  @form(controllers.routes.EmailPasscodeController.submitEmailForm()) {
+    @input(formData("email"),
+    '_type -> "hidden",
+    '_required -> true
+    )
+    @input(formData("continue"),
+    '_type -> "hidden",
+    '_required -> true
+    )
+    @messages("passcodeform.emailnotrecieved.line2").split("QQ")(0)
+    <input type="submit" value='@messages("passcodeform.emailnotrecieved.line2.anothercode")' class="button button--link" style="vertical-align:baseline; padding:0px; margin:0px"></input>
+    @messages("passcodeform.emailnotrecieved.line2").split("QQ")(1)
+    <a href='@controllers.routes.EmailPasscodeController.showEmailForm(RedirectUrl(formData("continue").value.getOrElse("")))'>
+     @messages("passcodeform.emailnotrecieved.line2.anotheremail")
+    </a>
+  }
+
+}
+
+
+@mainContent = {
+
+<p>
+ @messages("passcodeform.body")
+ <strong>
+  @formData("email").value.getOrElse("")
+ </strong>
+</p>
+
+@form(controllers.routes.EmailPasscodeController.submitPasscodeForm()) {
+
+<div class="form-group">
+ @input(formData("passcode"),
+ '_type -> "text",
+ '_required -> true,
+ '_label -> "",
+ '_inputHint -> messages("passcodeform.input.hint")
+ )
+ @input(formData("continue"),
+ '_type -> "hidden",
+ '_required -> true
+ )
+ @input(formData("email"),
+ '_type -> "hidden",
+ '_required -> true
+ )
+</div>
+
+<p>
+ @messages("passcodeform.newtabhelp")
+</p>
+
+
+<div class="form-group">
+ <button class="submit">@messages("passcodeform.continuebutton")</button>
+</div>
+}
+
+<details class="govuk-details">
+ <summary class="govuk-details__summary">
+  <span class="govuk-details__summary-text">@messages("passcodeform.emailnotreceived.summary")</span>
+ </summary>
+ <div class="govuk-details__text">
+  <p>@messages("passcodeform.emailnotrecieved.line1")</p>
+  <p>@line2Complete</p>
+ </div>
+</details>
+
+}
+
+@govUkWrapper(title = messages("passcodeform.title"), contentHeader = Some(contentHeader), mainContent = mainContent)

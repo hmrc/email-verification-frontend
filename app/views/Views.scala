@@ -20,5 +20,9 @@ import javax.inject.Inject
 
 class Views @Inject() (
   val errorTemplate: views.html.error_template,
-  val verifyError: views.html.verify_error
+  val verifyError: views.html.verify_error,
+  val emailForm: views.html.email_form,
+  val alreadyVerified: views.html.already_verified,
+  val passcodeForm: views.html.passcode_form,
+  val success: views.html.success
 )

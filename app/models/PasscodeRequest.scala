@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
+package models
 
-@this(govUkWrapper: govuk_wrapper)
+import play.api.libs.json.{Json, Writes}
 
-@(pageTitle: String, heading: String, message: String, continue:String="")(implicit request: Request[_], messages: Messages, config:FrontendAppConfig)
-
-@contentHeader = {
-  <h1 class="heading-xlarge">@heading</h1>
+case class PasscodeRequest(email: String, serviceName: String)
+object PasscodeRequest {
+  implicit def writes: Writes[PasscodeRequest] = Json.writes[PasscodeRequest]
 }
-
-@mainContent = {
-  <p>@message</p>
-
-  @if(!continue.isEmpty) {
-    <p><a class="button" role="button" href="@continue">@messages("error.continue")</a></p>
-  }
-}
-
-@govUkWrapper(title = pageTitle, contentHeader = Some(contentHeader), mainContent = mainContent)

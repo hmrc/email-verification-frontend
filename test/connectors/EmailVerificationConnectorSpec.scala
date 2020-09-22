@@ -24,13 +24,21 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EmailVerificationConnectorSpec extends UnitSpec {
 
-  "verifyEmailAddress" should {
+  "verify" should {
     "verify an email address using a token" in new Setup {
       when(mockAppConfig.emailUrl).thenReturn("/email")
       when(mockHttpClient.POST[VerificationToken, Unit](any, eqTo(VerificationToken(token)), eqTo(Nil))(any, any, any, any)).thenReturn(Future.unit)
 
       connector.verifyEmailAddress(token)(HeaderCarrier())
     }
+  }
+
+  "requestPasscode" should {
+    "call email-verification to email out a new passcode" in new Setup {}
+  }
+
+  "verifyPasscode" should {
+    "call email-verification to verify a given passcode" in new Setup {}
   }
 
   trait Setup {

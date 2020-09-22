@@ -18,8 +18,11 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
+import models.{PasscodeRequest, PasscodeVerificationRequest}
+import models.EmailPasscodeException
+import play.api.Logging
 import play.api.libs.json.{Json, Writes}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,7 +37,7 @@ object VerificationToken {
 class EmailVerificationConnector @Inject() (
   http: HttpClient,
   frontendAppConfig: FrontendAppConfig
-)(implicit ec: ExecutionContext) {
+)(implicit ec: ExecutionContext) extends Logging {
   private lazy val serviceUrl = frontendAppConfig.emailUrl
 
   def verifyEmailAddress(token: String)(implicit headerCarrier: HeaderCarrier): Future[Unit] =
@@ -43,4 +46,31 @@ class EmailVerificationConnector @Inject() (
         case Left(err) => throw err
         case Right(_)  => ()
       }
+
+  def requestPasscode(email: String)(implicit hc: HeaderCarrier): Future[Unit] = {
+    http.POST[PasscodeRequest, HttpResponse](
+      s"$serviceUrl/email-verification/request-passcode",
+      PasscodeRequest(email, "email-verification-frontend")
+    ).map {
+        case r @ HttpResponse(201, _, _) => ()
+        case r @ HttpResponse(401, _, _) => throw new EmailPasscodeException.MissingSessionId(r.body)
+        case r @ HttpResponse(403, _, _) => throw new EmailPasscodeException.MaxNewEmailsExceeded(r.body)
+        case r @ HttpResponse(409, _, _) => throw new EmailPasscodeException.EmailAlreadyVerified(r.body)
+        case r: HttpResponse             => throw new EmailPasscodeException.EmailVerificationServerError(r.body)
+      }
+  }
+
+  def verifyPasscode(email: String, passcode: String)(implicit hc: HeaderCarrier): Future[Unit] = {
+    http.POST[PasscodeVerificationRequest, HttpResponse](
+      s"$serviceUrl/email-verification/verify-passcode", PasscodeVerificationRequest(email, passcode)
+    ).map {
+        case r @ HttpResponse(201, _, _) => ()
+        case r @ HttpResponse(204, _, _) => ()
+        case r @ HttpResponse(401, _, _) => throw new EmailPasscodeException.MissingSessionId(r.body)
+        case r @ HttpResponse(403, _, _) => throw new EmailPasscodeException.MaxPasscodeAttemptsExceeded(r.body)
+        case r @ HttpResponse(404, _, _) => throw new EmailPasscodeException.IncorrectPasscode(r.body)
+        case r: HttpResponse             => throw new EmailPasscodeException.EmailVerificationServerError(r.body)
+      }
+  }
+
 }
