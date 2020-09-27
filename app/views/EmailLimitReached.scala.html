@@ -14,24 +14,17 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.helpers._
 @import config.FrontendAppConfig
+@import views.html.MessagePage
+@import views.html.fragments.Heading
 
-@this(govUkWrapper: govuk_wrapper)
+@this(messagePage:MessagePage)
+@(buttonUrl:String="#")(implicit request: Request[_], messages: Messages, appConfig:FrontendAppConfig)
 
-@(continue:String)(implicit request: Request[_], messages: Messages, config:FrontendAppConfig)
-
-@contentHeader = {
-<h1 class="heading-xlarge">@messages("alreadyverified.heading")</h1>
-}
-
-@mainContent = {
-
-<div class="form-group">
- <p>@messages("alreadyverified.label")</p>
- <p><a class="button" role="button" href="@continue">@messages("alreadyverified.continuebutton")</a></p>
-</div>
-
-}
-
-@govUkWrapper(title = messages("alreadyverified.title"), contentHeader = Some(contentHeader), mainContent = mainContent)
+@messagePage(
+  title       = messages("error.title"),
+  headingText = messages("error.emailsLimitExceeded.heading"),
+  messageText = messages("error.emailsLimitExceeded.message"),
+  buttonText  = messages("continuebutton.label"),
+  buttonUrl   = buttonUrl
+)

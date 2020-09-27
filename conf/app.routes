@@ -1,7 +1,6 @@
 # microservice specific routes
-
-#->         /govuk-frontend          govuk.Routes
-#->         /hmrc-frontend           hmrcfrontend.Routes
+->         /hmrc-frontend           hmrcfrontend.Routes
+->         /govuk-frontend          govuk.Routes
 
 GET        /assets/*file                                        controllers.Assets.versioned(path = "/public", file: Asset)
 
@@ -13,4 +12,9 @@ GET        /emailform          controllers.EmailPasscodeController.showEmailForm
 POST       /emailform          controllers.EmailPasscodeController.submitEmailForm()
 GET        /passcodeform       controllers.EmailPasscodeController.showPasscodeForm(email:String, continue: RedirectUrl)
 POST       /passcodeform       controllers.EmailPasscodeController.submitPasscodeForm()
+
+GET        /success               controllers.EmailPasscodeController.showSuccess(continue: RedirectUrl)
+GET        /emailLimitReached     controllers.EmailPasscodeController.showEmailLimitReached(continue: RedirectUrl)
+GET        /emailAlreadyVerified  controllers.EmailPasscodeController.showEmailAlreadyVerified(continue: RedirectUrl)
+GET        /passcodeLimitReached  controllers.EmailPasscodeController.showPasscodeLimitReached(continue: RedirectUrl)
 

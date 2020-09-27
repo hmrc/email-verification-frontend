@@ -14,24 +14,17 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.helpers._
 @import config.FrontendAppConfig
+@import views.html.Layout
+@import views.html.fragments.Heading
+@import views.html.fragments.ErrorSummary
+@import views.html.fragments.FormInput
+@import play.api.mvc.Call
 
-@this(govUkWrapper: govuk_wrapper)
+@this(formInput:FormInput)
+@(formData: Form[_])(implicit request: Request[_], messages: Messages, appConfig:FrontendAppConfig)
 
-@(continue:String)(implicit request: Request[_], messages: Messages, config:FrontendAppConfig)
-
-@contentHeader = {
-<h1 class="heading-xlarge">@messages("success.heading")</h1>
-}
-
-@mainContent = {
-
-<div class="form-group">
- <p>@messages("success.label")</p>
- <p><a class="button" role="button" href="@continue">@messages("success.continuebutton")</a></p>
-</div>
-
-}
-
-@govUkWrapper(title = messages("success.title"), contentHeader = Some(contentHeader), mainContent = mainContent)
+@formData.data.map(field=>formInput(
+  formField = formData(field._1),
+  inputType = "hidden"
+))

@@ -22,8 +22,8 @@ import crypto.Decrypter
 import javax.inject.{Inject, Singleton}
 import models.{EmailForm, EmailPasscodeException, PasscodeForm}
 import play.api.Logging
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.i18n.{Lang, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, RequestHeader, Result}
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.play.bootstrap.binders.{RedirectUrl, UnsafePermitAll}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -44,6 +44,8 @@ class EmailPasscodeController @Inject() (
 )(implicit ec: ExecutionContext, config: FrontendAppConfig)
   extends FrontendController(mcc) with Logging {
 
+  implicit def lang(implicit rh: RequestHeader): Lang = rh.cookies.get("PLAY_LANG").fold[Lang](Lang("en"))(c => Lang(c.value))
+
   def showEmailForm(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.emailForm(EmailForm.form.fill(EmailForm("", continue.get(UnsafePermitAll).url)))))
   }
@@ -58,10 +60,10 @@ class EmailPasscodeController @Inject() (
         emailVerificationConnector.requestPasscode(emailForm.email).flatMap { response =>
           logger.info(s"Passcode sent to email address $obfuscatedEmailAddress. $forwardedFor")
           Try(Ok(views.passcodeForm(PasscodeForm.form.fill(PasscodeForm(emailForm.email, "", emailForm.continue))))) match {
-            case Success(result) => Future.successful(result)
+            case Success(renderedPasscodeForm) => Future.successful(renderedPasscodeForm)
             case Failure(e) => {
               logger.error("Failed to build passcodeform view", e)
-              Future.successful(InternalServerError)
+              Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
             }
           }
         }.recoverWith {
@@ -71,14 +73,11 @@ class EmailPasscodeController @Inject() (
           }
           case e: EmailPasscodeException.MaxNewEmailsExceeded => {
             logger.info(s"Max permitted number of emails reached. $forwardedFor")
-            val title = request.messages("error.title")
-            val heading = request.messages("error.emailsLimitExceeded.heading")
-            val message = request.messages("error.emailsLimitExceeded.message")
-            Future.successful(Ok(errorHandler.standardErrorTemplateWithContinue(title, heading, message, emailForm.continue)))
+            Future.successful(Redirect(routes.EmailPasscodeController.showEmailLimitReached(RedirectUrl(emailForm.continue))))
           }
           case e: EmailPasscodeException.EmailAlreadyVerified => {
             logger.info(s"Email $obfuscatedEmailAddress already verified. $forwardedFor")
-            Future.successful(Ok(views.alreadyVerified(emailForm.continue)))
+            Future.successful(Redirect(routes.EmailPasscodeController.showEmailAlreadyVerified(RedirectUrl(emailForm.continue))))
           }
           case e: EmailPasscodeException.EmailVerificationServerError => {
             logger.error(s"Request to email-verification to send passcode to email $obfuscatedEmailAddress failed. $forwardedFor", e)
@@ -101,7 +100,7 @@ class EmailPasscodeController @Inject() (
         val obfuscatedEmailAddress = passcodeForm.email.take(4) + "..." + passcodeForm.email.takeRight(4)
         emailVerificationConnector.verifyPasscode(passcodeForm.email, passcodeForm.passcode).flatMap { _ =>
           logger.info(s"Email passcode for $obfuscatedEmailAddress verified")
-          Future.successful(Ok(views.success(passcodeForm.continue)))
+          Future.successful(Redirect(routes.EmailPasscodeController.showSuccess(RedirectUrl(passcodeForm.continue))))
         }.recoverWith {
           case e: EmailPasscodeException.MissingSessionId => {
             logger.warn(s"Missing sessionId. $forwardedFor")
@@ -115,10 +114,7 @@ class EmailPasscodeController @Inject() (
           }
           case e: EmailPasscodeException.MaxPasscodeAttemptsExceeded => {
             logger.info(s"Max permitted number of passcode attempts reached. $forwardedFor")
-            val title = request.messages("error.title")
-            val heading = request.messages("error.passcodesLimitExceeded.heading")
-            val message = request.messages("error.passcodesLimitExceeded.message")
-            Future.successful(Ok(errorHandler.standardErrorTemplateWithContinue(title, heading, message, passcodeForm.continue)))
+            Future.successful(Redirect(routes.EmailPasscodeController.showPasscodeLimitReached(RedirectUrl(passcodeForm.continue))))
           }
           case e: EmailPasscodeException.EmailVerificationServerError => {
             logger.error(s"Request to email-verification to verify passcode for email $obfuscatedEmailAddress failed. $forwardedFor", e)
@@ -128,6 +124,30 @@ class EmailPasscodeController @Inject() (
         }
       }
     )
+  }
+
+  def showSuccess(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(views.success(
+      buttonUrl = continue.unsafeValue
+    )))
+  }
+
+  def showPasscodeLimitReached(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(views.passcodeLimitReached(
+      buttonUrl = continue.unsafeValue
+    )))
+  }
+
+  def showEmailLimitReached(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(views.emailLimitReached(
+      buttonUrl = continue.unsafeValue
+    )))
+  }
+
+  def showEmailAlreadyVerified(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(views.emailAlreadyVerified(
+      buttonUrl = continue.unsafeValue
+    )))
   }
 
 }

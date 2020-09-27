@@ -1,3 +1,28 @@
+$govuk-assets-path: "/email-verification-frontend/assets/lib/govuk-frontend/govuk/assets/";
 $hmrc-assets-path: "/email-verification-frontend/assets/lib/hmrc-frontend/hmrc/";
 
+@import "lib/govuk-frontend/govuk/all";
 @import "lib/hmrc-frontend/hmrc/all";
+
+.custom-button-link {
+  background-color:transparent;
+  color: $govuk-link-colour;    /* #1d70b8 */
+  padding:0;
+  margin:0;
+  border:0;
+  cursor: pointer;
+  text-decoration: underline;
+  vertical-align:baseline;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight:inherit;
+  line-height:inherit;
+}
+.custom-button-link:hover {
+  color: $govuk-link-hover-colour;    /* #003078 */
+}
+.custom-button-link:active, .custom-button-link:focus {
+  background-color: $govuk-focus-colour;  /* #ffdd00 */
+  color: $govuk-link-active-colour;  /* #0b0c0c */
+  border-bottom: 3px solid $govuk-link-active-colour;  /* #0b0c0c */
+}

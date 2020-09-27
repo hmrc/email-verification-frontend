@@ -16,13 +16,35 @@
 
 package views
 
+import config.FrontendAppConfig
 import javax.inject.Inject
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.mvc.Request
+import uk.gov.hmrc.play.language.LanguageUtils
+
+import scala.util.{Failure, Try}
 
 class Views @Inject() (
-  val errorTemplate: views.html.error_template,
+  appConfig: FrontendAppConfig,
+  languageUtils: LanguageUtils,
+  val errorTemplate: views.html.MessagePage,
   val verifyError: views.html.verify_error,
-  val emailForm: views.html.email_form,
-  val alreadyVerified: views.html.already_verified,
-  val passcodeForm: views.html.passcode_form,
-  val success: views.html.success
-)
+  val emailForm: views.html.EmailForm,
+  val passcodeForm: views.html.PasscodeForm,
+
+  val success: views.html.Success,
+  val emailAlreadyVerified: views.html.EmailAlreadyVerified,
+  val emailLimitReached: views.html.EmailLimitReached,
+  val passcodeLimitReached: views.html.PasscodeLimitReached
+) {
+
+  def render(view: String, form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig) = {
+    view match {
+      case "emailForm"    => Try(emailForm(form))
+      case "passcodeForm" => Try(passcodeForm(form))
+      case _              => Failure(new Exception(s"Invalid view name: $view"))
+    }
+  }
+
+}

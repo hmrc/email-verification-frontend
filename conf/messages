@@ -1,5 +1,11 @@
+service.name =
+service.homePageUrl =
+service.text =
+
 verify-email-address.error.heading=This link has expired
 verify-email-address.error.paragraph=For security reasons the link must be used within a time limit.
+continuebutton.label=Continue
+errorSummary.title=There is a problem
 emailform.title=What is your email address?
 emailform.heading=What is your email address?
 emailform.body=To confirm it is your email address we will send you a code.
@@ -21,7 +27,6 @@ passcodeform.error.invalidFormat=Enter a valid security code.
 passcodeform.error.wrongPasscode=Enter a valid security code.
 success.heading=Email address confirmed
 success.label=This will enable us to help you get the most from this service.
-success.continuebutton=Continue
 alreadyverified.heading=Email address already confirmed
 alreadyverified.label=This will enable us to help you get the most from this service.
 alreadyverified.continuebutton=Continue

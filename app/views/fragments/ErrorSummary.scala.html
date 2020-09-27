@@ -14,14 +14,13 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
+@this(underlying: GovukErrorSummary)
 
-@this(errorTemplate: MessagePage)
+@(form: Form[_])(implicit messages: Messages)
 
-@()(implicit request: Request[_], MESSAGES: Messages, config:FrontendAppConfig)
-
-@errorTemplate(
-    title = Messages("verify-email-address.error.heading"),
-    headingText = Messages("verify-email-address.error.heading"),
-    messageText = Messages("verify-email-address.error.paragraph")
-)
+@if(form.hasErrors) {
+    @underlying(ErrorSummary(
+        title = Text(messages("errorSummary.title")),
+        errorList = form.errors.map(err => ErrorLink(href = Some("#" + err.key), content = Text(messages(err.message, err.args))))
+    ))
+}

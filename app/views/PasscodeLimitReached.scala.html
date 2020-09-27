@@ -15,13 +15,16 @@
  *@
 
 @import config.FrontendAppConfig
+@import views.html.MessagePage
+@import views.html.fragments.Heading
 
-@this(errorTemplate: MessagePage)
+@this(messagePage:MessagePage)
+@(buttonUrl:String="#")(implicit request: Request[_], messages: Messages, appConfig:FrontendAppConfig)
 
-@()(implicit request: Request[_], MESSAGES: Messages, config:FrontendAppConfig)
-
-@errorTemplate(
-    title = Messages("verify-email-address.error.heading"),
-    headingText = Messages("verify-email-address.error.heading"),
-    messageText = Messages("verify-email-address.error.paragraph")
+@messagePage(
+  title       = messages("error.title"),
+  headingText = messages("error.passcodesLimitExceeded.heading"),
+  messageText = messages("error.passcodesLimitExceeded.message"),
+  buttonText  = messages("continuebutton.label"),
+  buttonUrl  = buttonUrl
 )

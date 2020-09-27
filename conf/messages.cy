@@ -1,5 +1,11 @@
+service.name =
+service.homePageUrl =
+service.text =
+
 verify-email-address.error.heading=This link has expired
 verify-email-address.error.paragraph=For security reasons the link must be used within a time limit.
+continuebutton.label=Yn eich blaen
+errorSummary.title=Mae problem wedi codi
 emailform.title=Beth yw’ch cyfeiriad e-bost?
 emailform.heading=Beth yw’ch cyfeiriad e-bost?
 emailform.body=I gadarnhau mai’ch cyfeiriad e-bost chi yw hwn, byddwn yn anfon cod atoch

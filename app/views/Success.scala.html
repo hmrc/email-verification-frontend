@@ -15,21 +15,16 @@
  *@
 
 @import config.FrontendAppConfig
+@import views.html.MessagePage
+@import views.html.fragments.Heading
 
-@this(govUkWrapper: govuk_wrapper)
+@this(messagePage:MessagePage)
+@(buttonUrl:String="#")(implicit request: Request[_], messages: Messages, appConfig:FrontendAppConfig)
 
-@(pageTitle: String, heading: String, message: String, continue:String="")(implicit request: Request[_], messages: Messages, config:FrontendAppConfig)
-
-@contentHeader = {
-  <h1 class="heading-xlarge">@heading</h1>
-}
-
-@mainContent = {
-  <p>@message</p>
-
-  @if(!continue.isEmpty) {
-    <p><a class="button" role="button" href="@continue">@messages("error.continue")</a></p>
-  }
-}
-
-@govUkWrapper(title = pageTitle, contentHeader = Some(contentHeader), mainContent = mainContent)
+@messagePage(
+  title       = messages("success.heading"),
+  headingText = messages("success.heading"),
+  messageText = messages("success.label"),
+  buttonText  = messages("continuebutton.label"),
+  buttonUrl  = buttonUrl
+)
