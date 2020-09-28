@@ -1,17 +1,18 @@
 # microservice specific routes
-->         /hmrc-frontend           hmrcfrontend.Routes
-->         /govuk-frontend          govuk.Routes
+->         /hmrc-frontend         hmrcfrontend.Routes
+->         /govuk-frontend        govuk.Routes
 
-GET        /assets/*file                                        controllers.Assets.versioned(path = "/public", file: Asset)
+GET        /assets/*file          controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /verify             controllers.EmailVerificationController.verify(token : String)
-GET        /error              controllers.ErrorController.showErrorPage
-GET        /language/:lang     controllers.ManageLanguageController.switchToLanguage(lang: String)
+GET        /verify                controllers.EmailVerificationController.verify(token : String)
+GET        /error                 controllers.ErrorController.showErrorPage
+GET        /language/:lang        controllers.ManageLanguageController.switchToLanguage(lang: String)
+POST       /language/:lang/:view  controllers.ManageLanguageController.showViewWithLanguage(lang: String, view:String)
 
-GET        /emailform          controllers.EmailPasscodeController.showEmailForm(continue: RedirectUrl)
-POST       /emailform          controllers.EmailPasscodeController.submitEmailForm()
-GET        /passcodeform       controllers.EmailPasscodeController.showPasscodeForm(email:String, continue: RedirectUrl)
-POST       /passcodeform       controllers.EmailPasscodeController.submitPasscodeForm()
+GET        /emailform             controllers.EmailPasscodeController.showEmailForm(continue: RedirectUrl)
+POST       /emailform             controllers.EmailPasscodeController.submitEmailForm()
+GET        /passcodeform          controllers.EmailPasscodeController.showPasscodeForm(email:String, continue: RedirectUrl)
+POST       /passcodeform          controllers.EmailPasscodeController.submitPasscodeForm()
 
 GET        /success               controllers.EmailPasscodeController.showSuccess(continue: RedirectUrl)
 GET        /emailLimitReached     controllers.EmailPasscodeController.showEmailLimitReached(continue: RedirectUrl)

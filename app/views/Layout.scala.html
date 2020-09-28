@@ -28,11 +28,14 @@
     pageTitle: Option[String] = None,
     headBlock: Option[Html] = None,
     scriptsBlock: Option[Html] = None,
+    languageSelectorOverride: Option[Html] = None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @beforeContentBlockSection = {
   @backLink(BackLink(href="javascript:history.back()"))
-  @languageSelector(appConfig.getAvailableLanguages, controllers.routes.ManageLanguageController.switchToLanguage, Some("govuk-body-s lang-selector"), Some("email-verification-frontend"))(messages)
+  @languageSelectorOverride.getOrElse(
+    languageSelector(appConfig.getAvailableLanguages, controllers.routes.ManageLanguageController.switchToLanguage,Some("govuk-body-s lang-selector"), Some("email-verification-frontend"))(messages)
+  )
 }
 
 @contentSection = {

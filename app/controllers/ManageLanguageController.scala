@@ -22,7 +22,7 @@ import play.api.{Configuration, Logging}
 import play.api.data.Forms.text
 import play.api.data.Form
 import play.api.http.HeaderNames
-import play.api.i18n.Lang
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.request.{Cell, RequestAttrKey}
 import play.api.mvc.{Action, AnyContent, Cookie, Cookies, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
@@ -37,7 +37,8 @@ class ManageLanguageController @Inject() (
   languageUtils: LanguageUtils,
   views: Views,
   mcc: MessagesControllerComponents,
-  errorHandler: ErrorHandler
+  errorHandler: ErrorHandler,
+  messagesApi: MessagesApi
 )
   extends LanguageController(configuration, languageUtils, mcc) with Logging {
 
@@ -47,25 +48,27 @@ class ManageLanguageController @Inject() (
 
   def switchToLang: String => Action[AnyContent] = (lang: String) => switchToLanguage(lang)
 
-  private def langFromString(request: Request[_], language: String): Lang = {
+  private def langFromName(request: Request[_], languageName: String): Lang = {
     val languageMap = config.getAvailableLanguages
-    val enabled: Boolean = languageMap.get(language).exists(languageUtils.isLangAvailable)
+    val enabled: Boolean = languageMap.get(languageName).exists(languageUtils.isLangAvailable)
     if (enabled) {
-      languageMap.getOrElse(language, languageUtils.getCurrentLang(request))
+      languageMap.getOrElse(languageName, languageUtils.getCurrentLang(request))
     } else {
       languageUtils.getCurrentLang(request)
     }
   }
 
-  private def requestWithLanguage(request: Request[_], language: String): Request[_] = {
-    val lang: Lang = langFromString(request, language)
+  private def requestWithLanguage(request: Request[_], lang: Lang): Request[_] = {
     val updatedCookies = request.cookies.toSeq.filter(_.name != "PLAY_LANG") :+ Cookie("PLAY_LANG", lang.code)
     val updatedCookiesHeader = Cookies.encodeCookieHeader(updatedCookies)
     val updatedHeaders = request.headers.replace((HeaderNames.COOKIE, updatedCookiesHeader))
     request.addAttr(RequestAttrKey.Cookies, Cell(Cookies(updatedCookies))).withTransientLang(lang.code).withHeaders(updatedHeaders)
   }
 
-  def showViewWithFormAndLanguage(view: String, language: String): Action[AnyContent] = Action { implicit request =>
+  def showViewWithLanguage(languageName: String, view: String): Action[AnyContent] = Action { implicit request =>
+
+    val lang = langFromName(request, languageName)
+
     val formDataFromRequest = (request.body match {
       case body: play.api.mvc.AnyContent if body.asFormUrlEncoded.isDefined => body.asFormUrlEncoded.get
       case body: play.api.mvc.AnyContent if body.asMultipartFormData.isDefined =>
@@ -73,10 +76,14 @@ class ManageLanguageController @Inject() (
     }).map(tuple => tuple._1 -> tuple._2.headOption.getOrElse(""))
 
     //just using this to push received data into the view, mapping isn't used
-    val form = Form[String](mapping = text, data = formDataFromRequest, errors = Nil, value = None)
+    val formData = Form[String](mapping = text, data = formDataFromRequest, errors = Nil, value = None)
+    val requestWithUpdatedLang = requestWithLanguage(request, lang)
+    val messagesForUpdatedLang = messagesApi.preferred(requestWithUpdatedLang)
 
-    views.render(view, form)(requestWithLanguage(request, language), implicitly, config) match {
-      case Success(content) => Ok(content)
+    views.render(view, formData)(requestWithUpdatedLang, messagesForUpdatedLang, config) match {
+      case Success(content) => {
+        Ok(content).withCookies(Cookie("PLAY_LANG", lang.code))
+      }
       case Failure(exception) => {
         logger.error(s"Failed to render view '$view'", exception)
         BadRequest(errorHandler.badRequestTemplate)

@@ -20,8 +20,9 @@
 @import views.html.fragments.Heading
 @import views.html.fragments.ErrorSummary
 @import views.html.fragments.FormInput
+@import views.html.fragments.FormSubmitLanguageSelector
 
-@this(form: FormWithCSRF, layout: Layout, heading: Heading, errorSummary: ErrorSummary, formInput:FormInput)
+@this(form: FormWithCSRF, layout: Layout, heading: Heading, errorSummary: ErrorSummary, formInput:FormInput, formSubmitLanguageSelector:FormSubmitLanguageSelector)
 @(formData: Form[_])(implicit request: Request[_], messages: Messages, appConfig:FrontendAppConfig)
 
 
@@ -80,4 +81,8 @@
 
 }
 
-@layout(pageTitle = Some(messages("passcodeform.title")))(mainContent)
+@languageSelectorOverride = {
+  @formSubmitLanguageSelector("passcodeForm", formData, appConfig.getAvailableLanguages, controllers.routes.ManageLanguageController.showViewWithLanguage, Some("govuk-body-s lang-selector"))(request, messages)
+}
+
+@layout(pageTitle = Some(messages("passcodeform.title")), None, None, Some(languageSelectorOverride))(mainContent)

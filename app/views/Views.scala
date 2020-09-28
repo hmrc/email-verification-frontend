@@ -41,7 +41,6 @@ class Views @Inject() (
 
   def render(view: String, form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig) = {
     view match {
-      case "emailForm"    => Try(emailForm(form))
       case "passcodeForm" => Try(passcodeForm(form))
       case _              => Failure(new Exception(s"Invalid view name: $view"))
     }
