@@ -33,14 +33,6 @@ class EmailVerificationConnectorSpec extends UnitSpec {
     }
   }
 
-  "requestPasscode" should {
-    "call email-verification to email out a new passcode" in new Setup {}
-  }
-
-  "verifyPasscode" should {
-    "call email-verification to verify a given passcode" in new Setup {}
-  }
-
   trait Setup {
     val token = "some token"
     val mockHttpClient = mock[HttpClient]

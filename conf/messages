@@ -27,6 +27,7 @@ passcodeform.error.invalidFormat=Enter a valid security code.
 passcodeform.error.wrongPasscode=Enter a valid security code.
 success.heading=Email address confirmed
 success.label=This will enable us to help you get the most from this service.
+success.continuebutton=Continue
 alreadyverified.heading=Email address already confirmed
 alreadyverified.label=This will enable us to help you get the most from this service.
 alreadyverified.continuebutton=Continue

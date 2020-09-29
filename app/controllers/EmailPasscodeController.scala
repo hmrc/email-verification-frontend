@@ -22,8 +22,8 @@ import crypto.Decrypter
 import javax.inject.{Inject, Singleton}
 import models.{EmailForm, EmailPasscodeException, PasscodeForm}
 import play.api.Logging
-import play.api.i18n.{Lang, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, RequestHeader, Result}
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.play.bootstrap.binders.{RedirectUrl, UnsafePermitAll}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -44,7 +44,7 @@ class EmailPasscodeController @Inject() (
 )(implicit ec: ExecutionContext, config: FrontendAppConfig)
   extends FrontendController(mcc) with Logging {
 
-  implicit def lang(implicit rh: RequestHeader): Lang = rh.cookies.get("PLAY_LANG").fold[Lang](Lang("en"))(c => Lang(c.value))
+  //implicit def lang(implicit rh: RequestHeader): Lang = rh.cookies.get(messages.langCookieName).fold[Lang](Lang("en"))(c => Lang(c.value))
 
   def showEmailForm(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.emailForm(EmailForm.form.fill(EmailForm("", continue.get(UnsafePermitAll).url)))))
@@ -86,10 +86,6 @@ class EmailPasscodeController @Inject() (
         }
       }
     )
-  }
-
-  def showPasscodeForm(email: String, continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.passcodeForm(PasscodeForm.form.fill(PasscodeForm(email, "", continue.get(UnsafePermitAll).url)))))
   }
 
   def submitPasscodeForm(): Action[AnyContent] = Action.async { implicit request =>

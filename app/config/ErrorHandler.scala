@@ -31,6 +31,4 @@ class ErrorHandler @Inject() (
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
     views.errorTemplate(pageTitle, heading, message)
 
-  def standardErrorTemplateWithContinue(pageTitle: String, heading: String, message: String, continue: String)(implicit request: Request[_]): Html =
-    views.errorTemplate(pageTitle, heading, message, continue)
 }

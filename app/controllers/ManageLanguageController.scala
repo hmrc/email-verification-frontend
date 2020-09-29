@@ -59,7 +59,7 @@ class ManageLanguageController @Inject() (
   }
 
   private def requestWithLanguage(request: Request[_], lang: Lang): Request[_] = {
-    val updatedCookies = request.cookies.toSeq.filter(_.name != "PLAY_LANG") :+ Cookie("PLAY_LANG", lang.code)
+    val updatedCookies = request.cookies.toSeq.filter(_.name != messagesApi.langCookieName) :+ Cookie(messagesApi.langCookieName, lang.code)
     val updatedCookiesHeader = Cookies.encodeCookieHeader(updatedCookies)
     val updatedHeaders = request.headers.replace((HeaderNames.COOKIE, updatedCookiesHeader))
     request.addAttr(RequestAttrKey.Cookies, Cell(Cookies(updatedCookies))).withTransientLang(lang.code).withHeaders(updatedHeaders)
@@ -82,7 +82,7 @@ class ManageLanguageController @Inject() (
 
     views.render(view, formData)(requestWithUpdatedLang, messagesForUpdatedLang, config) match {
       case Success(content) => {
-        Ok(content).withCookies(Cookie("PLAY_LANG", lang.code))
+        Ok(content).withCookies(Cookie(messagesApi.langCookieName, lang.code))
       }
       case Failure(exception) => {
         logger.error(s"Failed to render view '$view'", exception)
