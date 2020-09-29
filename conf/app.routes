@@ -11,7 +11,6 @@ POST       /language/:lang/:view  controllers.ManageLanguageController.showViewW
 
 GET        /emailform             controllers.EmailPasscodeController.showEmailForm(continue: RedirectUrl)
 POST       /emailform             controllers.EmailPasscodeController.submitEmailForm()
-GET        /passcodeform          controllers.EmailPasscodeController.showPasscodeForm(email:String, continue: RedirectUrl)
 POST       /passcodeform          controllers.EmailPasscodeController.submitPasscodeForm()
 
 GET        /success               controllers.EmailPasscodeController.showSuccess(continue: RedirectUrl)

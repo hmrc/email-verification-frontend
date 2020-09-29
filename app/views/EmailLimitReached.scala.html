@@ -22,7 +22,7 @@
 @(buttonUrl:String="#")(implicit request: Request[_], messages: Messages, appConfig:FrontendAppConfig)
 
 @messagePage(
-  title       = messages("error.title"),
+  title       = messages("error.emailsLimitExceeded.heading"),
   headingText = messages("error.emailsLimitExceeded.heading"),
   messageText = messages("error.emailsLimitExceeded.message"),
   buttonText  = messages("continuebutton.label"),

@@ -108,7 +108,7 @@ class EmailPasscodeController @Inject() (
           }
           case e: EmailPasscodeException.IncorrectPasscode => {
             logger.info(s"Passcode supplied for email $obfuscatedEmailAddress was incorrect. $forwardedFor")
-            Future.successful(Ok(views.passcodeForm(PasscodeForm.form
+            Future.successful(BadRequest(views.passcodeForm(PasscodeForm.form
               .fill(passcodeForm.copy(passcode = ""))
               .withError("passcode", request.messages("passcodeform.error.wrongPasscode")))))
           }
