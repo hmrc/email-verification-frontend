@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package config
+@this(underlying: GovukErrorSummary)
 
-import javax.inject.Inject
-import play.api.i18n.MessagesApi
-import play.api.mvc.Request
-import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.Views
+@(form: Form[_])(implicit messages: Messages)
 
-class ErrorHandler @Inject() (
-  views: Views,
-  val messagesApi: MessagesApi
-)(implicit config: FrontendAppConfig) extends FrontendErrorHandler {
-
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    views.errorTemplate(pageTitle, heading, message)
-
+@if(form.hasErrors) {
+    @underlying(ErrorSummary(
+        title = Text(messages("errorSummary.title")),
+        errorList = form.errors.map(err => ErrorLink(href = Some("#" + err.key), content = Text(messages(err.message, err.args))))
+    ))
 }

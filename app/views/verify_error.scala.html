@@ -16,12 +16,12 @@
 
 @import config.FrontendAppConfig
 
-@this(errorTemplate: error_template)
+@this(errorTemplate: MessagePage)
 
-@()(implicit request: Request[_], messages: Messages, config:FrontendAppConfig)
+@()(implicit request: Request[_], MESSAGES: Messages, config:FrontendAppConfig)
 
 @errorTemplate(
-    pageTitle = Messages("verify-email-address.error.heading"),
-    heading = Messages("verify-email-address.error.heading"),
-    message = Messages("verify-email-address.error.paragraph")
+    title = Messages("verify-email-address.error.heading"),
+    headingText = Messages("verify-email-address.error.heading"),
+    messageText = Messages("verify-email-address.error.paragraph")
 )

@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-import javax.inject.Inject
-import play.api.i18n.MessagesApi
-import play.api.mvc.Request
-import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.Views
+import play.api.libs.json.{Json, Writes}
 
-class ErrorHandler @Inject() (
-  views: Views,
-  val messagesApi: MessagesApi
-)(implicit config: FrontendAppConfig) extends FrontendErrorHandler {
-
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    views.errorTemplate(pageTitle, heading, message)
-
+case class PasscodeRequest(email: String, serviceName: String)
+object PasscodeRequest {
+  implicit def writes: Writes[PasscodeRequest] = Json.writes[PasscodeRequest]
 }

@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-import javax.inject.Inject
-import play.api.i18n.MessagesApi
-import play.api.mvc.Request
-import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.Views
+import play.api.data.Form
+import play.api.data.Forms.{mapping, text}
+import play.api.i18n.Messages
 
-class ErrorHandler @Inject() (
-  views: Views,
-  val messagesApi: MessagesApi
-)(implicit config: FrontendAppConfig) extends FrontendErrorHandler {
-
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    views.errorTemplate(pageTitle, heading, message)
-
+case class EmailForm(email: String, continue: String)
+object EmailForm {
+  def form(implicit messages: Messages): Form[EmailForm] = Form(mapping(
+    "email" -> text.verifying(messages("emailform.error.invalidEmailFormat"), _.matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$")),
+    "continue" -> text
+  )(EmailForm.apply)(EmailForm.unapply))
 }

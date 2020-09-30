@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package config
+@import config.FrontendAppConfig
+@import views.html.Layout
+@import views.html.fragments.Heading
+@import views.html.fragments.ErrorSummary
+@import views.html.fragments.FormInput
+@import play.api.mvc.Call
 
-import javax.inject.Inject
-import play.api.i18n.MessagesApi
-import play.api.mvc.Request
-import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.Views
+@this(formInput:FormInput)
+@(formData: Form[_])(implicit request: Request[_], messages: Messages, appConfig:FrontendAppConfig)
 
-class ErrorHandler @Inject() (
-  views: Views,
-  val messagesApi: MessagesApi
-)(implicit config: FrontendAppConfig) extends FrontendErrorHandler {
-
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    views.errorTemplate(pageTitle, heading, message)
-
-}
+@formData.data.map(field=>formInput(
+  formField = formData(field._1),
+  inputType = "hidden"
+))

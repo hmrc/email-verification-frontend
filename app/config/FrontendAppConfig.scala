@@ -28,6 +28,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   lazy val isWelshEnabled: Boolean = configuration.getOptional[Boolean]("features.welsh-translation").getOrElse(true)
 
+  val footerLinkItems: Seq[String] = configuration.getOptional[Seq[String]]("footerLinkItems").getOrElse(Seq())
+
   def getAvailableLanguages: Map[String, Lang] = Map(
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy")
@@ -39,4 +41,5 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val reportAProblemNonJSUrl: String = s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
   lazy val emailUrl: String = servicesConfig.baseUrl("email-verification")
+
 }

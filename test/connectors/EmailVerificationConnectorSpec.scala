@@ -24,7 +24,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EmailVerificationConnectorSpec extends UnitSpec {
 
-  "verifyEmailAddress" should {
+  "verify" should {
     "verify an email address using a token" in new Setup {
       when(mockAppConfig.emailUrl).thenReturn("/email")
       when(mockHttpClient.POST[VerificationToken, Unit](any, eqTo(VerificationToken(token)), eqTo(Nil))(any, any, any, any)).thenReturn(Future.unit)
