@@ -52,12 +52,14 @@ class EmailPasscodeController @Inject() (
 
   def submitEmailForm(): Action[AnyContent] = Action.async { implicit request =>
 
+    val langCookieValue = request.cookies.get(request.messagesApi.langCookieName).map(_.value).getOrElse("en")
+
     EmailForm.form.bindFromRequest().fold[Future[Result]](
       formWithErrors => Future.successful(BadRequest(views.emailForm(formWithErrors))),
       emailForm => {
         val obfuscatedEmailAddress = emailForm.email.take(4) + "..." + emailForm.email.takeRight(4)
         val forwardedFor = request.headers.get(HeaderNames.X_FORWARDED_FOR).fold("") { fwd => s"x_forwarded_for: $fwd" }
-        emailVerificationConnector.requestPasscode(emailForm.email).flatMap { response =>
+        emailVerificationConnector.requestPasscode(emailForm.email, langCookieValue).flatMap { response =>
           logger.info(s"Passcode sent to email address $obfuscatedEmailAddress. $forwardedFor")
           Try(Ok(views.passcodeForm(PasscodeForm.form.fill(PasscodeForm(emailForm.email, "", emailForm.continue))))) match {
             case Success(renderedPasscodeForm) => Future.successful(renderedPasscodeForm)

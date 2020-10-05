@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json.{Json, Writes}
 
-case class PasscodeRequest(email: String, serviceName: String)
+case class PasscodeRequest(email: String, serviceName: String, lang: String)
 object PasscodeRequest {
   implicit def writes: Writes[PasscodeRequest] = Json.writes[PasscodeRequest]
 }
