@@ -18,12 +18,11 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
-import models.{PasscodeRequest, PasscodeVerificationRequest}
-import models.EmailPasscodeException
+import models.{EmailPasscodeException, PasscodeRequest, PasscodeVerificationRequest}
 import play.api.Logging
 import play.api.libs.json.{Json, Writes}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -47,10 +46,10 @@ class EmailVerificationConnector @Inject() (
         case Right(_)  => ()
       }
 
-  def requestPasscode(email: String)(implicit hc: HeaderCarrier): Future[Unit] = {
+  def requestPasscode(email: String, lang: String)(implicit hc: HeaderCarrier): Future[Unit] = {
     http.POST[PasscodeRequest, HttpResponse](
       s"$serviceUrl/email-verification/request-passcode",
-      PasscodeRequest(email, "email-verification-frontend")
+      PasscodeRequest(email, "email-verification-frontend", lang)
     ).map {
         case r @ HttpResponse(201, _, _) => ()
         case r @ HttpResponse(401, _, _) => throw new EmailPasscodeException.MissingSessionId(r.body)
