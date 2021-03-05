@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy")
   )
+
+  lazy val googleTagManagerIdAvailable: Boolean = configuration.getOptional[Boolean]("google-tag-manager.id-available").getOrElse(false)
+  lazy val googleTagManagerId: String = configuration.get[String]("google-tag-manager.id")
 
   lazy val analyticsToken: String = servicesConfig.getString("google-analytics.token")
   lazy val analyticsHost: String = servicesConfig.getString("google-analytics.host")
