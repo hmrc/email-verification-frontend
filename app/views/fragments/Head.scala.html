@@ -1,5 +1,5 @@
 @*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,14 @@
  * limitations under the License.
  *@
 
-@this()
+@import uk.gov.hmrc.play.views.html.layouts.TrackingConsentSnippet
 
-@(headBlock: Option[Html] = None)
+@this(trackingConsentSnippet: TrackingConsentSnippet)
+
+@(headBlock: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+@trackingConsentSnippet()
 @headBlock
+<div class="gtm-tag" data-gtag="virtualUrl:@{request.path}"></div>
 <!--[if lte IE 8]><script src='@controllers.routes.Assets.versioned("javascripts/html5shiv.min.js")'></script><![endif]-->
 <!--[if lte IE 8]><link href='@controllers.routes.Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
 <!--[if gt IE 8]><!--><link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
