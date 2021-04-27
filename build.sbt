@@ -24,9 +24,7 @@ lazy val microservice = Project("email-verification-frontend", file("."))
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(DefaultBuildSettings.integrationTestSettings())
   .settings(resolvers ++= Seq(
-    Resolver.bintrayRepo("hmrc", "releases"),
     Resolver.jcenterRepo,
-    "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/"
   ))
   .settings(PlayKeys.playDefaultPort := 9890)
   .settings(ScalariformSettings())
