@@ -30,7 +30,7 @@
   pattern:String = "",
   attributes: Map[String, String] = Map.empty,
   spellcheck: Boolean = false
-)
+)(implicit messages: Messages)
 
 @govukInput(Input(
         id = formField.name,
@@ -42,10 +42,10 @@
         label = Label(
           isPageHeading = false,
           classes = "govuk-label--l",
-          content = Text(label)
+          content = Text(messages(label))
         ),
         hint = if(hint.isEmpty) None else Some(Hint(content=Text(hint))),
-        errorMessage = formField.error.map(x=>ErrorMessage(content=Text(x.message))),
+        errorMessage = formField.error.map(x => ErrorMessage(content = Text(messages(x.message)))),
         formGroupClasses = formGroupClasses,
         classes = classes,
         autocomplete = if(autocomplete.isEmpty) None else Some(autocomplete),

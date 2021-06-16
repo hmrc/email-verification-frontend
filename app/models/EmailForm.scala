@@ -18,12 +18,11 @@ package models
 
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
-import play.api.i18n.Messages
 
 case class EmailForm(email: String, continue: String)
 object EmailForm {
-  def form(implicit messages: Messages): Form[EmailForm] = Form(mapping(
-    "email" -> text.verifying(messages("emailform.error.invalidEmailFormat"), _.matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$")),
+  val form: Form[EmailForm] = Form(mapping(
+    "email" -> text.verifying("emailform.error.invalidEmailFormat", _.matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$")),
     "continue" -> text
   )(EmailForm.apply)(EmailForm.unapply))
 }

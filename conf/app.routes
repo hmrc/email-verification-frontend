@@ -1,20 +1,28 @@
 # microservice specific routes
-->         /hmrc-frontend         hmrcfrontend.Routes
-->         /govuk-frontend        govuk.Routes
+->          /hmrc-frontend                             hmrcfrontend.Routes
+->          /govuk-frontend                            govuk.Routes
 
-GET        /assets/*file          controllers.Assets.versioned(path = "/public", file: Asset)
+GET         /assets/*file                              controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /verify                controllers.EmailVerificationController.verify(token : String)
-GET        /error                 controllers.ErrorController.showErrorPage
-GET        /language/:lang        controllers.ManageLanguageController.switchToLanguage(lang: String)
-POST       /language/:lang/:view  controllers.ManageLanguageController.showViewWithLanguage(lang: String, view:String)
+GET         /verify                                    controllers.EmailVerificationController.verify(token : String)
+GET         /error                                     controllers.ErrorController.showErrorPage
+GET         /language/:lang                            controllers.ManageLanguageController.switchToLanguage(lang: String)
+POST        /language/:lang/:view                      controllers.ManageLanguageController.showViewWithLanguage(lang: String, view:String)
 
-GET        /emailform             controllers.EmailPasscodeController.showEmailForm(continue: RedirectUrl)
-POST       /emailform             controllers.EmailPasscodeController.submitEmailForm()
-POST       /passcodeform          controllers.EmailPasscodeController.submitPasscodeForm()
+GET         /emailform                                 controllers.EmailPasscodeController.showEmailForm(continue: RedirectUrl)
+POST        /emailform                                 controllers.EmailPasscodeController.submitEmailForm()
+POST        /passcodeform                              controllers.EmailPasscodeController.submitPasscodeForm()
 
-GET        /success               controllers.EmailPasscodeController.showSuccess(continue: RedirectUrl)
-GET        /emailLimitReached     controllers.EmailPasscodeController.showEmailLimitReached(continue: RedirectUrl)
-GET        /emailAlreadyVerified  controllers.EmailPasscodeController.showEmailAlreadyVerified(continue: RedirectUrl)
-GET        /passcodeLimitReached  controllers.EmailPasscodeController.showPasscodeLimitReached(continue: RedirectUrl)
+GET         /success                                   controllers.EmailPasscodeController.showSuccess(continue: RedirectUrl)
+GET         /emailLimitReached                         controllers.EmailPasscodeController.showEmailLimitReached(continue: RedirectUrl)
+GET         /emailAlreadyVerified                      controllers.EmailPasscodeController.showEmailAlreadyVerified(continue: RedirectUrl)
+GET         /passcodeLimitReached                      controllers.EmailPasscodeController.showPasscodeLimitReached(continue: RedirectUrl)
+
+GET         /journey/:journeyId/email                  controllers.JourneyController.enterEmail(journeyId, continueUrl: RedirectUrl, origin)
+POST        /journey/:journeyId/email                  controllers.JourneyController.submitEmail(journeyId, continueUrl: RedirectUrl, origin)
+
+POST        /journey/:journeyId/resend-passcode        controllers.JourneyController.resendPasscode(journeyId, continueUrl: RedirectUrl, origin)
+
+GET         /journey/:journeyId/passcode               controllers.JourneyController.enterPasscode(journeyId, continueUrl: RedirectUrl, origin)
+POST        /journey/:journeyId/passcode               controllers.JourneyController.submitPasscode(journeyId, continueUrl: RedirectUrl, origin)
 
