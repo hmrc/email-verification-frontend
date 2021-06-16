@@ -15,16 +15,23 @@
  *@
 
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 @import views.html.Layout
 @import views.html.fragments.Heading
 @import views.html.fragments.ErrorSummary
 @import views.html.fragments.FormInput
 @import views.html.fragments.FormSubmitLanguageSelector
+@import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 
-@this(form: FormWithCSRF, layout: Layout, heading: Heading, errorSummary: ErrorSummary, formInput:FormInput, formSubmitLanguageSelector:FormSubmitLanguageSelector)
+@this(
+        form: FormWithCSRF,
+        layout: Layout,
+        heading: Heading,
+        errorSummary: ErrorSummary,
+        formInput: FormInput,
+        formSubmitLanguageSelector: FormSubmitLanguageSelector
+)
+
 @(formData: Form[_])(implicit request: Request[_], messages: Messages, appConfig:FrontendAppConfig)
-
 
 @line2Complete = {
   @form(controllers.routes.EmailPasscodeController.submitEmailForm()) {
@@ -34,9 +41,9 @@
     @formInput(formData("continue"),
       inputType = "hidden"
     )
-    @messages("passcodeform.emailnotrecieved.line2").split("QQ")(0)
+    @messages("passcodeform.emailnotrecieved.line2")
     <input type="submit" value='@messages("passcodeform.emailnotrecieved.line2.anothercode")' class="custom-button-link"></input>
-    @messages("passcodeform.emailnotrecieved.line2").split("QQ")(1)
+    @messages("passcodeform.emailnotrecieved.line2.or")
     <a class="govuk-link" href='@controllers.routes.EmailPasscodeController.showEmailForm(RedirectUrl(formData("continue").value.getOrElse("")))'>
       @messages("passcodeform.emailnotrecieved.line2.anotheremail")
     </a>
@@ -82,7 +89,13 @@
 }
 
 @languageSelectorOverride = {
-  @formSubmitLanguageSelector("passcodeForm", formData, appConfig.getAvailableLanguages, controllers.routes.ManageLanguageController.showViewWithLanguage, Some("govuk-body-s lang-selector"))(request, messages)
+  @formSubmitLanguageSelector(
+      "passcodeForm",
+      formData,
+      appConfig.getAvailableLanguages,
+      controllers.routes.ManageLanguageController.showViewWithLanguage,
+      Some("govuk-body-s lang-selector")
+  )(request, messages)
 }
 
 @layout(pageTitle = Some(messages("passcodeform.title")), None, None, Some(languageSelectorOverride))(mainContent)

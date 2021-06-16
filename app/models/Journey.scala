@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
-@import views.html.MessagePage
+package models
 
-@this(messagePage:MessagePage)
+import play.api.libs.json.{Json, Reads}
 
-@(buttonUrl: String)(implicit request: Request[_], messages: Messages, appConfig:FrontendAppConfig)
-
-@messagePage(
-  title       = messages("error.emailsLimitExceeded.heading"),
-  headingText = messages("error.emailsLimitExceeded.heading"),
-  messageText = messages("error.emailsLimitExceeded.message"),
-  buttonText  = messages("continuebutton.label"),
-  buttonUrl   = buttonUrl
+case class Journey(
+  accessibilityStatementUrl: String,
+  emailEnterUrl: Option[String]
 )
+
+object Journey {
+  implicit val reads: Reads[Journey] = Json.reads[Journey]
+}

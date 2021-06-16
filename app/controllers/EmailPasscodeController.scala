@@ -18,56 +18,49 @@ package controllers
 
 import config.{ErrorHandler, FrontendAppConfig}
 import connectors.EmailVerificationConnector
-import crypto.Decrypter
-import javax.inject.{Inject, Singleton}
 import models.{EmailForm, EmailPasscodeException, PasscodeForm}
 import play.api.Logging
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.mvc.Http.HeaderNames
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl._
 import uk.gov.hmrc.play.bootstrap.binders.{RedirectUrl, UnsafePermitAll}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.Views
-import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
 
 @Singleton
 class EmailPasscodeController @Inject() (
   views: Views,
   emailVerificationConnector: EmailVerificationConnector,
-  decrypter: Decrypter,
   mcc: MessagesControllerComponents,
-  messages: MessagesApi,
   errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext, config: FrontendAppConfig)
   extends FrontendController(mcc) with Logging {
 
-  //implicit def lang(implicit rh: RequestHeader): Lang = rh.cookies.get(messages.langCookieName).fold[Lang](Lang("en"))(c => Lang(c.value))
-
-  def showEmailForm(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.emailForm(EmailForm.form.fill(EmailForm("", continue.get(UnsafePermitAll).url)))))
+  def showEmailForm(continue: RedirectUrl): Action[AnyContent] = Action { implicit request =>
+    Ok(views.emailForm(
+      EmailForm.form.fill(EmailForm("", continue.get(UnsafePermitAll).url)),
+      routes.EmailPasscodeController.submitEmailForm()
+    ))
   }
 
   def submitEmailForm(): Action[AnyContent] = Action.async { implicit request =>
-
     val langCookieValue = request.cookies.get(request.messagesApi.langCookieName).map(_.value).getOrElse("en")
 
-    EmailForm.form.bindFromRequest().fold[Future[Result]](
-      formWithErrors => Future.successful(BadRequest(views.emailForm(formWithErrors))),
+    EmailForm.form.bindFromRequest().fold(
+      formWithErrors => Future.successful(BadRequest(views.emailForm(formWithErrors, controllers.routes.EmailPasscodeController.submitEmailForm()))),
       emailForm => {
         val obfuscatedEmailAddress = emailForm.email.take(4) + "..." + emailForm.email.takeRight(4)
         val forwardedFor = request.headers.get(HeaderNames.X_FORWARDED_FOR).fold("") { fwd => s"x_forwarded_for: $fwd" }
-        emailVerificationConnector.requestPasscode(emailForm.email, langCookieValue).flatMap { response =>
+
+        emailVerificationConnector.requestPasscode(emailForm.email, langCookieValue).map { _ =>
           logger.info(s"Passcode sent to email address $obfuscatedEmailAddress. $forwardedFor")
-          Try(Ok(views.passcodeForm(PasscodeForm.form.fill(PasscodeForm(emailForm.email, "", emailForm.continue))))) match {
-            case Success(renderedPasscodeForm) => Future.successful(renderedPasscodeForm)
-            case Failure(e) => {
-              logger.error("Failed to build passcodeform view", e)
-              Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-            }
-          }
+
+          Ok(views.passcodeForm(
+            PasscodeForm.form.fill(PasscodeForm(emailForm.email, "", emailForm.continue))
+          ))
         }.recoverWith {
           case e: EmailPasscodeException.MissingSessionId => {
             logger.warn(s"Missing sessionId. $forwardedFor")
@@ -91,14 +84,16 @@ class EmailPasscodeController @Inject() (
   }
 
   def submitPasscodeForm(): Action[AnyContent] = Action.async { implicit request =>
-    PasscodeForm.form.bindFromRequest().fold[Future[Result]](
-      formWithErrors => Future.successful(BadRequest(views.passcodeForm(formWithErrors))),
+    PasscodeForm.form.bindFromRequest().fold(
+      formWithErrors =>
+        Future.successful(BadRequest(views.passcodeForm(formWithErrors))),
       passcodeForm => {
         val forwardedFor = request.headers.get(HeaderNames.X_FORWARDED_FOR).fold("") { fwd => s"x_forwarded_for: $fwd" }
         val obfuscatedEmailAddress = passcodeForm.email.take(4) + "..." + passcodeForm.email.takeRight(4)
-        emailVerificationConnector.verifyPasscode(passcodeForm.email, passcodeForm.passcode).flatMap { _ =>
+        emailVerificationConnector.verifyPasscode(passcodeForm.email, passcodeForm.passcode).map { _ =>
           logger.info(s"Email passcode for $obfuscatedEmailAddress verified")
-          Future.successful(Redirect(routes.EmailPasscodeController.showSuccess(RedirectUrl(passcodeForm.continue))))
+
+          Redirect(routes.EmailPasscodeController.showSuccess(RedirectUrl(passcodeForm.continue)))
         }.recoverWith {
           case e: EmailPasscodeException.MissingSessionId => {
             logger.warn(s"Missing sessionId. $forwardedFor")
