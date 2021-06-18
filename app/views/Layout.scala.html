@@ -17,6 +17,7 @@
 @import config.FrontendAppConfig
 @import views.html.fragments.Head
 @import views.html.fragments.languageSelector
+@import uk.gov.hmrc.govukfrontend.views.html.components.FooterItem
 
 @this(
     govukLayout: GovukLayout,
@@ -50,7 +51,7 @@
 
 @contentSection = {
   @contentBlock
-  @reportTechnicalIssue(ReportTechnicalIssue("Email-Verification-Frontend", Some(messages.lang.language)))
+  @reportTechnicalIssue(ReportTechnicalIssue("Email-Verification-Frontend", messages.lang.language))
 }
 
 @govukLayout(

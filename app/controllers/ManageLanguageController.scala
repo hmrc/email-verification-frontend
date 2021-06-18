@@ -17,30 +17,28 @@
 package controllers
 
 import config.{ErrorHandler, FrontendAppConfig}
-import javax.inject.{Inject, Singleton}
-import play.api.{Configuration, Logging}
-import play.api.data.Forms.text
+import play.api.Logging
 import play.api.data.Form
+import play.api.data.Forms.text
 import play.api.http.HeaderNames
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.request.{Cell, RequestAttrKey}
-import play.api.mvc.{Action, AnyContent, Cookie, Cookies, MessagesControllerComponents, Request}
+import play.api.mvc._
 import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 import views.Views
 
+import javax.inject.{Inject, Singleton}
 import scala.util.{Failure, Success}
 
 @Singleton
 class ManageLanguageController @Inject() (
   config: FrontendAppConfig,
-  configuration: Configuration,
   languageUtils: LanguageUtils,
   views: Views,
   mcc: MessagesControllerComponents,
   errorHandler: ErrorHandler,
   messagesApi: MessagesApi
-)
-  extends LanguageController(configuration, languageUtils, mcc) with Logging {
+) extends LanguageController(languageUtils, mcc) with Logging {
 
   protected def fallbackURL = "/"
 
