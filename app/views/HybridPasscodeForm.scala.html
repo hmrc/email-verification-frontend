@@ -30,9 +30,22 @@
         details: GovukDetails
 )
 
-@(formData: Form[_], journeyId: String, redirectUrl: RedirectUrl, origin: String, enterEmailUrl: String)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@(
+        formData: Form[_],
+        journeyId: String,
+        redirectUrl: RedirectUrl,
+        origin: String,
+        enterEmailUrl: String,
+        journey: Journey,
+)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(messages("passcodeform.title")), None, None) {
+@layout(
+    pageTitle = Some(messages("passcodeform.title")),
+    accessibilityStatementUrl = Some(journey.accessibilityStatementUrl),
+    backUrl = journey.backUrl,
+    serviceTitle = journey.serviceTitle,
+    deskproServiceName = Some(journey.deskproServiceName)
+) {
     @errorSummary(formData)
     @heading("passcodeform.heading")
 

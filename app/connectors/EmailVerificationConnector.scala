@@ -135,7 +135,7 @@ object SubmitEmailResponse {
 sealed trait ValidatePasscodeResponse
 object ValidatePasscodeResponse {
   case class Complete(continueUrl: String) extends ValidatePasscodeResponse
-  case class IncorrectPasscode(enterEmailUrl: Option[String]) extends ValidatePasscodeResponse
+  case class IncorrectPasscode(journey: Journey) extends ValidatePasscodeResponse
   case class TooManyAttempts(continueUrl: String) extends ValidatePasscodeResponse
   case object JourneyNotFound extends ValidatePasscodeResponse
 
@@ -157,8 +157,8 @@ object ResendPasscodeResponse {
   case object PasscodeResent extends ResendPasscodeResponse
   case object JourneyNotFound extends ResendPasscodeResponse
   case object NoEmailProvided extends ResendPasscodeResponse
-  case class TooManyAttemptsForEmail(enterEmailUrl: Option[String]) extends ResendPasscodeResponse
   case class TooManyAttemptsInSession(continueUrl: String) extends ResendPasscodeResponse
+  case class TooManyAttemptsForEmail(journey: Journey) extends ResendPasscodeResponse
 
   private val tooManyAttemptsInSessionReads: Reads[TooManyAttemptsInSession] = Json.reads[TooManyAttemptsInSession]
   private val tooManyAttemptsForEmail: Reads[TooManyAttemptsForEmail] = Json.reads[TooManyAttemptsForEmail]

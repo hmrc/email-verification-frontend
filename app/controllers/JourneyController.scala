@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.Views
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class JourneyController @Inject() (
   emailVerificationConnector: EmailVerificationConnector,
@@ -39,17 +39,28 @@ class JourneyController @Inject() (
   environment: Environment
 )(implicit ec: ExecutionContext, appConfig: FrontendAppConfig) extends FrontendController(cc) {
 
-  def enterEmail(journeyId: String, continueUrl: RedirectUrl, origin: String): Action[AnyContent] = Action { implicit request =>
-    Ok(views.emailForm(
-      EmailForm.form,
-      routes.JourneyController.submitEmail(journeyId, continueUrl, origin)
-    ))
+  def enterEmail(journeyId: String, continueUrl: RedirectUrl, origin: String): Action[AnyContent] = Action.async { implicit request =>
+    emailVerificationConnector.getJourney(journeyId).map {
+      case Some(journey) =>
+        Ok(views.emailForm(
+          EmailForm.form,
+          routes.JourneyController.submitEmail(journeyId, continueUrl, origin),
+          Some(journey)
+        ))
+      case None =>
+        NotFound(errorHandler.notFoundTemplate)
+    }
   }
 
   def submitEmail(journeyId: String, continueUrl: RedirectUrl, origin: String): Action[AnyContent] = Action.async { implicit request =>
     EmailForm.form.bindFromRequest().fold(
       formWithErrors =>
-        Future.successful(BadRequest(views.emailForm(formWithErrors, routes.JourneyController.submitEmail(journeyId, continueUrl, origin)))),
+        emailVerificationConnector.getJourney(journeyId).map {
+          case Some(journey) =>
+            BadRequest(views.emailForm(formWithErrors, routes.JourneyController.submitEmail(journeyId, continueUrl, origin), Some(journey)))
+          case None =>
+            NotFound(errorHandler.notFoundTemplate)
+        },
       form =>
         emailVerificationConnector.submitEmail(journeyId, form.email).map {
           case SubmitEmailResponse.Accepted =>
@@ -74,7 +85,8 @@ class JourneyController @Inject() (
           journeyId,
           continueUrl,
           origin,
-          journey.emailEnterUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url)
+          journey.enterEmailUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url),
+          journey
         ))
       case None =>
         NotFound(errorHandler.notFoundTemplate)
@@ -85,13 +97,14 @@ class JourneyController @Inject() (
     emailVerificationConnector.resendPasscode(journeyId).map {
       case ResendPasscodeResponse.PasscodeResent =>
         Redirect(routes.JourneyController.enterPasscode(journeyId, continueUrl, origin))
-      case ResendPasscodeResponse.TooManyAttemptsForEmail(enterEmailUrl) =>
+      case ResendPasscodeResponse.TooManyAttemptsForEmail(journey) =>
         BadRequest(views.hybridPasscodeForm(
           passcodeForm.withGlobalError("error.passcodesLimitExceeded.heading"),
           journeyId,
           continueUrl,
           origin,
-          enterEmailUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url)
+          journey.enterEmailUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url),
+          journey
         ))
       case ResendPasscodeResponse.TooManyAttemptsInSession(continueUrl) =>
         val validated = RedirectUrl(continueUrl)
@@ -116,7 +129,8 @@ class JourneyController @Inject() (
               journeyId,
               continueUrl,
               origin,
-              journey.emailEnterUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url),
+              journey.enterEmailUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url),
+              journey
             ))
           case None =>
             NotFound(errorHandler.notFoundTemplate)
@@ -129,13 +143,14 @@ class JourneyController @Inject() (
               .url
 
             Redirect(validated)
-          case ValidatePasscodeResponse.IncorrectPasscode(enterEmailUrl) =>
+          case ValidatePasscodeResponse.IncorrectPasscode(journey) =>
             BadRequest(views.hybridPasscodeForm(
               passcodeForm.withError("passcode", "passcodeform.error.wrongPasscode"),
               journeyId,
               continueUrl,
               origin,
-              enterEmailUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url),
+              journey.enterEmailUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url),
+              journey
             ))
           case ValidatePasscodeResponse.JourneyNotFound =>
             NotFound(errorHandler.notFoundTemplate)
