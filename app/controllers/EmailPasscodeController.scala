@@ -42,7 +42,8 @@ class EmailPasscodeController @Inject() (
   def showEmailForm(continue: RedirectUrl): Action[AnyContent] = Action { implicit request =>
     Ok(views.emailForm(
       EmailForm.form.fill(EmailForm("", continue.get(UnsafePermitAll).url)),
-      routes.EmailPasscodeController.submitEmailForm()
+      routes.EmailPasscodeController.submitEmailForm(),
+      None
     ))
   }
 
@@ -50,7 +51,7 @@ class EmailPasscodeController @Inject() (
     val langCookieValue = request.cookies.get(request.messagesApi.langCookieName).map(_.value).getOrElse("en")
 
     EmailForm.form.bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(views.emailForm(formWithErrors, controllers.routes.EmailPasscodeController.submitEmailForm()))),
+      formWithErrors => Future.successful(BadRequest(views.emailForm(formWithErrors, controllers.routes.EmailPasscodeController.submitEmailForm(), None))),
       emailForm => {
         val obfuscatedEmailAddress = emailForm.email.take(4) + "..." + emailForm.email.takeRight(4)
         val forwardedFor = request.headers.get(HeaderNames.X_FORWARDED_FOR).fold("") { fwd => s"x_forwarded_for: $fwd" }

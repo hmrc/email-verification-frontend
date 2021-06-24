@@ -17,24 +17,28 @@
 @import config.FrontendAppConfig
 @import views.html.fragments.Head
 @import views.html.fragments.languageSelector
-@import uk.gov.hmrc.govukfrontend.views.html.components.FooterItem
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
+@import play.twirl.api.HtmlFormat
 
 @this(
     govukLayout: GovukLayout,
     head: Head,
     backLink: govukBackLink,
-    reportTechnicalIssue: hmrcReportTechnicalIssue
+    reportTechnicalIssue: hmrcReportTechnicalIssue,
+    hmrcStandardHeader: HmrcStandardHeader,
+    hmrcStandardFooter: HmrcStandardFooter
 )
 @(
     pageTitle: Option[String] = None,
-    headBlock: Option[Html] = None,
-    scriptsBlock: Option[Html] = None,
-    languageSelectorOverride: Option[Html] = None
+    languageSelectorOverride: Option[Html] = None,
+    accessibilityStatementUrl: Option[String] = None,
+    backUrl: Option[String] = None,
+    deskproServiceName: Option[String] = None,
+    serviceTitle: Option[String] = None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @scripts = {
     <script src="@controllers.routes.Assets.versioned("javascripts/gtm_dl.js")" type="text/javascript"></script>
-    @scriptsBlock
 
     @if(appConfig.googleTagManagerIdAvailable){
         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','@{appConfig.googleTagManagerId}');</script>
@@ -43,7 +47,7 @@
 
 
 @beforeContentBlockSection = {
-  @backLink(BackLink(href="javascript:history.back()"))
+  @backUrl.map(url => backLink(BackLink(href = url))).getOrElse(HtmlFormat.empty)
   @languageSelectorOverride.getOrElse(
     languageSelector(appConfig.getAvailableLanguages, controllers.routes.ManageLanguageController.switchToLanguage,Some("govuk-body-s lang-selector"), Some("email-verification-frontend"))(messages)
   )
@@ -51,16 +55,14 @@
 
 @contentSection = {
   @contentBlock
-  @reportTechnicalIssue(ReportTechnicalIssue("Email-Verification-Frontend", messages.lang.language))
+  @reportTechnicalIssue(ReportTechnicalIssue(deskproServiceName.getOrElse("email-verification-frontend"), messages.lang.language))
 }
 
 @govukLayout(
   pageTitle = pageTitle,
-  headBlock = Some(head(headBlock)),
+  headBlock = Some(head(None)),
   scriptsBlock = Some(scripts),
   beforeContentBlock = Some(beforeContentBlockSection),
-  footerItems = appConfig.footerLinkItems
-    .map(item=>(s"footer.$item.text", s"footer.$item.url"))
-    .filter(keyPair=>messages.isDefinedAt(keyPair._1) && messages.isDefinedAt(keyPair._2))
-    .map(keyPair => FooterItem(text = Some(messages(keyPair._1)), href = Some(messages(keyPair._2))))
+  headerBlock = Some(hmrcStandardHeader(serviceName = serviceTitle)),
+  footerBlock = Some(hmrcStandardFooter(accessibilityStatementUrl = accessibilityStatementUrl))
 )(contentSection)

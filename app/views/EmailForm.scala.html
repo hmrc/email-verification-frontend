@@ -22,9 +22,19 @@
 
 @this(form: FormWithCSRF, layout: Layout, heading: Heading, errorSummary: ErrorSummary, formInput: FormInput)
 
-@(formData: Form[_], submit: Call)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@(
+        formData: Form[_],
+        submit: Call,
+        journey: Option[Journey]
+)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(messages("emailform.title"))) {
+@layout(
+    pageTitle = Some(messages("emailform.title")),
+    accessibilityStatementUrl = journey.map(_.accessibilityStatementUrl),
+    backUrl = journey.flatMap(_.backUrl),
+    serviceTitle = journey.flatMap(_.serviceTitle),
+    deskproServiceName = journey.map(_.deskproServiceName)
+) {
     @errorSummary(formData)
     @heading("emailform.heading")
 

@@ -22,11 +22,21 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import play.api.libs.json.Json
 
 import java.util.UUID
+import scala.collection.JavaConverters.asScalaBufferConverter
 
 class JourneyControllerWireMockSpec extends WireMockSpec {
 
   "GET /journey/:journeyId/email" should {
     "return 200 OK and the email form" in new Setup {
+      stubFor(get(s"/email-verification/journey/$journeyId")
+        .willReturn(okJson(Json.obj(
+          "enterEmailUrl" -> "/enterEmail",
+          "accessibilityStatementUrl" -> "/accessibility",
+          "deskproServiceName" -> "service-name",
+          "backUrl" -> "/back",
+          "serviceTitle" -> "Service Name"
+        ).toString)))
+
       val result = await(resourceRequest(s"/email-verification/journey/$journeyId/email")
         .addQueryStringParameters("continueUrl" -> "/some-service")
         .addQueryStringParameters("origin" -> "oranges")
@@ -35,6 +45,14 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
 
       val html = Jsoup.parse(result.body)
       html.title shouldBe "What is your email address?"
+
+      html.selectFirst(".govuk-header__link--service-name").text shouldBe "Service Name"
+      html.selectFirst(".govuk-back-link").attr("href") shouldBe "/back"
+      html.selectFirst(".hmrc-report-technical-issue").attr("href") should endWith ("service=service-name")
+
+      val a11yLink = html.select(".govuk-footer__link").asScala.find(_.text == "Accessibility statement")
+      a11yLink shouldBe defined
+      a11yLink.value.attr("href") shouldBe "/accessibility"
     }
   }
 
@@ -59,6 +77,15 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
 
     "the submitted email is invalid" should {
       "return 400 Bad Request and the email form with errors" in new Setup {
+        stubFor(get(s"/email-verification/journey/$journeyId")
+          .willReturn(okJson(Json.obj(
+            "enterEmailUrl" -> "/enterEmail",
+            "accessibilityStatementUrl" -> "/accessibility",
+            "deskproServiceName" -> "service-name",
+            "backUrl" -> "/back",
+            "serviceTitle" -> "Service Name"
+          ).toString)))
+
         val result = await(resourceRequest(s"/email-verification/journey/$journeyId/email")
           .addQueryStringParameters("continueUrl" -> "/some-service")
           .addQueryStringParameters("origin" -> "oranges")
@@ -139,7 +166,13 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
         stubFor(post(s"/email-verification/journey/$journeyId/resend-passcode")
           .willReturn(okJson(Json.obj(
             "status" -> "tooManyAttemptsForEmail",
-            "enterEmailUrl" -> "/enterEmail"
+            "journey" -> Json.obj(
+              "enterEmailUrl" -> "/enterEmail",
+              "accessibilityStatementUrl" -> "/accessibility",
+              "deskproServiceName" -> "service-name",
+              "backUrl" -> "/back",
+              "serviceTitle" -> "Service Name"
+            )
           ).toString)))
 
         val result = await(resourceRequest(s"/email-verification/journey/$journeyId/resend-passcode")
@@ -215,7 +248,10 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
         stubFor(get(s"/email-verification/journey/$journeyId")
           .willReturn(okJson(Json.obj(
             "enterEmailUrl" -> "/enterEmail",
-            "accessibilityStatementUrl" -> "/accessibility"
+            "accessibilityStatementUrl" -> "/accessibility",
+            "deskproServiceName" -> "service-name",
+            "backUrl" -> "/back",
+            "serviceTitle" -> "Service Name"
           ).toString)))
 
         val result = await(resourceRequest(s"/email-verification/journey/$journeyId/passcode")
@@ -228,6 +264,14 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
         result.status shouldBe OK
         val html = Jsoup.parse(result.body)
         html.title shouldBe "Enter the code to confirm the email address"
+
+        html.selectFirst(".govuk-header__link--service-name").text shouldBe "Service Name"
+        html.selectFirst(".govuk-back-link").attr("href") shouldBe "/back"
+        html.selectFirst(".hmrc-report-technical-issue").attr("href") should endWith ("service=service-name")
+
+        val a11yLink = html.select(".govuk-footer__link").asScala.find(_.text == "Accessibility statement")
+        a11yLink shouldBe defined
+        a11yLink.value.attr("href") shouldBe "/accessibility"
       }
     }
 
@@ -273,7 +317,10 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
         stubFor(get(s"/email-verification/journey/$journeyId")
           .willReturn(okJson(Json.obj(
             "enterEmailUrl" -> "/enterEmail",
-            "accessibilityStatementUrl" -> "/accessibility"
+            "accessibilityStatementUrl" -> "/accessibility",
+            "deskproServiceName" -> "service-name",
+            "backUrl" -> "/back",
+            "serviceTitle" -> "Service Name"
           ).toString)))
 
         val result = await(resourceRequest(s"/email-verification/journey/$journeyId/passcode")
@@ -296,7 +343,13 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
         stubFor(post(s"/email-verification/journey/$journeyId/passcode")
           .willReturn(okJson(Json.obj(
             "status" -> "incorrectPasscode",
-            "enterEmailUrl" -> "/enterEmail"
+            "journey" -> Json.obj(
+              "enterEmailUrl" -> "/enterEmail",
+              "accessibilityStatementUrl" -> "/accessibility",
+              "deskproServiceName" -> "service-name",
+              "backUrl" -> "/back",
+              "serviceTitle" -> "Service Name"
+            )
           ).toString)))
 
         val result = await(resourceRequest(s"/email-verification/journey/$journeyId/passcode")
