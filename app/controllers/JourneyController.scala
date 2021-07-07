@@ -98,6 +98,7 @@ class JourneyController @Inject() (
       case ResendPasscodeResponse.PasscodeResent =>
         Redirect(routes.JourneyController.enterPasscode(journeyId, continueUrl, origin))
       case ResendPasscodeResponse.TooManyAttemptsForEmail(journey) =>
+        //TODO change to redirect here instead???
         BadRequest(views.hybridPasscodeForm(
           passcodeForm.withGlobalError("error.passcodesLimitExceeded.heading"),
           journeyId,
@@ -158,7 +159,7 @@ class JourneyController @Inject() (
             val validated = RedirectUrl(continueUrl)
               .get(OnlyRelative | PermitAllOnDev(environment))
               .url
-
+            //TODO change to redirect here instead???
             Forbidden(views.passcodeLimitReached(validated))
         }
     )
