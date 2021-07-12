@@ -23,7 +23,8 @@ case class Journey(
   deskproServiceName: String,
   enterEmailUrl: Option[String],
   backUrl: Option[String],
-  serviceTitle: Option[String]
+  serviceTitle: Option[String],
+  emailAddress: Option[String]
 )
 
 object Journey {
