@@ -52,7 +52,7 @@
     <p class="govuk-body">
         @messages("passcodeform.body")
         <strong id="email-address">
-        @formData("email").value.getOrElse("")
+        @journey.emailAddress.getOrElse("")
         </strong>
     </p>
 

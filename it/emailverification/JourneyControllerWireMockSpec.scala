@@ -171,7 +171,8 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
               "accessibilityStatementUrl" -> "/accessibility",
               "deskproServiceName" -> "service-name",
               "backUrl" -> "/back",
-              "serviceTitle" -> "Service Name"
+              "serviceTitle" -> "Service Name",
+              "emailAddress" -> "some@email.com"
             )
           ).toString)))
 
@@ -251,7 +252,8 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
             "accessibilityStatementUrl" -> "/accessibility",
             "deskproServiceName" -> "service-name",
             "backUrl" -> "/back",
-            "serviceTitle" -> "Service Name"
+            "serviceTitle" -> "Service Name",
+            "emailAddress" -> "some@email.com"
           ).toString)))
 
         val result = await(resourceRequest(s"/email-verification/journey/$journeyId/passcode")
@@ -268,6 +270,7 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
         html.selectFirst(".govuk-header__link--service-name").text shouldBe "Service Name"
         html.selectFirst(".govuk-back-link").attr("href") shouldBe "/back"
         html.selectFirst(".hmrc-report-technical-issue").attr("href") should endWith ("service=service-name")
+        html.selectFirst("#email-address").text.trim shouldBe "some@email.com"
 
         val a11yLink = html.select(".govuk-footer__link").asScala.find(_.text == "Accessibility statement")
         a11yLink shouldBe defined
