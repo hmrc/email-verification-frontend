@@ -183,10 +183,8 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
           .post(Map.empty[String, Seq[String]])
         )
 
-        result.status shouldBe BAD_REQUEST
-        val html = Jsoup.parse(result.body)
-        html.title shouldBe "Enter the code to confirm the email address"
-        html.selectFirst(".govuk-error-summary__list > li").text() shouldBe "Max passcode attempts exceeded"
+        result.status shouldBe SEE_OTHER
+        result.header(LOCATION).value shouldBe s"/some-service"
       }
     }
 
@@ -385,9 +383,8 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
           .post(Map("passcode" -> Seq("ZZZZZZ")))
         )
 
-        result.status shouldBe FORBIDDEN
-        val html = Jsoup.parse(result.body)
-        html.title shouldBe "Email Verification Error"
+        result.status shouldBe SEE_OTHER
+        result.header(LOCATION).value shouldBe s"/some-service"
       }
     }
 
