@@ -98,19 +98,12 @@ class JourneyController @Inject() (
       case ResendPasscodeResponse.PasscodeResent =>
         Redirect(routes.JourneyController.enterPasscode(journeyId, continueUrl, origin))
       case ResendPasscodeResponse.TooManyAttemptsForEmail(journey) =>
-        BadRequest(views.hybridPasscodeForm(
-          passcodeForm.withGlobalError("error.passcodesLimitExceeded.heading"),
-          journeyId,
-          continueUrl,
-          origin,
-          journey.enterEmailUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url),
-          journey
-        ))
+        val validated = continueUrl.get(OnlyRelative | PermitAllOnDev(environment)).url
+        Redirect(validated)
       case ResendPasscodeResponse.TooManyAttemptsInSession(continueUrl) =>
         val validated = RedirectUrl(continueUrl)
           .get(OnlyRelative | PermitAllOnDev(environment))
           .url
-
         Redirect(validated)
       case ResendPasscodeResponse.JourneyNotFound =>
         NotFound(errorHandler.notFoundTemplate)
@@ -158,8 +151,7 @@ class JourneyController @Inject() (
             val validated = RedirectUrl(continueUrl)
               .get(OnlyRelative | PermitAllOnDev(environment))
               .url
-
-            Forbidden(views.passcodeLimitReached(validated))
+            Redirect(validated)
         }
     )
   }
