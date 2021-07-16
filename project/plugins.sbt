@@ -11,12 +11,8 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
 
 addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.8.3")
 
-addSbtPlugin("uk.gov.hmrc" % "sbt-auto-build" % "2.14.0")
+addSbtPlugin("uk.gov.hmrc" % "sbt-auto-build" % "3.3.0")
 
-addSbtPlugin("uk.gov.hmrc" % "sbt-git-versioning" % "2.2.0")
-
-addSbtPlugin("uk.gov.hmrc" % "sbt-artifactory" % "1.13.0")
-
-addSbtPlugin("uk.gov.hmrc" % "sbt-settings" % "4.7.0")
+addSbtPlugin("uk.gov.hmrc" % "sbt-settings" % "4.9.0")
 
 addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.11")
