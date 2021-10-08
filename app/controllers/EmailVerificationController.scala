@@ -19,7 +19,7 @@ package controllers
 import connectors.EmailVerificationConnector
 import crypto.Decrypter
 import javax.inject.{Inject, Singleton}
-import org.joda.time.DateTime
+import java.time.ZonedDateTime
 import play.api.libs.json.{Json, Reads}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.crypto.Crypted._
@@ -41,7 +41,7 @@ class EmailVerificationController @Inject() (
 )(implicit ec: ExecutionContext)
   extends FrontendController(mcc) {
 
-  def dateTimeProvider: DateTime = DateTime.now()
+  def dateTimeProvider: ZonedDateTime = ZonedDateTime.now()
 
   def verify(token: String): Action[AnyContent] = Action.async { implicit request =>
     val redirectToContinue = for {

@@ -37,7 +37,8 @@ class ManageLanguageController @Inject() (
   views: Views,
   mcc: MessagesControllerComponents,
   errorHandler: ErrorHandler,
-  messagesApi: MessagesApi
+  messagesApi: MessagesApi,
+  cookieHeaderEncoding: CookieHeaderEncoding
 ) extends LanguageController(languageUtils, mcc) with Logging {
 
   protected def fallbackURL = "/"
@@ -58,7 +59,7 @@ class ManageLanguageController @Inject() (
 
   private def requestWithLanguage(request: Request[_], lang: Lang): Request[_] = {
     val updatedCookies = request.cookies.toSeq.filter(_.name != messagesApi.langCookieName) :+ Cookie(messagesApi.langCookieName, lang.code)
-    val updatedCookiesHeader = Cookies.encodeCookieHeader(updatedCookies)
+    val updatedCookiesHeader = cookieHeaderEncoding.encodeCookieHeader(updatedCookies)
     val updatedHeaders = request.headers.replace((HeaderNames.COOKIE, updatedCookiesHeader))
     request.addAttr(RequestAttrKey.Cookies, Cell(Cookies(updatedCookies))).withTransientLang(lang.code).withHeaders(updatedHeaders)
   }
