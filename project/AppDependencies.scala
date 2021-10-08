@@ -14,7 +14,8 @@ object AppDependencies {
 
   val test = Seq(
     "uk.gov.hmrc" %% "government-gateway-test" % "4.6.0-play-28",
-    "uk.gov.hmrc" %% "bootstrap-test-play-28" % "5.14.0" % "test,it"
+    "uk.gov.hmrc" %% "bootstrap-test-play-28" % "5.14.0" % "test,it",
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.12.2" % "test,it"
   )
 
   def apply(): Seq[ModuleID] = compile ++ test
