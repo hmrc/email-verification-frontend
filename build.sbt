@@ -8,7 +8,7 @@ lazy val microservice = Project("email-verification-frontend", file("."))
   .settings(scalaSettings: _*)
   .settings(publishingSettings: _*)
   .settings(defaultSettings(): _*)
-  .settings(scalaVersion := "2.12.11")
+  .settings(scalaVersion := "2.12.15")
   .settings(scalacOptions ++= Seq("-Xfatal-warnings", "-feature", "-unchecked"))
   .settings(
     libraryDependencies ++= AppDependencies(),
