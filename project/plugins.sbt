@@ -11,8 +11,8 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
 
 addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.8.3")
 
-addSbtPlugin("uk.gov.hmrc" % "sbt-auto-build" % "3.5.0")
+addSbtPlugin("uk.gov.hmrc" % "sbt-auto-build" % "3.6.0")
 
-addSbtPlugin("uk.gov.hmrc" % "sbt-settings" % "4.9.0")
+addSbtPlugin("uk.gov.hmrc" % "sbt-settings" % "4.10.0")
 
 addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.11")

@@ -15,23 +15,21 @@ lazy val microservice = Project("email-verification-frontend", file("."))
     retrieveManaged := true,
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.govukfrontend.views.html.components._",
-      "uk.gov.hmrc.govukfrontend.views.html.helpers._",
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
       "uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text"
-    ),
+    )
   )
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(DefaultBuildSettings.integrationTestSettings())
   .settings(resolvers ++= Seq(
-    Resolver.jcenterRepo,
+    Resolver.jcenterRepo
   ))
   .settings(PlayKeys.playDefaultPort := 9890)
   .settings(ScalariformSettings())
   .settings(ScoverageSettings())
   .settings(SilencerSettings())
   .settings(routesImport := Seq(
-    "uk.gov.hmrc.play.binders._",
     "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl",
     "controllers.Assets.Asset"
   ))

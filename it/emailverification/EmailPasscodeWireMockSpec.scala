@@ -227,22 +227,6 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
     }
   }
 
-  "post /language/cymraeg/passcodeForm with email address field" should {
-    "show passcode form in welsh while correctly showing the email address" in new Setup {
-      def response = await(resourceRequest("/email-verification/language/cymraeg/passcodeForm")
-        .withSession("sessionId" -> Setup.newSessionId)
-        .withFollowRedirects(false)
-        .post(Map("continue" -> Seq(Setup.continueUrl), "email" -> Seq("some.email@address.com"), "passcode" -> Seq("")))
-      )
-
-      response.status shouldBe 200
-      val html = Jsoup.parse(response.body)
-      val langSelectorDiv = html.getElementsByClass("lang-selector").first()
-      langSelectorDiv.getElementsByAttributeValue("type", "submit").first().attr("value") shouldBe "English"
-      html.getElementById("email-address").text.trim shouldBe messagesEn("some.email@address.com")
-    }
-  }
-
   trait Setup extends Wiremocks {
 
     def newSessionId = "sessionId-" + UUID.randomUUID().toString

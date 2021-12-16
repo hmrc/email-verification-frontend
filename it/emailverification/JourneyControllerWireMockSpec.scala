@@ -46,7 +46,7 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
       val html = Jsoup.parse(result.body)
       html.title shouldBe "What is your email address?"
 
-      html.selectFirst(".govuk-header__link--service-name").text shouldBe "Service Name"
+      html.selectFirst(".hmrc-header__service-name").text shouldBe "Service Name"
       html.selectFirst(".govuk-back-link").attr("href") shouldBe "/back"
       html.selectFirst(".hmrc-report-technical-issue").attr("href") should endWith ("service=service-name")
 
@@ -265,7 +265,7 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
         val html = Jsoup.parse(result.body)
         html.title shouldBe "Enter the code to confirm the email address"
 
-        html.selectFirst(".govuk-header__link--service-name").text shouldBe "Service Name"
+        html.selectFirst(".hmrc-header__service-name").text shouldBe "Service Name"
         html.selectFirst(".govuk-back-link").attr("href") shouldBe "/back"
         html.selectFirst(".hmrc-report-technical-issue").attr("href") should endWith ("service=service-name")
         html.selectFirst("#email-address").text.trim shouldBe "some@email.com"
