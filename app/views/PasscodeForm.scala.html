@@ -19,7 +19,6 @@
 @import views.html.fragments.Heading
 @import views.html.fragments.ErrorSummary
 @import views.html.fragments.FormInput
-@import views.html.fragments.FormSubmitLanguageSelector
 @import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 
 @this(
@@ -27,8 +26,7 @@
         layout: Layout,
         heading: Heading,
         errorSummary: ErrorSummary,
-        formInput: FormInput,
-        formSubmitLanguageSelector: FormSubmitLanguageSelector
+        formInput: FormInput
 )
 
 @(formData: Form[_])(implicit request: Request[_], messages: Messages, appConfig:FrontendAppConfig)
@@ -88,14 +86,4 @@
 
 }
 
-@languageSelectorOverride = {
-  @formSubmitLanguageSelector(
-      "passcodeForm",
-      formData,
-      appConfig.getAvailableLanguages,
-      controllers.routes.ManageLanguageController.showViewWithLanguage,
-      Some("govuk-body-s lang-selector")
-  )(request, messages)
-}
-
-@layout(pageTitle = Some(messages("passcodeform.title")), Some(languageSelectorOverride))(mainContent)
+@layout(pageTitle = Some(messages("passcodeform.title")))(mainContent)

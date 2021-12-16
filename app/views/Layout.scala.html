@@ -16,14 +16,13 @@
 
 @import config.FrontendAppConfig
 @import views.html.fragments.Head
-@import views.html.fragments.languageSelector
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import play.twirl.api.HtmlFormat
 
 @this(
-    govukLayout: GovukLayout,
+    govukLayout: HmrcLayout,
     head: Head,
-    backLink: govukBackLink,
+    backLink: GovukBackLink,
     reportTechnicalIssue: HmrcReportTechnicalIssue,
     hmrcStandardHeader: HmrcStandardHeader,
     hmrcStandardFooter: HmrcStandardFooter
@@ -48,9 +47,6 @@
 
 @beforeContentBlockSection = {
   @backUrl.map(url => backLink(BackLink(href = url))).getOrElse(HtmlFormat.empty)
-  @languageSelectorOverride.getOrElse(
-    languageSelector(appConfig.getAvailableLanguages, controllers.routes.ManageLanguageController.switchToLanguage,Some("govuk-body-s lang-selector"), Some("email-verification-frontend"))(messages)
-  )
 }
 
 @contentSection = {
@@ -60,9 +56,9 @@
 
 @govukLayout(
   pageTitle = pageTitle,
-  headBlock = Some(head(None)),
-  scriptsBlock = Some(scripts),
+  additionalScriptsBlock = Some(scripts),
   beforeContentBlock = Some(beforeContentBlockSection),
-  headerBlock = Some(hmrcStandardHeader(serviceName = serviceTitle)),
-  footerBlock = Some(hmrcStandardFooter(accessibilityStatementUrl = accessibilityStatementUrl))
+  serviceName = serviceTitle,
+  accessibilityStatementUrl = accessibilityStatementUrl,
+  isWelshTranslationAvailable = true
 )(contentSection)

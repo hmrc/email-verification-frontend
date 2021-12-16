@@ -1,13 +1,10 @@
 # microservice specific routes
 ->          /hmrc-frontend                             hmrcfrontend.Routes
-->          /govuk-frontend                            govuk.Routes
 
 GET         /assets/*file                              controllers.Assets.versioned(path = "/public", file: Asset)
 
 GET         /verify                                    controllers.EmailVerificationController.verify(token : String)
 GET         /error                                     controllers.ErrorController.showErrorPage
-GET         /language/:lang                            controllers.ManageLanguageController.switchToLanguage(lang: String)
-POST        /language/:lang/:view                      controllers.ManageLanguageController.showViewWithLanguage(lang: String, view:String)
 
 GET         /emailform                                 controllers.EmailPasscodeController.showEmailForm(continue: RedirectUrl)
 POST        /emailform                                 controllers.EmailPasscodeController.submitEmailForm()
