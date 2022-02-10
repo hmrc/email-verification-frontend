@@ -19,12 +19,12 @@ package controllers
 import config.{ErrorHandler, FrontendAppConfig}
 import connectors.{EmailVerificationConnector, ResendPasscodeResponse, SubmitEmailResponse, ValidatePasscodeResponse}
 import models.EmailForm
-import play.api.Environment
+import play.api.{Environment, Mode}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
-import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, PermitAllOnDev, RedirectUrl}
+import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, PermitAllOnDev, RedirectUrl, UnsafePermitAll}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.Views
 
@@ -94,11 +94,12 @@ class JourneyController @Inject() (
   }
 
   def resendPasscode(journeyId: String, continueUrl: RedirectUrl, origin: String): Action[AnyContent] = Action.async { implicit request =>
+
     emailVerificationConnector.resendPasscode(journeyId).map {
       case ResendPasscodeResponse.PasscodeResent =>
         Redirect(routes.JourneyController.enterPasscode(journeyId, continueUrl, origin))
       case ResendPasscodeResponse.TooManyAttemptsForEmail(journey) =>
-        val validated = continueUrl.get(OnlyRelative | PermitAllOnDev(environment)).url
+        val validated = continueUrl.get(OnlyRelative).url
         Redirect(validated)
       case ResendPasscodeResponse.TooManyAttemptsInSession(continueUrl) =>
         val validated = RedirectUrl(continueUrl)
@@ -131,8 +132,13 @@ class JourneyController @Inject() (
       passcode =>
         emailVerificationConnector.validatePasscode(journeyId, passcode).map {
           case ValidatePasscodeResponse.Complete(redirectUri) =>
+            val policy = if (environment.mode == Mode.Test)
+              UnsafePermitAll
+            else
+              OnlyRelative | PermitAllOnDev(environment)
+
             val validated = RedirectUrl(redirectUri)
-              .get(OnlyRelative | PermitAllOnDev(environment))
+              .get(policy)
               .url
 
             Redirect(validated)
