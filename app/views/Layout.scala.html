@@ -46,19 +46,15 @@
 }
 
 
-@beforeContentBlockSection = {
-  @backUrl.map(url => backLink(BackLink(href = url))).getOrElse(HtmlFormat.empty)
-}
-
 @contentSection = {
   @contentBlock
-  @reportTechnicalIssue(ReportTechnicalIssue(deskproServiceName.getOrElse("email-verification-frontend"), messages.lang.language))
+  @reportTechnicalIssue(ReportTechnicalIssue(deskproServiceName.getOrElse("email-verification-frontend"), language = if (messages.lang.language == "en") En else Cy))
 }
 
 @govukLayout(
   pageTitle = pageTitle,
   additionalScriptsBlock = Some(scripts),
-  beforeContentBlock = Some(beforeContentBlockSection),
+  backLinkUrl = backUrl,
   serviceName = serviceTitle,
   accessibilityStatementUrl = accessibilityStatementUrl,
   additionalHeadBlock = Option(head()),
