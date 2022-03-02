@@ -14,15 +14,15 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTrackingConsentSnippet
+@import views.html.helper.CSPNonce
 
-@this(trackingConsentSnippet: HmrcTrackingConsentSnippet)
+@this()
 
 @(headBlock: Option[Html] = None)(implicit request: Request[_], messages: Messages)
-@trackingConsentSnippet()
+
 @headBlock
-<div class="gtm-tag" data-gtag="virtualUrl:@{request.path}"></div>
-<!--[if lte IE 8]><script src='@controllers.routes.Assets.versioned("javascripts/html5shiv.min.js")'></script><![endif]-->
+<div @{CSPNonce.attr} class="gtm-tag" data-gtag="virtualUrl:@{request.path}"></div>
+<!--[if lte IE 8]><script @{CSPNonce.attr} src='@controllers.routes.Assets.versioned("javascripts/html5shiv.min.js")'></script><![endif]-->
 <!--[if lte IE 8]><link href='@controllers.routes.Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
 <!--[if gt IE 8]><!--><link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
 <!--[if gt IE 8]><!--><link href='@controllers.routes.Assets.versioned("stylesheets/main.css")' media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
