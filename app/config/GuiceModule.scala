@@ -18,12 +18,12 @@ package config
 
 import play.api.inject.{Binding, Module}
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.crypto.CryptoWithKeysFromConfig
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter, SymmetricCryptoFactory}
 
 class GuiceModule extends Module {
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = Seq(
-    bind[CryptoWithKeysFromConfig].qualifiedWith("tokenEncryption").toInstance(
-      new CryptoWithKeysFromConfig("token.encryption", configuration.underlying)
+    bind[Encrypter with Decrypter].qualifiedWith("tokenEncryption").toInstance(
+      SymmetricCryptoFactory.aesCryptoFromConfig("token.encryption", configuration.underlying)
     )
   )
 }

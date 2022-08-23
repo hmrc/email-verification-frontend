@@ -23,7 +23,7 @@ import com.typesafe.config.ConfigFactory
 import controllers.Token
 import org.scalatest.LoneElement
 import play.api.Configuration
-import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig, PlainText}
+import uk.gov.hmrc.crypto.{Crypted, SymmetricCryptoFactory, PlainText}
 import uk.gov.hmrc.gg.test.{LogCapturing, UnitSpec}
 
 import scala.util.Success
@@ -47,7 +47,7 @@ class DecrypterSpec extends UnitSpec with LogCapturing with LoneElement {
 
   trait Setup {
     val configuration = new Configuration(ConfigFactory.load("application.conf"))
-    val theCrypto = new CryptoWithKeysFromConfig("queryParameter.encryption", configuration.underlying)
+    val theCrypto = SymmetricCryptoFactory.aesCryptoFromConfig("queryParameter.encryption", configuration.underlying)
     val continueUrl = "/continue-url"
     val token = UUID.randomUUID().toString
 

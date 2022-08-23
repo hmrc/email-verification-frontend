@@ -19,12 +19,12 @@ package crypto
 import javax.inject.{Inject, Named, Singleton}
 import play.api.Logging
 import play.api.libs.json.{Json, Reads}
-import uk.gov.hmrc.crypto.{Crypted, CryptoWithKeysFromConfig}
+import uk.gov.hmrc.crypto.{Crypted, Encrypter}
 
 import scala.util.{Failure, Try}
 
 @Singleton
-class Decrypter @Inject() (@Named("tokenEncryption") crypto: CryptoWithKeysFromConfig) extends Logging {
+class Decrypter @Inject() (@Named("tokenEncryption") crypto: Encrypter with uk.gov.hmrc.crypto.Decrypter) extends Logging {
 
   def decryptAs[T](crypted: Crypted)(implicit reads: Reads[T]): Try[T] = Try(Json.parse(crypto.decrypt(crypted).value).as).recoverWith {
     case e: SecurityException =>
