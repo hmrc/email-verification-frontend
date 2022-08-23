@@ -18,7 +18,7 @@ object ScoverageSettings {
       "app.*",
       "prod.*"
     ).mkString(";"),
-    ScoverageKeys.coverageMinimum := 80,
+    ScoverageKeys.coverageMinimumStmtTotal := 79,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
