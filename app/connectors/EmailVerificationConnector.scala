@@ -54,7 +54,7 @@ class EmailVerificationConnector @Inject() (
       PasscodeRequest(email, "email-verification-frontend", lang)
     ).map {
         case r @ HttpResponse(201, _, _) => ()
-        case r @ HttpResponse(401, _, _) => throw EmailPasscodeException.MissingSessionId(r.body)
+        case r @ HttpResponse(401, _, _) => throw EmailPasscodeException.Unauthorised(r.body)
         case r @ HttpResponse(403, _, _) => throw EmailPasscodeException.MaxNewEmailsExceeded(r.body)
         case r @ HttpResponse(409, _, _) => throw EmailPasscodeException.EmailAlreadyVerified(r.body)
         case r: HttpResponse             => throw EmailPasscodeException.EmailVerificationServerError(r.body)
@@ -67,7 +67,7 @@ class EmailVerificationConnector @Inject() (
     ).map {
         case HttpResponse(201, _, _)     => ()
         case HttpResponse(204, _, _)     => ()
-        case r @ HttpResponse(401, _, _) => throw EmailPasscodeException.MissingSessionId(r.body)
+        case r @ HttpResponse(401, _, _) => throw EmailPasscodeException.Unauthorised(r.body)
         case r @ HttpResponse(403, _, _) => throw EmailPasscodeException.MaxPasscodeAttemptsExceeded(r.body)
         case r @ HttpResponse(404, _, _) => throw EmailPasscodeException.IncorrectPasscode(r.body)
         case r: HttpResponse             => throw EmailPasscodeException.EmailVerificationServerError(r.body)

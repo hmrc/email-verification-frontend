@@ -35,6 +35,8 @@ import scala.collection.JavaConverters._
 
 class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with SessionCookieEncryptionSupport with TableDrivenPropertyChecks {
 
+  override def extraConfig: Map[String, Any] = super.extraConfig ++ Map("forceRelativeOnlyUrlPolicy"->true)
+
   val messagesEn = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
   val messagesCy = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("cy")))
 
@@ -53,11 +55,64 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
     }
   }
 
+
   "get /emailform with invalid continue url" should {
     "return bad request error" in new Setup {
       val response = await(
         resourceRequest("/email-verification/emailform")
-          .addQueryStringParameters("continue" -> "IAmNotAContinueUrlAndImOkWithThat")
+          .addQueryStringParameters("continue" -> "http://not/a/relative/url")
+          .withSession("sessionId" -> newSessionId)
+          .withFollowRedirects(false)
+          .get()
+      )
+      response.status shouldBe BAD_REQUEST
+    }
+  }
+
+  "get /success with invalid continue url" should {
+    "return bad request error" in new Setup {
+      val response = await(
+        resourceRequest("/email-verification/success")
+          .addQueryStringParameters("continue" -> "http://not/a/relative/url")
+          .withSession("sessionId" -> newSessionId)
+          .withFollowRedirects(false)
+          .get()
+      )
+      response.status shouldBe BAD_REQUEST
+    }
+  }
+
+  "get /emailLimitReached with invalid continue url" should {
+    "return bad request error" in new Setup {
+      val response = await(
+        resourceRequest("/email-verification/emailLimitReached")
+          .addQueryStringParameters("continue" -> "http://not/a/relative/url")
+          .withSession("sessionId" -> newSessionId)
+          .withFollowRedirects(false)
+          .get()
+      )
+      response.status shouldBe BAD_REQUEST
+    }
+  }
+
+  "get /emailAlreadyVerified with invalid continue url" should {
+    "return bad request error" in new Setup {
+      val response = await(
+        resourceRequest("/email-verification/emailAlreadyVerified")
+          .addQueryStringParameters("continue" -> "http://not/a/relative/url")
+          .withSession("sessionId" -> newSessionId)
+          .withFollowRedirects(false)
+          .get()
+      )
+      response.status shouldBe BAD_REQUEST
+    }
+  }
+
+  "get /passcodeLimitReached with invalid continue url" should {
+    "return bad request error" in new Setup {
+      val response = await(
+        resourceRequest("/email-verification/passcodeLimitReached")
+          .addQueryStringParameters("continue" -> "http://not/a/relative/url")
           .withSession("sessionId" -> newSessionId)
           .withFollowRedirects(false)
           .get()

@@ -19,32 +19,47 @@ package controllers
 import config.{ErrorHandler, FrontendAppConfig}
 import connectors.EmailVerificationConnector
 import models.{EmailForm, EmailPasscodeException, PasscodeForm}
-import play.api.Logging
+import play.api.{Environment, Logging, Mode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl._
-import uk.gov.hmrc.play.bootstrap.binders.{RedirectUrl, UnsafePermitAll}
+import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, RedirectUrl}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.Views
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
 
 @Singleton
 class EmailPasscodeController @Inject() (
   views: Views,
   emailVerificationConnector: EmailVerificationConnector,
   mcc: MessagesControllerComponents,
-  errorHandler: ErrorHandler
+  errorHandler: ErrorHandler,
+  environment: Environment
 )(implicit ec: ExecutionContext, config: FrontendAppConfig)
   extends FrontendController(mcc) with Logging {
 
+  private def validateContinueUrl(continueUrl: RedirectUrl): Try[String] = {
+    if (environment.mode == Mode.Prod || config.forceRelativeOnlyUrlPolicy) {
+      Try(continueUrl.get(OnlyRelative).url)
+    } else {
+      Success(continueUrl.unsafeValue)
+    }
+  }
+
   def showEmailForm(continue: RedirectUrl): Action[AnyContent] = Action { implicit request =>
-    Ok(views.emailForm(
-      EmailForm.form.fill(EmailForm("", continue.get(UnsafePermitAll).url)),
-      routes.EmailPasscodeController.submitEmailForm(),
-      None
-    ))
+    validateContinueUrl(continue) match {
+      case Success(url) => Ok(views.emailForm(
+        EmailForm.form.fill(EmailForm("", url)),
+        routes.EmailPasscodeController.submitEmailForm(),
+        None
+      ))
+      case Failure(e) =>
+        logger.warn("[GG-6759] Continue URL passed to showEmailForm endpoint fails RedirectUrl Policy", e)
+        BadRequest(errorHandler.badRequestTemplate)
+    }
   }
 
   def submitEmailForm(): Action[AnyContent] = Action.async { implicit request =>
@@ -63,8 +78,8 @@ class EmailPasscodeController @Inject() (
             PasscodeForm.form.fill(PasscodeForm(emailForm.email, "", emailForm.continue))
           ))
         }.recoverWith {
-          case e: EmailPasscodeException.MissingSessionId => {
-            logger.warn(s"Missing sessionId. $forwardedFor")
+          case EmailPasscodeException.Unauthorised(body) => {
+            logger.warn(s"Unauthorised. $body  $forwardedFor ")
             Future.successful(Unauthorized(errorHandler.internalServerErrorTemplate))
           }
           case e: EmailPasscodeException.MaxNewEmailsExceeded => {
@@ -96,7 +111,7 @@ class EmailPasscodeController @Inject() (
 
           Redirect(routes.EmailPasscodeController.showSuccess(RedirectUrl(passcodeForm.continue)))
         }.recoverWith {
-          case e: EmailPasscodeException.MissingSessionId => {
+          case e: EmailPasscodeException.Unauthorised => {
             logger.warn(s"Missing sessionId. $forwardedFor")
             Future.successful(Unauthorized(errorHandler.internalServerErrorTemplate))
           }
@@ -121,27 +136,39 @@ class EmailPasscodeController @Inject() (
   }
 
   def showSuccess(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.success(
-      buttonUrl = continue.unsafeValue
-    )))
+    validateContinueUrl(continue) match {
+      case Success(url) => Future.successful(Ok(views.success(buttonUrl = url)))
+      case Failure(e) =>
+        logger.warn("[GG-6759] Continue URL passed to showSuccess endpoint fails RedirectUrl Policy", e)
+        Future.successful(BadRequest(errorHandler.badRequestTemplate))
+    }
   }
 
   def showPasscodeLimitReached(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.passcodeLimitReached(
-      buttonUrl = continue.unsafeValue
-    )))
+    validateContinueUrl(continue) match {
+      case Success(url) => Future.successful(Ok(views.passcodeLimitReached(buttonUrl = url)))
+      case Failure(e) =>
+        logger.warn("[GG-6759] Continue URL passed to showPasscodeLimitReached endpoint fails RedirectUrl Policy", e)
+        Future.successful(BadRequest(errorHandler.badRequestTemplate))
+    }
   }
 
   def showEmailLimitReached(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.emailLimitReached(
-      buttonUrl = continue.unsafeValue
-    )))
+    validateContinueUrl(continue) match {
+      case Success(url) => Future.successful(Ok(views.emailLimitReached(buttonUrl = url)))
+      case Failure(e) =>
+        logger.warn("[GG-6759] Continue URL passed to showEmailLimitReached endpoint fails RedirectUrl Policy", e)
+        Future.successful(BadRequest(errorHandler.badRequestTemplate))
+    }
   }
 
   def showEmailAlreadyVerified(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.emailAlreadyVerified(
-      buttonUrl = continue.unsafeValue
-    )))
+    validateContinueUrl(continue) match {
+      case Success(url) => Future.successful(Ok(views.emailAlreadyVerified(buttonUrl = url)))
+      case Failure(e) =>
+        logger.warn("[GG-6759] Continue URL passed to showEmailAlreadyVerified endpoint fails RedirectUrl Policy", e)
+        Future.successful(BadRequest(errorHandler.badRequestTemplate))
+    }
   }
 
 }

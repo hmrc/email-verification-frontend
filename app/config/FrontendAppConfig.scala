@@ -45,4 +45,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   lazy val emailUrl: String = servicesConfig.baseUrl("email-verification")
 
+  lazy val forceRelativeOnlyUrlPolicy: Boolean = configuration.get[Boolean]("forceRelativeOnlyUrlPolicy")
+
 }
