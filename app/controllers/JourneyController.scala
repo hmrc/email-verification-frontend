@@ -132,11 +132,11 @@ class JourneyController @Inject() (
       passcode =>
         emailVerificationConnector.validatePasscode(journeyId, passcode).map {
           case ValidatePasscodeResponse.Complete(redirectUri) =>
-            val isLocal: Boolean = appConfig.platformFrontendHost.isEmpty
+            val allowRelativeUrls: Boolean = appConfig.allowRelativeUrls
 
             val policy = if (environment.mode == Mode.Test)
               UnsafePermitAll
-            else if (isLocal) UnsafePermitAll
+            else if (allowRelativeUrls) UnsafePermitAll
             else
               OnlyRelative | PermitAllOnDev(environment)
 
