@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
-  lazy val allowRelativeUrls: Boolean = configuration.getOptional[String]("platform.frontend.host").isEmpty
+  lazy val allowRelativeUrls: Boolean = configuration.getOptional[String]("platform.frontend.host").isEmpty //platform.frontend.host only specified in environments not application config
   private lazy val contactFormServiceIdentifier = "email-verification-frontend"
 
   lazy val isWelshEnabled: Boolean = configuration.getOptional[Boolean]("features.welsh-translation").getOrElse(true)
