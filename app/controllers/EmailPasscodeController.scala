@@ -23,7 +23,7 @@ import play.api.Logging
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl._
-import uk.gov.hmrc.play.bootstrap.binders.{RedirectUrl, UnsafePermitAll}
+import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, OnlyRelative, RedirectUrl}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.Views
 
@@ -35,13 +35,16 @@ class EmailPasscodeController @Inject() (
   views: Views,
   emailVerificationConnector: EmailVerificationConnector,
   mcc: MessagesControllerComponents,
-  errorHandler: ErrorHandler
+  errorHandler: ErrorHandler,
+  frontendAppConfig: FrontendAppConfig
 )(implicit ec: ExecutionContext, config: FrontendAppConfig)
   extends FrontendController(mcc) with Logging {
 
   def showEmailForm(continue: RedirectUrl): Action[AnyContent] = Action { implicit request =>
     Ok(views.emailForm(
-      EmailForm.form.fill(EmailForm("", continue.get(UnsafePermitAll).url)),
+      EmailForm.form.fill(EmailForm("", RedirectUrl(continue.unsafeValue)
+        .get(OnlyRelative | AbsoluteWithHostnameFromAllowlist(frontendAppConfig.ssoOutInternalDomains))
+        .url)),
       routes.EmailPasscodeController.submitEmailForm(),
       None
     ))
@@ -122,25 +125,33 @@ class EmailPasscodeController @Inject() (
 
   def showSuccess(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.success(
-      buttonUrl = continue.unsafeValue
+      buttonUrl = RedirectUrl(continue.unsafeValue)
+        .get(OnlyRelative | AbsoluteWithHostnameFromAllowlist(frontendAppConfig.ssoOutInternalDomains))
+        .url
     )))
   }
 
   def showPasscodeLimitReached(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.passcodeLimitReached(
-      buttonUrl = continue.unsafeValue
+      buttonUrl = RedirectUrl(continue.unsafeValue)
+        .get(OnlyRelative | AbsoluteWithHostnameFromAllowlist(frontendAppConfig.ssoOutInternalDomains))
+        .url
     )))
   }
 
   def showEmailLimitReached(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.emailLimitReached(
-      buttonUrl = continue.unsafeValue
+      buttonUrl = RedirectUrl(continue.unsafeValue)
+        .get(OnlyRelative | AbsoluteWithHostnameFromAllowlist(frontendAppConfig.ssoOutInternalDomains))
+        .url
     )))
   }
 
   def showEmailAlreadyVerified(continue: RedirectUrl): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(views.emailAlreadyVerified(
-      buttonUrl = continue.unsafeValue
+      buttonUrl = RedirectUrl(continue.unsafeValue)
+        .get(OnlyRelative | AbsoluteWithHostnameFromAllowlist(frontendAppConfig.ssoOutInternalDomains))
+        .url
     )))
   }
 

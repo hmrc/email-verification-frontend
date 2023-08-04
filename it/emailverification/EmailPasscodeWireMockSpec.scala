@@ -66,6 +66,20 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
     }
   }
 
+  "get /emailform with insecure continue url" should {
+    "return internal server error" in new Setup {
+      val response = await(
+        resourceRequest("/email-verification/emailform")
+          .addQueryStringParameters("continue" -> "http://www.google.com")
+          .withSession("sessionId" -> newSessionId)
+          .withFollowRedirects(false)
+          .get()
+      )
+
+      response.status shouldBe INTERNAL_SERVER_ERROR
+    }
+  }
+
   "post /emailform" should {
     "request a passcode email and show passcode entry form" in new Setup {
       expectRequestPasscodeToReturn(201)
@@ -224,6 +238,118 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
 
       response.status shouldBe 303
       response.header(HeaderNames.LOCATION).get should include("/passcodeLimitReached")
+    }
+
+    "get /success" should {
+      "show success page" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/success")
+            .addQueryStringParameters("continue" -> continueUrl)
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe OK
+        val html = Jsoup.parse(response.body)
+        html.title shouldBe messagesEn("success.heading")
+      }
+    }
+
+    "get /success with insecure continue url" should {
+      "return internal server error" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/success")
+            .addQueryStringParameters("continue" -> "http://www.google.com")
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe INTERNAL_SERVER_ERROR
+      }
+    }
+
+    "get /emailLimitReached" should {
+      "show email limit reached page" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/emailLimitReached")
+            .addQueryStringParameters("continue" -> continueUrl)
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe OK
+        val html = Jsoup.parse(response.body)
+        html.title shouldBe messagesEn("error.emailsLimitExceeded.heading")
+      }
+    }
+
+    "get /emailLimitReached  with insecure continue url" should {
+      "return internal server error" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/emailLimitReached")
+            .addQueryStringParameters("continue" -> "http://www.google.com")
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe INTERNAL_SERVER_ERROR
+      }
+    }
+
+    "get /emailAlreadyVerified" should {
+      "show email already verified page" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/emailAlreadyVerified")
+            .addQueryStringParameters("continue" -> continueUrl)
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe OK
+        val html = Jsoup.parse(response.body)
+        html.title shouldBe messagesEn("alreadyverified.heading")
+      }
+    }
+
+    "get /emailAlreadyVerified with insecure continue url" should {
+      "return internal server error" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/emailAlreadyVerified")
+            .addQueryStringParameters("continue" -> "http://www.google.com")
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe INTERNAL_SERVER_ERROR
+      }
+    }
+
+    "get /passcodeLimitReached" should {
+      "show password limit reached page" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/passcodeLimitReached")
+            .addQueryStringParameters("continue" -> continueUrl)
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe OK
+        val html = Jsoup.parse(response.body)
+        html.title shouldBe messagesEn("error.title")
+      }
+    }
+
+    "get /passcodeLimitReached with insecure continue url" should {
+      "return internal server error" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/passcodeLimitReached")
+            .addQueryStringParameters("continue" -> "http://www.google.com")
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe INTERNAL_SERVER_ERROR
+      }
     }
   }
 
