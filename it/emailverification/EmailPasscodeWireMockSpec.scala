@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import play.api.test.Injecting
 import uk.gov.hmrc.gg.test.WireMockSpec
 import uk.gov.hmrc.play.it.SessionCookieEncryptionSupport
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with SessionCookieEncryptionSupport with TableDrivenPropertyChecks {
 

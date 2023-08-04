@@ -1,14 +1,12 @@
 import uk.gov.hmrc.DefaultBuildSettings
 import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings}
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 lazy val microservice = Project("email-verification-frontend", file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(majorVersion := 0)
-  .settings(scalaSettings: _*)
-  .settings(publishingSettings: _*)
-  .settings(defaultSettings(): _*)
-  .settings(scalaVersion := "2.12.15")
+  .settings(scalaSettings *)
+  .settings(defaultSettings() *)
+  .settings(scalaVersion := "2.13.8")
   .settings(scalacOptions ++= Seq("-Xfatal-warnings", "-feature", "-unchecked"))
   .settings(
     libraryDependencies ++= AppDependencies(),
@@ -20,7 +18,7 @@ lazy val microservice = Project("email-verification-frontend", file("."))
     )
   )
   .configs(IntegrationTest)
-  .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
+  .settings(inConfig(IntegrationTest)(Defaults.itSettings) *)
   .settings(DefaultBuildSettings.integrationTestSettings())
   .settings(resolvers ++= Seq(
     Resolver.jcenterRepo
