@@ -46,5 +46,5 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   lazy val emailUrl: String = servicesConfig.baseUrl("email-verification")
 
-  lazy val ssoOutInternalDomains: Set[String] = servicesConfig.getString("portal.ssoOutInternalDomains").split(",").toSet
+  lazy val mdtpInternalDomains: Set[String] = servicesConfig.getString("mdtp.internalDomains").split(",").toSet
 }

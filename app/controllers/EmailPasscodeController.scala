@@ -42,7 +42,7 @@ class EmailPasscodeController @Inject() (
 
   private def safeUrl(url: String) = {
     RedirectUrl(url)
-      .get(OnlyRelative | AbsoluteWithHostnameFromAllowlist(frontendAppConfig.ssoOutInternalDomains))
+      .get(OnlyRelative | AbsoluteWithHostnameFromAllowlist(frontendAppConfig.mdtpInternalDomains))
       .url
   }
 
