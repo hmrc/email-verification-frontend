@@ -23,7 +23,7 @@ import play.api.Logging
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl._
-import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, OnlyRelative, RedirectUrl}
+import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, RedirectUrl}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.Views
 
@@ -42,7 +42,7 @@ class EmailPasscodeController @Inject() (
 
   private def safeUrl(url: String) = {
     RedirectUrl(url)
-      .get(OnlyRelative | AbsoluteWithHostnameFromAllowlist(frontendAppConfig.mdtpInternalDomains))
+      .get(OnlyRelative)
       .url
   }
 
