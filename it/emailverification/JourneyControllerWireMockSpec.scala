@@ -22,7 +22,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import play.api.libs.json.Json
 
 import java.util.UUID
-import scala.collection.JavaConverters.asScalaBufferConverter
+import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 class JourneyControllerWireMockSpec extends WireMockSpec {
 

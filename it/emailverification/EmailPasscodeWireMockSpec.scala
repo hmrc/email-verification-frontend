@@ -31,7 +31,7 @@ import play.api.test.Injecting
 import uk.gov.hmrc.gg.test.WireMockSpec
 import uk.gov.hmrc.play.it.SessionCookieEncryptionSupport
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with SessionCookieEncryptionSupport with TableDrivenPropertyChecks {
 
