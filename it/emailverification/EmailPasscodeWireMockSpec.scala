@@ -53,6 +53,22 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
     }
   }
 
+  "get /emailform with safe absolute continue url" should {
+    "show enter your email page" in new Setup {
+      val response = await(
+        resourceRequest("/email-verification/emailform")
+          .addQueryStringParameters("continue" -> "http://www.tax.service.gov.uk")
+          .withSession("sessionId" -> newSessionId)
+          .withFollowRedirects(false)
+          .get()
+      )
+
+      response.status shouldBe OK
+      val html = Jsoup.parse(response.body)
+      html.title shouldBe messagesEn("emailform.title")
+    }
+  }
+
   "get /emailform with invalid continue url" should {
     "return bad request error" in new Setup {
       val response = await(
@@ -255,6 +271,21 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
       }
     }
 
+    "get /success with safe absolute continue url" should {
+      "show success page" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/success")
+            .addQueryStringParameters("continue" -> "http://www.tax.service.gov.uk")
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe OK
+        val html = Jsoup.parse(response.body)
+        html.title shouldBe messagesEn("success.heading")
+      }
+    }
+
     "get /success with insecure continue url" should {
       "return internal server error" in new Setup {
         val response = await(
@@ -273,6 +304,21 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
         val response = await(
           resourceRequest("/email-verification/emailLimitReached")
             .addQueryStringParameters("continue" -> continueUrl)
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe OK
+        val html = Jsoup.parse(response.body)
+        html.title shouldBe messagesEn("error.emailsLimitExceeded.heading")
+      }
+    }
+
+    "get /emailLimitReached with safe absolute continue url" should {
+      "show email limit reached page" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/emailLimitReached")
+            .addQueryStringParameters("continue" -> "http://www.tax.service.gov.uk")
             .withSession("sessionId" -> newSessionId)
             .withFollowRedirects(false)
             .get()
@@ -311,6 +357,21 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
       }
     }
 
+    "get /emailAlreadyVerified with safe absolute continue url" should {
+      "show email already verified page" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/emailAlreadyVerified")
+            .addQueryStringParameters("continue" -> "http://www.tax.service.gov.uk")
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe OK
+        val html = Jsoup.parse(response.body)
+        html.title shouldBe messagesEn("alreadyverified.heading")
+      }
+    }
+
     "get /emailAlreadyVerified with insecure continue url" should {
       "return internal server error" in new Setup {
         val response = await(
@@ -329,6 +390,21 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
         val response = await(
           resourceRequest("/email-verification/passcodeLimitReached")
             .addQueryStringParameters("continue" -> continueUrl)
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe OK
+        val html = Jsoup.parse(response.body)
+        html.title shouldBe messagesEn("error.title")
+      }
+    }
+
+    "get /passcodeLimitReached with safe absolute continue url" should {
+      "show password limit reached page" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/passcodeLimitReached")
+            .addQueryStringParameters("continue" -> "http://www.tax.service.gov.uk")
             .withSession("sessionId" -> newSessionId)
             .withFollowRedirects(false)
             .get()
