@@ -7,7 +7,13 @@ lazy val microservice = Project("email-verification-frontend", file("."))
   .settings(scalaSettings *)
   .settings(defaultSettings() *)
   .settings(scalaVersion := "2.13.8")
-  .settings(scalacOptions ++= Seq("-Xfatal-warnings", "-feature", "-unchecked"))
+  .settings(scalacOptions ++= Seq(
+    "-Werror",
+    "-Wconf:src=routes/.*&cat=unused-imports:silent",
+    "-Wconf:src=views/.*html.*&cat=unused-imports:silent",
+    "-Wconf:src=routes/.*&msg=Auto-application to .* is deprecated:silent",
+    "-Wconf:src=routes/.*&msg=private val defaultPrefix in class Routes is never used:silent"
+  ))
   .settings(
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
@@ -26,7 +32,6 @@ lazy val microservice = Project("email-verification-frontend", file("."))
   .settings(PlayKeys.playDefaultPort := 9890)
   .settings(ScalariformSettings())
   .settings(ScoverageSettings())
-  .settings(SilencerSettings())
   .settings(routesImport := Seq(
     "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl",
     "controllers.Assets.Asset"

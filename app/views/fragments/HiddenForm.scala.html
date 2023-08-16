@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import views.html.Layout
 @import views.html.fragments.Heading
 @import views.html.fragments.ErrorSummary
@@ -22,7 +21,7 @@
 @import play.api.mvc.Call
 
 @this(formInput:FormInput)
-@(formData: Form[_])(implicit request: Request[_], messages: Messages, appConfig:FrontendAppConfig)
+@(formData: Form[_])(implicit messages: Messages)
 
 @formData.data.map(field=>formInput(
   formField = formData(field._1),
