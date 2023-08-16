@@ -4,8 +4,8 @@ import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings}
 lazy val microservice = Project("email-verification-frontend", file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(majorVersion := 0)
-  .settings(scalaSettings: _*)
-  .settings(defaultSettings(): _*)
+  .settings(scalaSettings *)
+  .settings(defaultSettings() *)
   .settings(scalaVersion := "2.13.8")
   .settings(scalacOptions ++= Seq("-Xfatal-warnings", "-feature", "-unchecked"))
   .settings(
@@ -18,7 +18,7 @@ lazy val microservice = Project("email-verification-frontend", file("."))
     )
   )
   .configs(IntegrationTest)
-  .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
+  .settings(inConfig(IntegrationTest)(Defaults.itSettings) *)
   .settings(DefaultBuildSettings.integrationTestSettings())
   .settings(resolvers ++= Seq(
     Resolver.jcenterRepo
