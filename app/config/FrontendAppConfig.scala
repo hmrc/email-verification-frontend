@@ -45,4 +45,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val reportAProblemNonJSUrl: String = s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
   lazy val emailUrl: String = servicesConfig.baseUrl("email-verification")
+
+  lazy val mdtpInternalDomains: Set[String] = servicesConfig.getString("mdtp.internalDomains").split(",").toSet
 }
