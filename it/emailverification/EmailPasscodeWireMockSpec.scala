@@ -17,9 +17,9 @@
 package emailverification
 
 import java.util.UUID
-
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
+import config.FrontendAppConfig
 import org.jsoup.Jsoup
 import org.scalatest.Assertion
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -38,11 +38,35 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
   val messagesEn = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
   val messagesCy = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("cy")))
 
-  "get /emailform" should {
+  val mdtpInternalDomains = app.injector.instanceOf[FrontendAppConfig].mdtpInternalDomains
+
+  private def random[T](s: Set[T]): T = {
+    val n = util.Random.nextInt(s.size)
+    s.iterator.drop(n).next()
+  }
+
+  private def continueUrlFromAllowList = random(mdtpInternalDomains)
+
+  "get /emailform with relative continue url" should {
     "show enter your email page" in new Setup {
       val response = await(
         resourceRequest("/email-verification/emailform")
           .addQueryStringParameters("continue" -> continueUrl)
+          .withSession("sessionId" -> newSessionId)
+          .withFollowRedirects(false)
+          .get()
+      )
+      response.status shouldBe OK
+      val html = Jsoup.parse(response.body)
+      html.title shouldBe messagesEn("emailform.title")
+    }
+  }
+
+  "get /emailform with continue url in allow list" should {
+    "show enter your email page" in new Setup {
+      val response = await(
+        resourceRequest("/email-verification/emailform")
+          .addQueryStringParameters("continue" -> s"http://$continueUrlFromAllowList")
           .withSession("sessionId" -> newSessionId)
           .withFollowRedirects(false)
           .get()
@@ -240,11 +264,26 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
       response.header(HeaderNames.LOCATION).get should include("/passcodeLimitReached")
     }
 
-    "get /success" should {
+    "get /success with relative continue url" should {
       "show success page" in new Setup {
         val response = await(
           resourceRequest("/email-verification/success")
             .addQueryStringParameters("continue" -> continueUrl)
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe OK
+        val html = Jsoup.parse(response.body)
+        html.title shouldBe messagesEn("success.heading")
+      }
+    }
+
+    "get /success with continue url in allow list" should {
+      "show success page" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/success")
+            .addQueryStringParameters("continue" -> s"http://$continueUrlFromAllowList")
             .withSession("sessionId" -> newSessionId)
             .withFollowRedirects(false)
             .get()
@@ -268,11 +307,26 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
       }
     }
 
-    "get /emailLimitReached" should {
+    "get /emailLimitReached with relative url" should {
       "show email limit reached page" in new Setup {
         val response = await(
           resourceRequest("/email-verification/emailLimitReached")
             .addQueryStringParameters("continue" -> continueUrl)
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe OK
+        val html = Jsoup.parse(response.body)
+        html.title shouldBe messagesEn("error.emailsLimitExceeded.heading")
+      }
+    }
+
+    "get /emailLimitReached with continue url in allow list" should {
+      "show email limit reached page" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/emailLimitReached")
+            .addQueryStringParameters("continue" -> s"http://$continueUrlFromAllowList")
             .withSession("sessionId" -> newSessionId)
             .withFollowRedirects(false)
             .get()
@@ -296,11 +350,26 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
       }
     }
 
-    "get /emailAlreadyVerified" should {
+    "get /emailAlreadyVerified with relative url" should {
       "show email already verified page" in new Setup {
         val response = await(
           resourceRequest("/email-verification/emailAlreadyVerified")
             .addQueryStringParameters("continue" -> continueUrl)
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe OK
+        val html = Jsoup.parse(response.body)
+        html.title shouldBe messagesEn("alreadyverified.heading")
+      }
+    }
+
+    "get /emailAlreadyVerified with continue url in allow list" should {
+      "show email already verified page" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/emailAlreadyVerified")
+            .addQueryStringParameters("continue" -> s"http://$continueUrlFromAllowList")
             .withSession("sessionId" -> newSessionId)
             .withFollowRedirects(false)
             .get()
@@ -324,11 +393,26 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
       }
     }
 
-    "get /passcodeLimitReached" should {
+    "get /passcodeLimitReached with relative url" should {
       "show password limit reached page" in new Setup {
         val response = await(
           resourceRequest("/email-verification/passcodeLimitReached")
             .addQueryStringParameters("continue" -> continueUrl)
+            .withSession("sessionId" -> newSessionId)
+            .withFollowRedirects(false)
+            .get()
+        )
+        response.status shouldBe OK
+        val html = Jsoup.parse(response.body)
+        html.title shouldBe messagesEn("error.title")
+      }
+    }
+
+    "get /passcodeLimitReached with continue url in allow list" should {
+      "show password limit reached page" in new Setup {
+        val response = await(
+          resourceRequest("/email-verification/passcodeLimitReached")
+            .addQueryStringParameters("continue" -> s"http://$continueUrlFromAllowList")
             .withSession("sessionId" -> newSessionId)
             .withFollowRedirects(false)
             .get()
