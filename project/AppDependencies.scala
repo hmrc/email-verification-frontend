@@ -3,7 +3,7 @@ import play.sbt.PlayImport.ws
 
 object AppDependencies {
 
-  private val bootstrapVersion = "7.1.0"
+  private val bootstrapVersion = "7.21.0"
 
   private val compile = Seq(
     ws,
