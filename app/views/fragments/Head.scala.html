@@ -18,7 +18,7 @@
 
 @this()
 
-@(headBlock: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+@(headBlock: Option[Html] = None)(implicit request: Request[_])
 
 @headBlock
 <div @{CSPNonce.attr} class="gtm-tag" data-gtag="virtualUrl:@{request.path}"></div>
