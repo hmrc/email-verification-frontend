@@ -18,11 +18,9 @@ package controllers
 
 import config.{ErrorHandler, FrontendAppConfig}
 import connectors.{EmailVerificationConnector, ResendPasscodeResponse, SubmitEmailResponse, ValidatePasscodeResponse}
-import models.EmailForm
-import play.api.{Environment, Mode}
-import play.api.data.Forms.text
-import play.api.data.{Form, Forms}
+import models.{EmailForm, PasscodeForm}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.{Environment, Mode}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
 import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, PermitAllOnDev, RedirectUrl, UnsafePermitAll}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -81,7 +79,7 @@ class JourneyController @Inject() (
     emailVerificationConnector.getJourney(journeyId).map {
       case Some(journey) =>
         Ok(views.hybridPasscodeForm(
-          passcodeForm,
+          PasscodeForm.singleForm,
           journeyId,
           continueUrl,
           origin,
@@ -114,7 +112,7 @@ class JourneyController @Inject() (
   }
 
   def submitPasscode(journeyId: String, continueUrl: RedirectUrl, origin: String): Action[AnyContent] = Action.async { implicit request =>
-    passcodeForm.bindFromRequest().fold(
+    PasscodeForm.singleForm.bindFromRequest().fold(
       formWithErrors =>
         emailVerificationConnector.getJourney(journeyId).map {
           case Some(journey) =>
@@ -147,7 +145,7 @@ class JourneyController @Inject() (
             Redirect(validated)
           case ValidatePasscodeResponse.IncorrectPasscode(journey) =>
             BadRequest(views.hybridPasscodeForm(
-              passcodeForm.withError("passcode", "passcodeform.error.wrongPasscode"),
+              PasscodeForm.singleForm.withError("passcode", "passcodeform.error.wrongPasscode"),
               journeyId,
               continueUrl,
               origin,
@@ -164,8 +162,4 @@ class JourneyController @Inject() (
         }
     )
   }
-
-  private def passcodeForm: Form[String] = Form(Forms.single(
-    "passcode" -> text.verifying("passcodeform.error.invalidFormat", _.matches("^[BCDFGHJKLMNPQRSTVWXYZ]{6}$"))
-  ))
 }
