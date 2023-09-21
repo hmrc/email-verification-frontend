@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import views.html.Layout
 @import views.html.fragments.Heading
 @import views.html.fragments.ErrorSummary
@@ -37,7 +36,7 @@
         origin: String,
         enterEmailUrl: String,
         journey: Journey,
-)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+)(implicit request: Request[_], messages: Messages)
 
 @layout(
     pageTitle = Some(messages("passcodeform.title")),

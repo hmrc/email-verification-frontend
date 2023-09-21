@@ -26,10 +26,8 @@ import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.gg.test.WireMockSpec
 
 class VerifyEmailWireMockSpec extends WireMockSpec with Injecting {
-
-  val continueUrl = "/continue-url"
-
-  def jsonToken(token: String) = Json.obj(
+  private val continueUrl = "/continue-url"
+  private def jsonToken(token: String) = Json.obj(
     "token" -> token,
     "continueUrl" -> continueUrl
   ).toString

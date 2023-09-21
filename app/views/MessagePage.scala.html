@@ -14,12 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import views.html.Layout
 @import views.html.fragments.Heading
 
 @this(layout: Layout, heading: Heading)
-@(title:String, headingText:String, messageText:String, buttonText:String="", buttonUrl:String="")(implicit request: Request[_], messages: Messages, appConfig:FrontendAppConfig)
+@(title:String, headingText:String, messageText:String, buttonText:String="", buttonUrl:String="")(implicit request: Request[_], messages: Messages)
 
 @mainContent = {
   @heading(headingText)

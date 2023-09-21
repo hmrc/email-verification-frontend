@@ -23,4 +23,3 @@ POST        /journey/:journeyId/resend-passcode        controllers.JourneyContro
 
 GET         /journey/:journeyId/passcode               controllers.JourneyController.enterPasscode(journeyId, continueUrl: RedirectUrl, origin)
 POST        /journey/:journeyId/passcode               controllers.JourneyController.submitPasscode(journeyId, continueUrl: RedirectUrl, origin)
-

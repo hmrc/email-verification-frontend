@@ -16,14 +16,12 @@
 
 package views
 
-import config.FrontendAppConfig
-
-import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Request
 import play.twirl.api.Html
 
+import javax.inject.Inject
 import scala.util.{Failure, Success, Try}
 
 class Views @Inject() (
@@ -38,8 +36,7 @@ class Views @Inject() (
   val emailLimitReached: views.html.EmailLimitReached,
   val passcodeLimitReached: views.html.PasscodeLimitReached
 ) {
-
-  def render(view: String, form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig): Try[Html] = {
+  def render(view: String, form: Form[_])(implicit request: Request[_], messages: Messages): Try[Html] = {
     view match {
       case "passcodeForm" =>
         Success(passcodeForm(form))
@@ -47,5 +44,4 @@ class Views @Inject() (
         Failure(new IllegalArgumentException(s"Invalid view name: $view"))
     }
   }
-
 }

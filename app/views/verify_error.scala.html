@@ -14,11 +14,9 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
-
 @this(errorTemplate: MessagePage)
 
-@()(implicit request: Request[_], MESSAGES: Messages, config:FrontendAppConfig)
+@()(implicit request: Request[_], MESSAGES: Messages)
 
 @errorTemplate(
     title = Messages("verify-email-address.error.heading"),

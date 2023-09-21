@@ -14,12 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import views.html.MessagePage
 
 @this(messagePage:MessagePage)
 
-@(buttonUrl: String)(implicit request: Request[_], messages: Messages, appConfig:FrontendAppConfig)
+@(buttonUrl: String)(implicit request: Request[_], messages: Messages)
 
 @messagePage(
   title       = messages("error.emailsLimitExceeded.heading"),

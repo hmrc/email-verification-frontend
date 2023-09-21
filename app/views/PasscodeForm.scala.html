@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import views.html.Layout
 @import views.html.fragments.Heading
 @import views.html.fragments.ErrorSummary
@@ -22,14 +21,15 @@
 @import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 
 @this(
-        form: FormWithCSRF,
-        layout: Layout,
-        heading: Heading,
-        errorSummary: ErrorSummary,
-        formInput: FormInput
+  form: FormWithCSRF,
+  layout: Layout,
+  heading: Heading,
+  errorSummary: ErrorSummary,
+  formInput: FormInput,
+  govukInput: GovukInput
 )
 
-@(formData: Form[_])(implicit request: Request[_], messages: Messages, appConfig:FrontendAppConfig)
+@(formData: Form[_])(implicit request: Request[_], messages: Messages)
 
 @line2Complete = {
   @form(controllers.routes.EmailPasscodeController.submitEmailForm()) {
@@ -48,42 +48,38 @@
   }
 }
 
-
-@mainContent = {
+@layout(pageTitle = Some(messages("passcodeform.title"))){
   @errorSummary(formData)
   @heading("passcodeform.heading")
 
   <p class="govuk-body">
     @messages("passcodeform.body")
-    <strong id="email-address">
-      @formData("email").value.getOrElse("")
-    </strong>
+    <strong id="email-address">@formData("email").value</strong>
   </p>
 
+  <p class="govuk-body">@messages("passcodeform.newtabhelp")</p>
+
   @form(controllers.routes.EmailPasscodeController.submitPasscodeForm()) {
-    @formInput(formData("passcode"),
-      hint = messages("passcodeform.input.hint")
+    @formInput(
+      formData("passcode"),
+      label = "passcodeForm.input.label",
+      hint  = messages("passcodeform.input.hint")
     )
     @formInput(formData("continue"), inputType="hidden")
     @formInput(formData("email"), inputType="hidden")
-
-  <p class="govuk-body">@messages("passcodeform.newtabhelp")</p>
+  }
 
   <div class="form-group">
     <button class="govuk-button">@messages("passcodeform.continuebutton")</button>
   </div>
+
+  <details class="govuk-details">
+    <summary class="govuk-details__summary">
+      <span class="govuk-details__summary-text">@messages("passcodeform.emailnotreceived.summary")</span>
+    </summary>
+    <div class="govuk-details__text">
+      <p class="govuk-body">@messages("passcodeform.emailnotrecieved.line1")</p>
+      <p class="govuk-body">@line2Complete</p>
+    </div>
+  </details>
 }
-
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">@messages("passcodeform.emailnotreceived.summary")</span>
-  </summary>
-  <div class="govuk-details__text">
-    <p class="govuk-body">@messages("passcodeform.emailnotrecieved.line1")</p>
-    <p class="govuk-body">@line2Complete</p>
-  </div>
-</details>
-
-}
-
-@layout(pageTitle = Some(messages("passcodeform.title")))(mainContent)
