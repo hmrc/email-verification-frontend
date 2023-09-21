@@ -16,14 +16,15 @@
 
 package emailverification
 
-import java.util.UUID
-
+import java.util.{Base64, UUID}
 import com.github.tomakehurst.wiremock.client.WireMock._
 import play.api.http.HeaderNames
 import play.api.libs.json.Json
 import play.api.test.Injecting
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.gg.test.WireMockSpec
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalatest.prop.TableDrivenPropertyChecks._
 
 class VerifyEmailWireMockSpec extends WireMockSpec with Injecting {
 
@@ -36,28 +37,38 @@ class VerifyEmailWireMockSpec extends WireMockSpec with Injecting {
 
   def encryptAndEncode(value: String) = new String(inject[ApplicationCrypto].QueryParameterCrypto.encrypt(PlainText(value)).toBase64)
 
+  def encryptAndEncodeWithUrlEncoder(value: String) = new String(Base64.getUrlEncoder.withoutPadding().encode(inject[ApplicationCrypto].QueryParameterCrypto.encrypt(PlainText(value)).value.getBytes("UTF-8")))
+
   "a verification link with a valid encrypted payload" should {
-    "redirect to the original continue URL" in {
-      val token = UUID.randomUUID().toString
-      val encryptedJsonToken = encryptAndEncode(jsonToken(token))
 
-      stubFor(
-        post(
-          urlEqualTo("/email-verification/verified-email-addresses"))
-          .willReturn(created())
-      )
+    val encodedStrings = Table[String, String => String, String](
+      ("counter", "encoder", "token"),
+      ("1", encryptAndEncode, Gen.listOfN(16, Arbitrary.arbChar.arbitrary).map(_.mkString).sample.get),
+      ("2", encryptAndEncodeWithUrlEncoder, Gen.listOfN(16, Arbitrary.arbChar.arbitrary).map(_.mkString).sample.get)
+    )
 
-      val response = await(
-        resourceRequest("/email-verification/verify")
-          .addQueryStringParameters("token" -> encryptedJsonToken)
-          .withFollowRedirects(false)
-          .get()
-      )
+    forAll(encodedStrings) { (counter, encoder, token) =>
+      s"redirect to the original continue URL $counter" in {
+        val encryptedJsonToken = encoder(jsonToken(token))
 
-      response.status shouldBe SEE_OTHER
-      response.header(HeaderNames.LOCATION) should contain("/continue-url")
+        stubFor(
+          post(
+            urlEqualTo("/email-verification/verified-email-addresses"))
+            .willReturn(created())
+        )
 
-      verify(postRequestedFor(urlEqualTo("/email-verification/verified-email-addresses")))
+        val response = await(
+          resourceRequest("/email-verification/verify")
+            .addQueryStringParameters("token" -> encryptedJsonToken)
+            .withFollowRedirects(false)
+            .get()
+        )
+
+        response.status shouldBe SEE_OTHER
+        response.header(HeaderNames.LOCATION) should contain("/continue-url")
+
+        verify(postRequestedFor(urlEqualTo("/email-verification/verified-email-addresses")))
+      }
     }
   }
 
