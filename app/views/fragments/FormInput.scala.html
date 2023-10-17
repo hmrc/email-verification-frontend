@@ -41,7 +41,7 @@
         value = formField.value,
         label = Label(
           isPageHeading = false,
-          classes = "govuk-label--l",
+          classes = "govuk-label",
           content = Text(messages(label))
         ),
         hint = if(hint.isEmpty) None else Some(Hint(content=Text(hint))),

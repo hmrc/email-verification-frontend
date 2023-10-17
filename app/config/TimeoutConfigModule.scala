@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,18 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import views.html.Layout
-@import views.html.fragments.Heading
-@import views.html.fragments.ErrorSummary
-@import views.html.fragments.FormInput
-@import play.api.mvc.Call
+package config
 
-@this(formInput:FormInput)
-@(formData: Form[_])(implicit messages: Messages)
+import com.google.inject.{AbstractModule, Provides, Singleton}
+import play.api.{Configuration, Environment}
 
-@formData.data.map(field=>formInput(
-  formField = formData(field._1),
-  inputType = "hidden"
-))
+class TimeoutConfigModule(environment: Environment, configuration: Configuration) extends AbstractModule {
+  @Provides
+  @Singleton
+  def timeoutConfig(frontendAppConfig: FrontendAppConfig): TimeoutConfig = frontendAppConfig.timeoutConfig
+
+}

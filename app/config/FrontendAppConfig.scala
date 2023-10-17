@@ -16,13 +16,14 @@
 
 package config
 
-import javax.inject.{Inject, Singleton}
-import play.api.Configuration
 import play.api.i18n.Lang
+import play.api.{Configuration, Environment, Mode}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import javax.inject.{Inject, Singleton}
+
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
+class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig, environment: Environment) {
 
   lazy val allowRelativeUrls: Boolean = configuration.getOptional[String]("platform.frontend.host").isEmpty //platform.frontend.host only specified in environments not application config
   private lazy val contactFormServiceIdentifier = "email-verification-frontend"
@@ -47,4 +48,20 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val emailUrl: String = servicesConfig.baseUrl("email-verification")
 
   lazy val mdtpInternalDomains: Set[String] = servicesConfig.getString("mdtp.internalDomains").split(",").toSet
+  val basGatewayParentUrl: String = if (environment.mode != Mode.Prod) {
+    "http://localhost:9553"
+  } else {
+    ""
+  }
+
+  lazy val timeoutConfig: TimeoutConfig = {
+    TimeoutConfig(
+      timeoutSeconds = configuration.get[Int]("timeoutDialog.timeout"),
+      countdownSecs  = configuration.get[Int]("timeoutDialog.countdown"),
+      signOutUrl     = s"${basGatewayParentUrl}/bas-gateway/sign-out-without-state",
+      signInUrl      = s"$basGatewayParentUrl/bas-gateway/sign-in"
+    )
+  }
 }
+
+case class TimeoutConfig(timeoutSeconds: Int, countdownSecs: Int, signOutUrl: String, signInUrl: String)

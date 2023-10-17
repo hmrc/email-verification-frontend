@@ -18,4 +18,4 @@
 
 @(key: String)(implicit messagesProvider: MessagesProvider)
 
-@underlying(PageHeading(Messages(key)))
+@underlying(PageHeading(Messages(key),headingClasses = Some("govuk-heading-l")))

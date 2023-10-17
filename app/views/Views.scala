@@ -30,7 +30,7 @@ class Views @Inject() (
   val emailForm: views.html.EmailForm,
   val passcodeForm: views.html.PasscodeForm,
   val hybridPasscodeForm: views.html.HybridPasscodeForm,
-
+  val timeoutPage: views.html.TimeoutPage,
   val success: views.html.Success,
   val emailAlreadyVerified: views.html.EmailAlreadyVerified,
   val emailLimitReached: views.html.EmailLimitReached,
