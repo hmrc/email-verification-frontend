@@ -18,13 +18,15 @@ package controllers
 
 import connectors.EmailVerificationConnector
 import crypto.Decrypter
+
 import javax.inject.{Inject, Singleton}
 import java.time.ZonedDateTime
 import play.api.libs.json.{Json, Reads}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.crypto.Crypted._
+import uk.gov.hmrc.crypto.Crypted
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import java.util.Base64
 import scala.concurrent.{ExecutionContext, Future}
 
 case class Token(token: String, continueUrl: String)
@@ -43,9 +45,17 @@ class EmailVerificationController @Inject() (
 
   def dateTimeProvider: ZonedDateTime = ZonedDateTime.now()
 
+  private def decodeToken(token: String): Array[Byte] = {
+    if (token.contains('+') || token.contains('/') || token.contains('=')) {
+      Base64.getDecoder.decode(token.getBytes("UTF-8"))
+    } else {
+      Base64.getUrlDecoder.decode(token.getBytes("UTF-8"))
+    }
+  }
+
   def verify(token: String): Action[AnyContent] = Action.async { implicit request =>
     val redirectToContinue = for {
-      decryptedToken <- Future.fromTry(decrypter.decryptAs[Token](fromBase64(token)))
+      decryptedToken <- Future.fromTry(decrypter.decryptAs[Token](Crypted(new String(decodeToken(token)))))
       _ <- emailVerificationConnector.verifyEmailAddress(decryptedToken.token)
     } yield Redirect(decryptedToken.continueUrl)
 
