@@ -53,8 +53,8 @@
     @timeoutDialogHelper(
         timeout = Some(timeoutConfig.timeoutSeconds),
         countdown = Some(timeoutConfig.countdownSecs),
-        keepAliveUrl = Some(routes.KeepAliveController.keepAlive(journeyId).url),
-        signOutUrl = s"${timeoutConfig.signOutUrl}?continue=/email-verification/timeout/$journeyId")
+        keepAliveUrl = Some(routes.KeepAliveController.keepAlive().url),
+        signOutUrl = s"${timeoutConfig.signOutUrl}?continue=${routes.KeepAliveController.timeout(journeyId,redirectUrl, origin).url}")
 }
 
 @layout(

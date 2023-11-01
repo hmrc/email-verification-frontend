@@ -19,14 +19,16 @@
 @this(layout: Layout, timeoutConfig: TimeoutConfig)
 
 @(
-        nextPageLink: String,
+        returnPageLink: String,
         journeyId: String,
         journey: Journey
 
 )(implicit request: Request[_], messages: Messages)
 
 @mainTitle = @{messages("timeout-page.title")}
-
+@signInUrlWithContinue = @{
+   s"${timeoutConfig.signInUrl}?continue=${returnPageLink}"
+}
 @layout(
     pageTitle = Some(mainTitle),
     deskproServiceName = Some(journey.deskproServiceName),
@@ -36,7 +38,7 @@
         <p class="govuk-body">@{messages("timeout-page.p1")}</p>
 
         <div style = "display: block; margin-bottom: 60px">
-            <a id = "continue-button" role="button" draggable="false" class="govuk-button" data-module="govuk-button" href="@timeoutConfig.signInUrl">@{messages("timeout-page.button")}</a>
+            <a id = "continue-button" role="button" draggable="false" class="govuk-button" data-module="govuk-button" href="@signInUrlWithContinue">@{messages("timeout-page.button")}</a>
         </div>
 
         <p class="govuk-body">@Html(messages("timeout-page.p2"))</p>

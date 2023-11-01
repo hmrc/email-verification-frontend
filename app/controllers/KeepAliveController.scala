@@ -18,6 +18,7 @@ package controllers
 
 import connectors.EmailVerificationConnector
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.Views
 
@@ -31,11 +32,11 @@ class KeepAliveController @Inject() (
 )(implicit ec: ExecutionContext)
   extends FrontendController(mcc) {
 
-  def keepAlive(journeyId: String): Action[AnyContent] = Action(NoContent)
+  def keepAlive(): Action[AnyContent] = Action(NoContent)
 
-  def timeout(journeyId: String): Action[AnyContent] = Action.async { implicit request =>
+  def timeout(journeyId: String, continueUrl: RedirectUrl, origin: String): Action[AnyContent] = Action.async { implicit request =>
     emailVerificationConnector.getJourney(journeyId).map {
-      case Some(journey) => Ok(views.timeoutPage(s"/timeout/$journeyId", journeyId, journey))
+      case Some(journey) => Ok(views.timeoutPage(controllers.routes.JourneyController.enterPasscode(journeyId, continueUrl, origin).url, journeyId, journey))
       case None          => NotFound
 
     }
