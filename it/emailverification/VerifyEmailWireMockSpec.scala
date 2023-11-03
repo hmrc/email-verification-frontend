@@ -27,10 +27,8 @@ import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.prop.TableDrivenPropertyChecks._
 
 class VerifyEmailWireMockSpec extends WireMockSpec with Injecting {
-
-  val continueUrl = "/continue-url"
-
-  def jsonToken(token: String) = Json.obj(
+  private val continueUrl = "/continue-url"
+  private def jsonToken(token: String) = Json.obj(
     "token" -> token,
     "continueUrl" -> continueUrl
   ).toString

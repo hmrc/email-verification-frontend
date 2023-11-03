@@ -37,7 +37,7 @@ class EmailPasscodeController @Inject() (
   mcc: MessagesControllerComponents,
   errorHandler: ErrorHandler,
   frontendAppConfig: FrontendAppConfig
-)(implicit ec: ExecutionContext, config: FrontendAppConfig)
+)(implicit ec: ExecutionContext)
   extends FrontendController(mcc) with Logging {
 
   private def safeUrl(url: String) = {
@@ -70,22 +70,18 @@ class EmailPasscodeController @Inject() (
             PasscodeForm.form.fill(PasscodeForm(emailForm.email, "", emailForm.continue))
           ))
         }.recoverWith {
-          case e: EmailPasscodeException.MissingSessionId => {
+          case _: EmailPasscodeException.MissingSessionId =>
             logger.warn(s"Missing sessionId. $forwardedFor")
             Future.successful(Unauthorized(errorHandler.internalServerErrorTemplate))
-          }
-          case e: EmailPasscodeException.MaxNewEmailsExceeded => {
+          case _: EmailPasscodeException.MaxNewEmailsExceeded =>
             logger.info(s"Max permitted number of emails reached. $forwardedFor")
             Future.successful(Redirect(routes.EmailPasscodeController.showEmailLimitReached(RedirectUrl(emailForm.continue))))
-          }
-          case e: EmailPasscodeException.EmailAlreadyVerified => {
+          case _: EmailPasscodeException.EmailAlreadyVerified =>
             logger.info(s"Email $obfuscatedEmailAddress already verified. $forwardedFor")
             Future.successful(Redirect(routes.EmailPasscodeController.showEmailAlreadyVerified(RedirectUrl(emailForm.continue))))
-          }
-          case e: EmailPasscodeException.EmailVerificationServerError => {
+          case e: EmailPasscodeException.EmailVerificationServerError =>
             logger.error(s"Request to email-verification to send passcode to email $obfuscatedEmailAddress failed. $forwardedFor", e)
             Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-          }
         }
       }
     )
@@ -103,25 +99,20 @@ class EmailPasscodeController @Inject() (
 
           Redirect(routes.EmailPasscodeController.showSuccess(RedirectUrl(passcodeForm.continue)))
         }.recoverWith {
-          case e: EmailPasscodeException.MissingSessionId => {
+          case _: EmailPasscodeException.MissingSessionId =>
             logger.warn(s"Missing sessionId. $forwardedFor")
             Future.successful(Unauthorized(errorHandler.internalServerErrorTemplate))
-          }
-          case e: EmailPasscodeException.IncorrectPasscode => {
+          case _: EmailPasscodeException.IncorrectPasscode =>
             logger.info(s"Passcode supplied for email $obfuscatedEmailAddress was incorrect. $forwardedFor")
             Future.successful(BadRequest(views.passcodeForm(PasscodeForm.form
               .fill(passcodeForm.copy(passcode = ""))
               .withError("passcode", request.messages("passcodeform.error.wrongPasscode")))))
-          }
-          case e: EmailPasscodeException.MaxPasscodeAttemptsExceeded => {
+          case _: EmailPasscodeException.MaxPasscodeAttemptsExceeded =>
             logger.info(s"Max permitted number of passcode attempts reached. $forwardedFor")
             Future.successful(Redirect(routes.EmailPasscodeController.showPasscodeLimitReached(RedirectUrl(passcodeForm.continue))))
-          }
-          case e: EmailPasscodeException.EmailVerificationServerError => {
+          case e: EmailPasscodeException.EmailVerificationServerError =>
             logger.error(s"Request to email-verification to verify passcode for email $obfuscatedEmailAddress failed. $forwardedFor", e)
             Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-          }
-
         }
       }
     )

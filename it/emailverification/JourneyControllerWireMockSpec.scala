@@ -263,7 +263,7 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
 
         result.status shouldBe OK
         val html = Jsoup.parse(result.body)
-        html.title shouldBe "Enter the code to confirm the email address"
+        html.title shouldBe "Enter code to confirm your email address"
 
         html.selectFirst(".hmrc-header__service-name").text shouldBe "Service Name"
         html.selectFirst(".govuk-back-link").attr("href") shouldBe "/back"
@@ -334,7 +334,7 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
         result.status shouldBe BAD_REQUEST
 
         val html = Jsoup.parse(result.body)
-        html.title shouldBe "Enter the code to confirm the email address"
+        html.title shouldBe "Enter code to confirm your email address"
         html.getElementById("passcode-error").text() shouldBe "Error: Enter a valid security code."
       }
     }
@@ -363,7 +363,7 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
         result.status shouldBe BAD_REQUEST
 
         val html = Jsoup.parse(result.body)
-        html.title shouldBe "Enter the code to confirm the email address"
+        html.title shouldBe "Enter code to confirm your email address"
         html.getElementById("passcode-error").text() shouldBe "Error: Enter a valid security code."
       }
     }

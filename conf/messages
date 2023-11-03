@@ -11,11 +11,13 @@ emailform.heading=What is your email address?
 emailform.body=To confirm it is your email address we will send you a code.
 emailform.continuebutton=Continue
 emailform.error.invalidEmailFormat=Enter an email address in the correct format, like name@example.com
-passcodeform.title=Enter the code to confirm the email address
-passcodeform.heading=Enter the code to confirm the email address
-passcodeform.body=We have sent a code to:
-passcodeform.input.label=
-passcodeform.input.hint=For example, DNCLRK
+
+passcodeform.title       = Enter code to confirm your email address
+passcodeform.heading     = Enter code to confirm your email address
+passcodeform.body        = We have sent a code to:
+passcodeform.input.label = Confirmation code
+passcodeform.input.hint  = For example, DNCLRK
+
 passcodeform.newtabhelp=If you use a browser to access your email, you may need to open a new window or tab to see the code.
 passcodeform.emailnotreceived.summary=I have not received the email
 passcodeform.emailnotrecieved.line1=The email may take a few minutes to arrive. Its subject line is: ‘Your email confirmation code’.
@@ -23,9 +25,10 @@ passcodeform.emailnotrecieved.line2=Check your spam or junk folder. If it still 
 passcodeform.emailnotrecieved.line2.or=or
 passcodeform.emailnotrecieved.line2.anothercode=request a new code
 passcodeform.emailnotrecieved.line2.anotheremail=another email address
-passcodeform.continuebutton=Continue
+passcodeform.continuebutton=Confirm
 passcodeform.error.invalidFormat=Enter a valid security code.
 passcodeform.error.wrongPasscode=Enter a valid security code.
+
 success.heading=Email address confirmed
 success.label=This will enable us to help you get the most from this service.
 success.continuebutton=Continue
@@ -38,3 +41,16 @@ error.emailsLimitExceeded.heading=Max email attempts exceeded
 error.emailsLimitExceeded.message=You''ve exceeded the maximum permitted number of email attempts
 error.passcodesLimitExceeded.heading=Max passcode attempts exceeded
 error.passcodesLimitExceeded.message=You''ve exceeded the maximum permitted number of passcode attempts
+
+timeout-dialog.title=You will be timed out soon
+timeout-dialog.p1=You will be timed out if you do not respond in
+timeout-dialog.button=Stay signed in
+timeout-dialog.minutes=minutes
+timeout-dialog.minute=minute
+timeout-dialog.seconds=seconds
+timeout-dialog.second=second
+
+timeout-page.title=You have been timed out
+timeout-page.p1=We have timed you out because you did not do anything for 15 minutes. We did this to keep your information secure.
+timeout-page.button=Start again
+timeout-page.p2=You can <a href="https://www.gov.uk">return to GOV.UK</a> if you don''t want to start again.
