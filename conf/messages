@@ -11,6 +11,7 @@ emailform.heading=What is your email address?
 emailform.body=To confirm it is your email address we will send you a code.
 emailform.continuebutton=Continue
 emailform.error.invalidEmailFormat=Enter an email address in the correct format, like name@example.com
+emailform.input.label=Email address
 
 passcodeform.title       = Enter code to confirm your email address
 passcodeform.heading     = Enter code to confirm your email address
