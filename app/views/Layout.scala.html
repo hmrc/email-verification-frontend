@@ -26,8 +26,7 @@
         backLink: GovukBackLink,
         reportTechnicalIssue: HmrcReportTechnicalIssue,
         hmrcStandardHeader: HmrcStandardHeader,
-        hmrcStandardFooter: HmrcStandardFooter,
-        timeout: HmrcTimeoutDialog
+        hmrcStandardFooter: HmrcStandardFooter
 )
 @(
         pageTitle: Option[String] = None,
@@ -52,7 +51,6 @@
     ) {
         @contentBlock
         @reportTechnicalIssue(ReportTechnicalIssue(deskproServiceName.getOrElse("email-verification-frontend"), language = if(messages.lang.language == "en") En else Cy))
-        @timeout(TimeoutDialog(language = Some(messages.lang.language)))
     }
 
 
