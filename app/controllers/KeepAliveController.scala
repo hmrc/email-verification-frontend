@@ -36,7 +36,7 @@ class KeepAliveController @Inject() (
 
   def timeout(journeyId: String, continueUrl: RedirectUrl, origin: String): Action[AnyContent] = Action.async { implicit request =>
     emailVerificationConnector.getJourney(journeyId).map {
-      case Some(journey) => Ok(views.timeoutPage(controllers.routes.JourneyController.enterPasscode(journeyId, continueUrl, origin).url, journeyId, journey))
+      case Some(journey) => Ok(views.timeoutPage(controllers.routes.JourneyController.enterPasscode(journeyId, continueUrl, origin, None).url, journeyId, journey))
       case None          => NotFound
 
     }

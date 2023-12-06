@@ -21,7 +21,7 @@ POST        /journey/:journeyId/email                  controllers.JourneyContro
 
 POST        /journey/:journeyId/resend-passcode        controllers.JourneyController.resendPasscode(journeyId, continueUrl: RedirectUrl, origin)
 
-GET         /journey/:journeyId/passcode               controllers.JourneyController.enterPasscode(journeyId, continueUrl: RedirectUrl, origin)
+GET         /journey/:journeyId/passcode               controllers.JourneyController.enterPasscode(journeyId, continueUrl: RedirectUrl, origin, requestedNew: Option[Boolean])
 POST        /journey/:journeyId/passcode               controllers.JourneyController.submitPasscode(journeyId, continueUrl: RedirectUrl, origin)
 
 GET         /keep-alive                                controllers.KeepAliveController.keepAlive()

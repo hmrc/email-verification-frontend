@@ -157,7 +157,7 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
         )
 
         result.status shouldBe SEE_OTHER
-        result.header(LOCATION).value shouldBe s"/email-verification/journey/$journeyId/passcode?continueUrl=%2Fsome-service&origin=oranges"
+        result.header(LOCATION).value shouldBe s"/email-verification/journey/$journeyId/passcode?continueUrl=%2Fsome-service&origin=oranges&requestedNew=true"
       }
     }
 
