@@ -28,14 +28,18 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 
 class VerifyEmailWireMockSpec extends WireMockSpec with Injecting {
   private val continueUrl = "/continue-url"
-  private def jsonToken(token: String) = Json.obj(
-    "token" -> token,
-    "continueUrl" -> continueUrl
-  ).toString
+  private def jsonToken(token: String) = Json
+    .obj(
+      "token"       -> token,
+      "continueUrl" -> continueUrl
+    )
+    .toString
 
   def encryptAndEncode(value: String) = new String(inject[ApplicationCrypto].QueryParameterCrypto.encrypt(PlainText(value)).toBase64)
 
-  def encryptAndEncodeWithUrlEncoder(value: String) = new String(Base64.getUrlEncoder.withoutPadding().encode(inject[ApplicationCrypto].QueryParameterCrypto.encrypt(PlainText(value)).value.getBytes("UTF-8")))
+  def encryptAndEncodeWithUrlEncoder(value: String) = new String(
+    Base64.getUrlEncoder.withoutPadding().encode(inject[ApplicationCrypto].QueryParameterCrypto.encrypt(PlainText(value)).value.getBytes("UTF-8"))
+  )
 
   "a verification link with a valid encrypted payload" should {
 
@@ -50,8 +54,7 @@ class VerifyEmailWireMockSpec extends WireMockSpec with Injecting {
         val encryptedJsonToken = encoder(jsonToken(token))
 
         stubFor(
-          post(
-            urlEqualTo("/email-verification/verified-email-addresses"))
+          post(urlEqualTo("/email-verification/verified-email-addresses"))
             .willReturn(created())
         )
 
@@ -62,7 +65,7 @@ class VerifyEmailWireMockSpec extends WireMockSpec with Injecting {
             .get()
         )
 
-        response.status shouldBe SEE_OTHER
+        response.status                     shouldBe SEE_OTHER
         response.header(HeaderNames.LOCATION) should contain("/continue-url")
 
         verify(postRequestedFor(urlEqualTo("/email-verification/verified-email-addresses")))
@@ -76,8 +79,7 @@ class VerifyEmailWireMockSpec extends WireMockSpec with Injecting {
       val encryptedJsonToken = encryptAndEncode(jsonToken(token))
 
       stubFor(
-        post(
-          urlEqualTo("/email-verification/verified-email-addresses"))
+        post(urlEqualTo("/email-verification/verified-email-addresses"))
           .willReturn(badRequest())
       )
 
@@ -88,7 +90,7 @@ class VerifyEmailWireMockSpec extends WireMockSpec with Injecting {
           .get()
       )
 
-      response.status shouldBe SEE_OTHER
+      response.status                     shouldBe SEE_OTHER
       response.header(HeaderNames.LOCATION) should contain("/email-verification/error")
     }
   }

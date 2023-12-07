@@ -22,8 +22,10 @@ import uk.gov.hmrc.crypto.{Decrypter, Encrypter, SymmetricCryptoFactory}
 
 class GuiceModule extends Module {
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = Seq(
-    bind[Encrypter with Decrypter].qualifiedWith("tokenEncryption").toInstance(
-      SymmetricCryptoFactory.aesCryptoFromConfig("token.encryption", configuration.underlying)
-    )
+    bind[Encrypter with Decrypter]
+      .qualifiedWith("tokenEncryption")
+      .toInstance(
+        SymmetricCryptoFactory.aesCryptoFromConfig("token.encryption", configuration.underlying)
+      )
   )
 }

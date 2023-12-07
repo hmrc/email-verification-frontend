@@ -38,10 +38,10 @@ object Token {
 @Singleton
 class EmailVerificationController @Inject() (
   emailVerificationConnector: EmailVerificationConnector,
-  decrypter: Decrypter,
-  mcc: MessagesControllerComponents
+  decrypter:                  Decrypter,
+  mcc:                        MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-  extends FrontendController(mcc) {
+    extends FrontendController(mcc) {
 
   def dateTimeProvider: ZonedDateTime = ZonedDateTime.now()
 
@@ -56,7 +56,7 @@ class EmailVerificationController @Inject() (
   def verify(token: String): Action[AnyContent] = Action.async { implicit request =>
     val redirectToContinue = for {
       decryptedToken <- Future.fromTry(decrypter.decryptAs[Token](Crypted(new String(decodeToken(token)))))
-      _ <- emailVerificationConnector.verifyEmailAddress(decryptedToken.token)
+      _              <- emailVerificationConnector.verifyEmailAddress(decryptedToken.token)
     } yield Redirect(decryptedToken.continueUrl)
 
     redirectToContinue.recover { case _ => Redirect(routes.ErrorController.showErrorPage) }

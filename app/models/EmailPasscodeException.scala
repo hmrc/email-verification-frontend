@@ -18,12 +18,12 @@ package models
 
 class EmailPasscodeException(msg: String) extends Exception(msg)
 object EmailPasscodeException {
-  case class MissingSessionId(msg: String) extends EmailPasscodeException(msg)
+  case class MissingSessionId(msg: String)             extends EmailPasscodeException(msg)
   case class EmailVerificationServerError(msg: String) extends EmailPasscodeException(msg)
 
   case class MaxNewEmailsExceeded(msg: String) extends EmailPasscodeException(msg)
   case class EmailAlreadyVerified(msg: String) extends EmailPasscodeException(msg)
 
-  case class IncorrectPasscode(msg: String) extends EmailPasscodeException(msg)
+  case class IncorrectPasscode(msg: String)           extends EmailPasscodeException(msg)
   case class MaxPasscodeAttemptsExceeded(msg: String) extends EmailPasscodeException(msg)
 }

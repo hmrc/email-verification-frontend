@@ -33,12 +33,12 @@ import scala.concurrent.ExecutionContext
 
 class JourneyController @Inject() (
   emailVerificationConnector: EmailVerificationConnector,
-  views: Views,
-  errorHandler: ErrorHandler,
-  cc: MessagesControllerComponents,
-  environment: Environment
+  views:                      Views,
+  errorHandler:               ErrorHandler,
+  cc:                         MessagesControllerComponents,
+  environment:                Environment
 )(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
-  extends FrontendController(cc) {
+    extends FrontendController(cc) {
 
   def enterEmail(journeyId: String, continueUrl: RedirectUrl, origin: String): Action[AnyContent] = Action.async { implicit request =>
     emailVerificationConnector.getJourney(journeyId).map {

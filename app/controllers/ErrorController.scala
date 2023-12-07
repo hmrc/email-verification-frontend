@@ -25,7 +25,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class ErrorController @Inject() (
   views: Views,
-  mcc: MessagesControllerComponents
+  mcc:   MessagesControllerComponents
 ) extends FrontendController(mcc) {
   def showErrorPage(): Action[AnyContent] = Action { implicit request =>
     Ok(views.verifyError())

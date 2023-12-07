@@ -35,7 +35,7 @@ class EmailVerificationControllerSpec extends UnitSpec {
       when(mockEmailVerificationConnector.verifyEmailAddress(eqTo(token))(any)).thenReturn(Future.unit)
       val result = controller.verify(encryptedAndEncodedToken)(FakeRequest())
 
-      status(result) shouldBe 303
+      status(result)         shouldBe 303
       redirectLocation(result) should contain(continueUrl)
     }
 
@@ -44,7 +44,7 @@ class EmailVerificationControllerSpec extends UnitSpec {
       when(mockEmailVerificationConnector.verifyEmailAddress(eqTo(token))(any)).thenReturn(Future.failed(new RuntimeException))
       val result = controller.verify(encryptedAndEncodedToken)(FakeRequest())
 
-      status(result) shouldBe 303
+      status(result)         shouldBe 303
       redirectLocation(result) should contain("/error")
     }
   }
@@ -56,6 +56,8 @@ class EmailVerificationControllerSpec extends UnitSpec {
     val token = "some token"
     val mockDecrypter = mock[Decrypter]
     val mockEmailVerificationConnector = mock[EmailVerificationConnector]
-    val controller = new EmailVerificationController(mockEmailVerificationConnector, mockDecrypter, Stubs.stubMessagesControllerComponents())(ExecutionContext.global)
+    val controller = new EmailVerificationController(mockEmailVerificationConnector, mockDecrypter, Stubs.stubMessagesControllerComponents())(
+      ExecutionContext.global
+    )
   }
 }

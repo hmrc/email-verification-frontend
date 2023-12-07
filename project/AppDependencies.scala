@@ -1,9 +1,9 @@
-import sbt.*
 import play.sbt.PlayImport.ws
+import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapVersion = "7.21.0"
+  private val bootstrapVersion = "7.23.0"
 
   private val compile = Seq(
     ws,
@@ -12,10 +12,10 @@ object AppDependencies {
   )
 
   private val test = Seq(
-    "uk.gov.hmrc" %% "government-gateway-test" % "5.2.0"                % "test,it",
-    "uk.gov.hmrc" %% "bootstrap-test-play-28"  % bootstrapVersion       % "test,it",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.3" % "it",
-    "org.scalacheck"               %% "scalacheck"           % "1.17.0" % "it"
+    "uk.gov.hmrc"                  %% "government-gateway-test" % "5.2.0"          % "test,it",
+    "uk.gov.hmrc"                  %% "bootstrap-test-play-28"  % bootstrapVersion % "test,it",
+    "com.fasterxml.jackson.module" %% "jackson-module-scala"    % "2.13.3"         % "it",
+    "org.scalacheck"               %% "scalacheck"              % "1.17.0"         % "it"
   )
 
   def apply(): Seq[ModuleID] = compile ++ test

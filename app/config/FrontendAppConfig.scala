@@ -25,7 +25,10 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig, environment: Environment) {
 
-  lazy val allowRelativeUrls: Boolean = configuration.getOptional[String]("platform.frontend.host").isEmpty //platform.frontend.host only specified in environments not application config
+  lazy val allowRelativeUrls: Boolean =
+    configuration
+      .getOptional[String]("platform.frontend.host")
+      .isEmpty // platform.frontend.host only specified in environments not application config
   private lazy val contactFormServiceIdentifier = "email-verification-frontend"
 
   lazy val isWelshEnabled: Boolean = configuration.getOptional[Boolean]("features.welsh-translation").getOrElse(true)
@@ -38,12 +41,12 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   )
 
   lazy val googleTagManagerIdAvailable: Boolean = configuration.getOptional[Boolean]("google-tag-manager.id-available").getOrElse(false)
-  lazy val googleTagManagerId: String = configuration.get[String]("google-tag-manager.id")
+  lazy val googleTagManagerId:          String = configuration.get[String]("google-tag-manager.id")
 
-  lazy val analyticsToken: String = servicesConfig.getString("google-analytics.token")
-  lazy val analyticsHost: String = servicesConfig.getString("google-analytics.host")
+  lazy val analyticsToken:           String = servicesConfig.getString("google-analytics.token")
+  lazy val analyticsHost:            String = servicesConfig.getString("google-analytics.host")
   lazy val reportAProblemPartialUrl: String = s"/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  lazy val reportAProblemNonJSUrl: String = s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  lazy val reportAProblemNonJSUrl:   String = s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
   lazy val emailUrl: String = servicesConfig.baseUrl("email-verification")
 
@@ -58,7 +61,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
     TimeoutConfig(
       timeoutSeconds = configuration.get[Int]("timeoutDialog.timeout"),
       countdownSecs  = configuration.get[Int]("timeoutDialog.countdown"),
-      signOutUrl     = s"${basGatewayParentUrl}/bas-gateway/sign-out-without-state",
+      signOutUrl     = s"$basGatewayParentUrl/bas-gateway/sign-out-without-state",
       signInUrl      = s"$basGatewayParentUrl/bas-gateway/sign-in"
     )
   }
