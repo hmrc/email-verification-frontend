@@ -6,7 +6,7 @@ lazy val microservice = Project("email-verification-frontend", file("."))
   .settings(majorVersion := 0)
   .settings(scalaSettings *)
   .settings(defaultSettings() *)
-  .settings(scalaVersion := "2.13.8")
+  .settings(scalaVersion := "2.13.12")
   .settings(scalacOptions ++= Seq(
     "-Werror",
     "-Wconf:src=routes/.*&cat=unused-imports:silent",
