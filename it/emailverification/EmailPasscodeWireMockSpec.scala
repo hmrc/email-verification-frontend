@@ -139,10 +139,11 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
 
   "post /emailform with invalid email address" should {
     "return bad request error" in new Setup {
-      def response = await(resourceRequest("/email-verification/emailform")
-        .withSession("sessionId" -> newSessionId)
-        .withFollowRedirects(false)
-        .post(Map("continue" -> Seq(continueUrl), "email" -> Seq("IAmNotAValidEmailAddress")))
+      def response = await(
+        resourceRequest("/email-verification/emailform")
+          .withSession("sessionId" -> newSessionId)
+          .withFollowRedirects(false)
+          .post(Map("continue" -> Seq(continueUrl), "email" -> Seq("IAmNotAValidEmailAddress")))
       )
 
       response.status shouldBe BAD_REQUEST
@@ -155,13 +156,14 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
     "redirect to max emails limit reached error page" in new Setup {
       expectRequestPasscodeToReturn(403)
 
-      def response = await(resourceRequest("/email-verification/emailform")
-        .withSession("sessionId" -> newSessionId)
-        .withFollowRedirects(false)
-        .post(Map("continue" -> Seq(continueUrl), "email" -> Seq(newEmailAddress)))
+      def response = await(
+        resourceRequest("/email-verification/emailform")
+          .withSession("sessionId" -> newSessionId)
+          .withFollowRedirects(false)
+          .post(Map("continue" -> Seq(continueUrl), "email" -> Seq(newEmailAddress)))
       )
 
-      response.status shouldBe 303
+      response.status                         shouldBe 303
       response.header(HeaderNames.LOCATION).get should include("/emailLimitReached")
     }
   }
@@ -170,13 +172,14 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
     "redirect to email already verified page" in new Setup {
       expectRequestPasscodeToReturn(409)
 
-      def response = await(resourceRequest("/email-verification/emailform")
-        .withSession("sessionId" -> newSessionId)
-        .withFollowRedirects(false)
-        .post(Map("continue" -> Seq(continueUrl), "email" -> Seq(newEmailAddress)))
+      def response = await(
+        resourceRequest("/email-verification/emailform")
+          .withSession("sessionId" -> newSessionId)
+          .withFollowRedirects(false)
+          .post(Map("continue" -> Seq(continueUrl), "email" -> Seq(newEmailAddress)))
       )
 
-      response.status shouldBe 303
+      response.status                         shouldBe 303
       response.header(HeaderNames.LOCATION).get should include("/emailAlreadyVerified")
     }
   }
@@ -185,9 +188,10 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
     "return 401 unauthorised response page" in new Setup {
       expectRequestPasscodeToReturn(401)
 
-      def response = await(resourceRequest("/email-verification/emailform")
-        .withFollowRedirects(false)
-        .post(Map("continue" -> Seq(continueUrl), "email" -> Seq(newEmailAddress)))
+      def response = await(
+        resourceRequest("/email-verification/emailform")
+          .withFollowRedirects(false)
+          .post(Map("continue" -> Seq(continueUrl), "email" -> Seq(newEmailAddress)))
       )
 
       response.status shouldBe 401
@@ -200,30 +204,34 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
     "redirect to success page" in new Setup {
       expectVerifyPasscodeToReturn(201)
 
-      def response = await(resourceRequest("/email-verification/passcodeform")
-        .withSession("sessionId" -> newSessionId)
-        .withFollowRedirects(false)
-        .post(Map("continue" -> Seq(continueUrl), "email" -> Seq(newEmailAddress), "passcode" -> Seq(correctPasscode)))
+      def response = await(
+        resourceRequest("/email-verification/passcodeform")
+          .withSession("sessionId" -> newSessionId)
+          .withFollowRedirects(false)
+          .post(Map("continue" -> Seq(continueUrl), "email" -> Seq(newEmailAddress), "passcode" -> Seq(correctPasscode)))
       )
 
-      response.status shouldBe 303
+      response.status                         shouldBe 303
       response.header(HeaderNames.LOCATION).get should include("/success")
     }
   }
 
   "post /passcodeform with invalid passcode formats (should be 6 upper case alphabet characters, no vowels)" should {
 
-    forAll(Table(
-      ("invalidPasscode"),
-      Setup.passcodeWithVowels,
-      Setup.passcodeTooLong,
-      Setup.emptyPasscode
-    )) { case (invalidPasscode) =>
+    forAll(
+      Table(
+        "invalidPasscode",
+        Setup.passcodeWithVowels,
+        Setup.passcodeTooLong,
+        Setup.emptyPasscode
+      )
+    ) { case invalidPasscode =>
       s"return 400 and error on passcode page when submitting invalid passcode: $invalidPasscode" in {
-        def response = await(resourceRequest("/email-verification/passcodeform")
-          .withSession("sessionId" -> Setup.newSessionId)
-          .withFollowRedirects(false)
-          .post(Map("continue" -> Seq(Setup.continueUrl), "email" -> Seq(Setup.newEmailAddress), "passcode" -> Seq(invalidPasscode)))
+        def response = await(
+          resourceRequest("/email-verification/passcodeform")
+            .withSession("sessionId" -> Setup.newSessionId)
+            .withFollowRedirects(false)
+            .post(Map("continue" -> Seq(Setup.continueUrl), "email" -> Seq(Setup.newEmailAddress), "passcode" -> Seq(invalidPasscode)))
         )
 
         response.status shouldBe 400
@@ -233,15 +241,15 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
     }
   }
 
-
   "post /passcodeform with incorrect passcode (email-verification/verify-passcode 404)" should {
     "show passcode form again with error message" in new Setup {
       expectVerifyPasscodeToReturn(404)
 
-      def response = await(resourceRequest("/email-verification/passcodeform")
-        .withSession("sessionId" -> Setup.newSessionId)
-        .withFollowRedirects(false)
-        .post(Map("continue" -> Seq(Setup.continueUrl), "email" -> Seq(Setup.newEmailAddress), "passcode" -> Seq(correctPasscode)))
+      def response = await(
+        resourceRequest("/email-verification/passcodeform")
+          .withSession("sessionId" -> Setup.newSessionId)
+          .withFollowRedirects(false)
+          .post(Map("continue" -> Seq(Setup.continueUrl), "email" -> Seq(Setup.newEmailAddress), "passcode" -> Seq(correctPasscode)))
       )
 
       response.status shouldBe 400
@@ -254,13 +262,14 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
     "show passcode attempt limit reached error page" in new Setup {
       expectVerifyPasscodeToReturn(403)
 
-      def response = await(resourceRequest("/email-verification/passcodeform")
-        .withSession("sessionId" -> Setup.newSessionId)
-        .withFollowRedirects(false)
-        .post(Map("continue" -> Seq(Setup.continueUrl), "email" -> Seq(Setup.newEmailAddress), "passcode" -> Seq(correctPasscode)))
+      def response = await(
+        resourceRequest("/email-verification/passcodeform")
+          .withSession("sessionId" -> Setup.newSessionId)
+          .withFollowRedirects(false)
+          .post(Map("continue" -> Seq(Setup.continueUrl), "email" -> Seq(Setup.newEmailAddress), "passcode" -> Seq(correctPasscode)))
       )
 
-      response.status shouldBe 303
+      response.status                         shouldBe 303
       response.header(HeaderNames.LOCATION).get should include("/passcodeLimitReached")
     }
 
@@ -456,14 +465,12 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
   trait Wiremocks {
 
     def expectRequestPasscodeToReturn(status: Int) = stubFor(
-      post(
-        urlEqualTo("/email-verification/request-passcode"))
+      post(urlEqualTo("/email-verification/request-passcode"))
         .willReturn(aResponse().withStatus(status))
     )
 
     def expectVerifyPasscodeToReturn(status: Int) = stubFor(
-      post(
-        urlEqualTo("/email-verification/verify-passcode"))
+      post(urlEqualTo("/email-verification/verify-passcode"))
         .willReturn(aResponse().withStatus(status))
     )
 
@@ -481,4 +488,3 @@ class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with Session
   }
 
 }
-

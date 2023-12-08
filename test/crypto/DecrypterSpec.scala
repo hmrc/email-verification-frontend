@@ -23,7 +23,7 @@ import com.typesafe.config.ConfigFactory
 import controllers.Token
 import org.scalatest.LoneElement
 import play.api.Configuration
-import uk.gov.hmrc.crypto.{Crypted, SymmetricCryptoFactory, PlainText}
+import uk.gov.hmrc.crypto.{Crypted, PlainText, SymmetricCryptoFactory}
 import uk.gov.hmrc.gg.test.{LogCapturing, UnitSpec}
 
 import scala.util.Success

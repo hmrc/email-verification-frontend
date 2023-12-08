@@ -15,7 +15,7 @@
  *@
 
 @import config.TimeoutConfig
-
+@import uk.gov.hmrc.http.StringContextOps
 @this(layout: Layout, timeoutConfig: TimeoutConfig)
 
 @(
@@ -25,9 +25,9 @@
 
 )(implicit request: Request[_], messages: Messages)
 
-@mainTitle = @{messages("timeout-page.title")}
+@mainTitle= @{messages("timeout-page.title")}
 @signInUrlWithContinue = @{
-   s"${timeoutConfig.signInUrl}?continue=${returnPageLink}"
+   url"${timeoutConfig.signInUrl}?continue=${returnPageLink}"
 }
 @layout(
     pageTitle = Some(mainTitle),

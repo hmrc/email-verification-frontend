@@ -20,11 +20,11 @@ import play.api.libs.json.{Json, Reads}
 
 case class Journey(
   accessibilityStatementUrl: String,
-  deskproServiceName: String,
-  enterEmailUrl: Option[String],
-  backUrl: Option[String],
-  serviceTitle: Option[String],
-  emailAddress: Option[String]
+  deskproServiceName:        String,
+  enterEmailUrl:             Option[String],
+  backUrl:                   Option[String],
+  serviceTitle:              Option[String],
+  emailAddress:              Option[String]
 )
 
 object Journey {

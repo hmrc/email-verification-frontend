@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
+@import config.TimeoutConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTimeoutDialogHelper
 @import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 @import views.html.Layout
 @import views.html.fragments.{ErrorSummary, Heading}
 @import views.html.helper.CSPNonce
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTimeoutDialogHelper
-@import config.TimeoutConfig
 
 @this(
         form: FormWithCSRF,
@@ -42,6 +42,7 @@
         origin: String,
         enterEmailUrl: String,
         journey: Journey,
+        requestedNew: Boolean = false
 )(implicit request: Request[_], messages: Messages)
 
 @additionalScripts = {
@@ -50,11 +51,11 @@
     } src="@controllers.routes.Assets.versioned("javascripts/resend-passcode.js")" type="text/javascript"></script>
 }
 @timeoutDialog = {
-    @timeoutDialogHelper(
-        timeout = Some(timeoutConfig.timeoutSeconds),
-        countdown = Some(timeoutConfig.countdownSecs),
-        keepAliveUrl = Some(routes.KeepAliveController.keepAlive().url),
-        signOutUrl = s"${timeoutConfig.signOutUrl}?continue=${routes.KeepAliveController.timeout(journeyId,redirectUrl, origin).url}")
+@timeoutDialogHelper(
+    timeout = Some(timeoutConfig.timeoutSeconds),
+    countdown = Some(timeoutConfig.countdownSecs),
+    keepAliveUrl = Some(routes.KeepAliveController.keepAlive().url),
+    signOutUrl = s"${timeoutConfig.signOutUrl}?continue=${routes.KeepAliveController.timeout(journeyId, redirectUrl, origin).url}")
 }
 
 @layout(
@@ -70,7 +71,7 @@
     @heading("passcodeform.heading")
 
     <p class="govuk-body">
-        @messages("passcodeform.body")
+        @passcodeBody()
         <strong id="email-address">
         @journey.emailAddress.getOrElse("")
         </strong>
@@ -95,6 +96,14 @@
     @form(action = routes.JourneyController.resendPasscode(journeyId, redirectUrl, origin), args = Symbol("id") -> "resendPasscodeForm") {
     }
 
+}
+
+@passcodeBody() = {
+@if(requestedNew) {
+    @messages("passcodeform.body.new")
+} else {
+    @messages("passcodeform.body")
+}
 }
 
 @passcodeNotReceived() = {

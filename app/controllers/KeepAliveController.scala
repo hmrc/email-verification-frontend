@@ -26,18 +26,19 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class KeepAliveController @Inject() (
-  mcc: MessagesControllerComponents,
+  mcc:                        MessagesControllerComponents,
   emailVerificationConnector: EmailVerificationConnector,
-  views: Views
+  views:                      Views
 )(implicit ec: ExecutionContext)
-  extends FrontendController(mcc) {
+    extends FrontendController(mcc) {
 
   def keepAlive(): Action[AnyContent] = Action(NoContent)
 
   def timeout(journeyId: String, continueUrl: RedirectUrl, origin: String): Action[AnyContent] = Action.async { implicit request =>
     emailVerificationConnector.getJourney(journeyId).map {
-      case Some(journey) => Ok(views.timeoutPage(controllers.routes.JourneyController.enterPasscode(journeyId, continueUrl, origin).url, journeyId, journey))
-      case None          => NotFound
+      case Some(journey) =>
+        Ok(views.timeoutPage(controllers.routes.JourneyController.enterPasscode(journeyId, continueUrl, origin, None).url, journeyId, journey))
+      case None => NotFound
 
     }
   }
