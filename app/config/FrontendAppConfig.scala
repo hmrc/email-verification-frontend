@@ -16,7 +16,6 @@
 
 package config
 
-import play.api.i18n.Lang
 import play.api.{Configuration, Environment, Mode}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -29,24 +28,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
     configuration
       .getOptional[String]("platform.frontend.host")
       .isEmpty // platform.frontend.host only specified in environments not application config
-  private lazy val contactFormServiceIdentifier = "email-verification-frontend"
-
-  lazy val isWelshEnabled: Boolean = configuration.getOptional[Boolean]("features.welsh-translation").getOrElse(true)
-
-  val footerLinkItems: Seq[String] = configuration.getOptional[Seq[String]]("footerLinkItems").getOrElse(Seq())
-
-  def getAvailableLanguages: Map[String, Lang] = Map(
-    "english" -> Lang("en"),
-    "cymraeg" -> Lang("cy")
-  )
 
   lazy val googleTagManagerIdAvailable: Boolean = configuration.getOptional[Boolean]("google-tag-manager.id-available").getOrElse(false)
   lazy val googleTagManagerId:          String = configuration.get[String]("google-tag-manager.id")
-
-  lazy val analyticsToken:           String = servicesConfig.getString("google-analytics.token")
-  lazy val analyticsHost:            String = servicesConfig.getString("google-analytics.host")
-  lazy val reportAProblemPartialUrl: String = s"/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  lazy val reportAProblemNonJSUrl:   String = s"/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
   lazy val emailUrl: String = servicesConfig.baseUrl("email-verification")
 

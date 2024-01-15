@@ -1,7 +1,8 @@
+import sbt.Def
 import scoverage.ScoverageKeys
 
 object ScoverageSettings {
-  def apply() =   Seq(
+  def apply(): Seq[Def.Setting[? >: String & Double & Boolean]] =   Seq(
     ScoverageKeys.coverageExcludedPackages := Seq(
       "<empty>",
       "Reverse*",
@@ -18,7 +19,7 @@ object ScoverageSettings {
       "app.*",
       "prod.*"
     ).mkString(";"),
-    ScoverageKeys.coverageMinimumStmtTotal := 79,
+    ScoverageKeys.coverageMinimumStmtTotal := 85,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
