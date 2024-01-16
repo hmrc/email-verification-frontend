@@ -17,6 +17,9 @@ lazy val microservice = Project("email-verification-frontend", file("."))
     )
   )
   .settings(
+    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
+  )
+  .settings(
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
     TwirlKeys.templateImports ++= Seq(
