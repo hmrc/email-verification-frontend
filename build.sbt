@@ -8,6 +8,7 @@ ThisBuild / majorVersion := 0
 ThisBuild / scalaVersion := scala2_13
 //ThisBuild / Test / fork := true //Required to prevent https://github.com/sbt/sbt/issues/4609
 ThisBuild / scalafmtOnCompile := true
+ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
 
 
 lazy val microservice = Project("email-verification-frontend", file("."))
@@ -22,9 +23,6 @@ lazy val microservice = Project("email-verification-frontend", file("."))
       "-Wconf:src=routes/.*&msg=Auto-application to .* is deprecated:silent",
       "-Wconf:src=routes/.*&msg=private val defaultPrefix in class Routes is never used:silent"
     )
-  )
-  .settings(
-    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
   )
   .settings(
     libraryDependencies ++= AppDependencies(),
