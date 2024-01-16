@@ -18,5 +18,9 @@ object AppDependencies {
     "org.scalacheck"               %% "scalacheck"              % "1.17.0"         % "it"
   )
 
+  val itDependencies: Seq[ModuleID] = Seq(
+    "uk.gov.hmrc" %% "bootstrap-test-play-28" % bootstrapVersion % Test
+  )
+
   def apply(): Seq[ModuleID] = compile ++ test
 }

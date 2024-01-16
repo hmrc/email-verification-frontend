@@ -1,12 +1,25 @@
 import uk.gov.hmrc.DefaultBuildSettings
 import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings}
 
+val scala2_13 = "2.13.12"
+val bootstrapVersion = "7.23.0"
+
+
+ThisBuild / majorVersion := 0
+ThisBuild / scalaVersion := scala2_13
+//ThisBuild / Test / fork := true //Required to prevent https://github.com/sbt/sbt/issues/4609
+ThisBuild / scalafmtOnCompile := true
+
+lazy val it = project
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
+  .settings(DefaultBuildSettings.itSettings())
+  .settings(libraryDependencies ++= AppDependencies.itDependencies)
+
 lazy val microservice = Project("email-verification-frontend", file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
-  .settings(majorVersion := 0)
   .settings(scalaSettings *)
   .settings(defaultSettings() *)
-  .settings(scalaVersion := "2.13.12")
   .settings(
     scalacOptions ++= Seq(
       "-Werror",
@@ -28,10 +41,6 @@ lazy val microservice = Project("email-verification-frontend", file("."))
       "uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text"
     )
   )
-  .settings(scalafmtOnCompile := true)
-  .configs(IntegrationTest)
-  .settings(inConfig(IntegrationTest)(Defaults.itSettings) *)
-  .settings(DefaultBuildSettings.integrationTestSettings())
   .settings(
     resolvers ++= Seq(
       Resolver.jcenterRepo
