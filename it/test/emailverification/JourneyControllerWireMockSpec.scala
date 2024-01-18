@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package emailverification
+package test.emailverification
 
 import org.jsoup.Jsoup
 import uk.gov.hmrc.gg.test.WireMockSpec
