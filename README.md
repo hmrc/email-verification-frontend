@@ -21,6 +21,12 @@ The user is then sent to the continueUrl specified in initial backend POST reque
 GET /email-verification/verify?token=111aa11-11a1-1aa1-a111-a11a11111aaa
  ```
 
+## Testing Locally
+```bash
+sm2 -start EMAIL_VERIFICATION_ALL
+sm2 -stop EMAIL_VERIFICATION_FRONTEND
+sbt clean coverage test it/test coverageReport
+```
 
 ### License
 

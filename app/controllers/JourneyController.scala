@@ -145,19 +145,12 @@ class JourneyController @Inject() (
         passcode =>
           emailVerificationConnector.validatePasscode(journeyId, passcode).map {
             case ValidatePasscodeResponse.Complete(redirectUri) =>
-              val allowRelativeUrls: Boolean = appConfig.allowRelativeUrls
-
+              val isLocalDevMachine: Boolean = appConfig.isAppRunningOnLocalDevMachine
               val policy =
-                if (environment.mode == Mode.Test)
-                  UnsafePermitAll
-                else if (allowRelativeUrls) UnsafePermitAll
-                else
-                  OnlyRelative | PermitAllOnDev(environment)
-
-              val validated = RedirectUrl(redirectUri)
-                .get(policy)
-                .url
-
+                if (environment.mode == Mode.Test) UnsafePermitAll
+                else if (isLocalDevMachine) UnsafePermitAll
+                else OnlyRelative | PermitAllOnDev(environment)
+              val validated = RedirectUrl(redirectUri).get(policy).url
               Redirect(validated)
             case ValidatePasscodeResponse.IncorrectPasscode(journey) =>
               BadRequest(
@@ -173,9 +166,13 @@ class JourneyController @Inject() (
             case ValidatePasscodeResponse.JourneyNotFound =>
               NotFound(errorHandler.notFoundTemplate)
             case ValidatePasscodeResponse.TooManyAttempts(continueUrl) =>
-              val validated = RedirectUrl(continueUrl)
-                .get(OnlyRelative | PermitAllOnDev(environment))
-                .url
+              val isLocalDevMachine: Boolean = appConfig.isAppRunningOnLocalDevMachine
+              val policy =
+                if (environment.mode == Mode.Test) UnsafePermitAll
+                else if (isLocalDevMachine) UnsafePermitAll
+                else OnlyRelative | PermitAllOnDev(environment)
+              val validated = RedirectUrl(continueUrl).get(policy).url
+
               Redirect(validated)
           }
       )

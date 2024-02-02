@@ -19,9 +19,13 @@ package controllers
 import connectors.EmailVerificationConnector
 import crypto.Decrypter
 import org.apache.commons.codec.binary.Base64.encodeBase64String
+import play.api.mvc.Result
+import play.api.{Environment, Mode}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.crypto.Crypted
 import uk.gov.hmrc.gg.test.UnitSpec
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
+import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, PermitAllOnDev, RedirectUrl}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,7 +37,7 @@ class EmailVerificationControllerSpec extends UnitSpec {
     "redirect to continue url if link is verified" in new Setup {
       when(mockDecrypter.decryptAs[Token](Crypted(encryptedToken))).thenReturn(Success(Token(token, continueUrl)))
       when(mockEmailVerificationConnector.verifyEmailAddress(eqTo(token))(any)).thenReturn(Future.unit)
-      val result = controller.verify(encryptedAndEncodedToken)(FakeRequest())
+      val result: Future[Result] = controller.verify(encryptedAndEncodedToken)(FakeRequest())
 
       status(result)         shouldBe 303
       redirectLocation(result) should contain(continueUrl)
@@ -42,7 +46,7 @@ class EmailVerificationControllerSpec extends UnitSpec {
     "redirect to error page if link is not verified" in new Setup {
       when(mockDecrypter.decryptAs[Token](Crypted(encryptedToken))).thenReturn(Success(Token(token, continueUrl)))
       when(mockEmailVerificationConnector.verifyEmailAddress(eqTo(token))(any)).thenReturn(Future.failed(new RuntimeException))
-      val result = controller.verify(encryptedAndEncodedToken)(FakeRequest())
+      val result: Future[Result] = controller.verify(encryptedAndEncodedToken)(FakeRequest())
 
       status(result)         shouldBe 303
       redirectLocation(result) should contain("/error")
@@ -52,10 +56,10 @@ class EmailVerificationControllerSpec extends UnitSpec {
   trait Setup {
     val continueUrl = "/continue"
     val encryptedToken = "some-encrypted-string"
-    val encryptedAndEncodedToken = encodeBase64String(encryptedToken.getBytes("UTF-8"))
+    val encryptedAndEncodedToken: String = encodeBase64String(encryptedToken.getBytes("UTF-8"))
     val token = "some token"
-    val mockDecrypter = mock[Decrypter]
-    val mockEmailVerificationConnector = mock[EmailVerificationConnector]
+    val mockDecrypter: Decrypter = mock[Decrypter]
+    val mockEmailVerificationConnector: EmailVerificationConnector = mock[EmailVerificationConnector]
     val controller = new EmailVerificationController(mockEmailVerificationConnector, mockDecrypter, Stubs.stubMessagesControllerComponents())(
       ExecutionContext.global
     )
