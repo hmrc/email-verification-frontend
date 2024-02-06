@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
-  lazy val allowRelativeUrls: Boolean =
+  lazy val isAppRunningOnLocalDevMachine: Boolean =
     configuration
       .getOptional[String]("platform.frontend.host")
       .isEmpty // platform.frontend.host only specified in environments not application config
