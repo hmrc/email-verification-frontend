@@ -21,6 +21,7 @@
 @import views.html.Layout
 @import views.html.fragments.{ErrorSummary, Heading}
 @import views.html.helper.CSPNonce
+@import uk.gov.hmrc.http.StringContextOps
 
 @this(
         form: FormWithCSRF,
@@ -55,7 +56,7 @@
     timeout = Some(timeoutConfig.timeoutSeconds),
     countdown = Some(timeoutConfig.countdownSecs),
     keepAliveUrl = Some(routes.KeepAliveController.keepAlive().url),
-    signOutUrl = s"${timeoutConfig.signOutUrl}?continue=${routes.KeepAliveController.timeout(journeyId, redirectUrl, origin).url}")
+    signOutUrl = url"${timeoutConfig.signOutUrl}?continue=${routes.KeepAliveController.timeout(journeyId, redirectUrl, origin).url}".toString)
 }
 
 @layout(
