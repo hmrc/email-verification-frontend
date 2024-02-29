@@ -37,13 +37,11 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val mdtpInternalDomains: Set[String] = servicesConfig.getString("mdtp.internalDomains").split(",").toSet
 
   lazy val timeoutConfig: TimeoutConfig = {
-    val basGatewayParentUrl = servicesConfig.baseUrl("bas-gateway-frontend")
-
     TimeoutConfig(
       timeoutSeconds = configuration.get[Int]("timeoutDialog.timeout"),
       countdownSecs  = configuration.get[Int]("timeoutDialog.countdown"),
-      signOutUrl     = s"$basGatewayParentUrl/bas-gateway/sign-out-without-state",
-      signInUrl      = s"$basGatewayParentUrl/bas-gateway/sign-in"
+      signOutUrl     = "/bas-gateway/sign-out-without-state",
+      signInUrl      = "/bas-gateway/sign-in"
     )
   }
 }
