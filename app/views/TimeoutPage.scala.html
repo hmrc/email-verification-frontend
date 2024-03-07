@@ -15,7 +15,7 @@
  *@
 
 @import config.TimeoutConfig
-@import uk.gov.hmrc.http.StringContextOps
+@import java.net.URLEncoder
 @this(layout: Layout, timeoutConfig: TimeoutConfig)
 
 @(
@@ -27,7 +27,7 @@
 
 @mainTitle= @{messages("timeout-page.title")}
 @signInUrlWithContinue = @{
-   url"${timeoutConfig.signInUrl}?continue=${returnPageLink}"
+   s"${timeoutConfig.signInUrl}?continue=${URLEncoder.encode(returnPageLink, "UTF-8")}"
 }
 @layout(
     pageTitle = Some(mainTitle),
