@@ -52,7 +52,7 @@
     } src="@controllers.routes.Assets.versioned("javascripts/resend-passcode.js")" type="text/javascript"></script>
 }
 @timeoutDialog = {
-    timeoutDialogHelper(
+    @timeoutDialogHelper(
     timeout = Some(timeoutConfig.timeoutSeconds),
     countdown = Some(timeoutConfig.countdownSecs),
     keepAliveUrl = Some(routes.KeepAliveController.keepAlive().url),
