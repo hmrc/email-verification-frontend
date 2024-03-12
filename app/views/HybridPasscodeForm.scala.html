@@ -60,9 +60,16 @@
     signOutUrl = s"${timeoutConfig.signOutUrl}?continue=${URLEncoder.encode(routes.KeepAliveController.timeout(journeyId, redirectUrl, origin).url, "UTF-8")}"
     )
 }
+@pageTitle = @{
+    if(formData.hasErrors) {
+        messages("passcodeform.error.title")
+    } else {
+        messages("passcodeform.title")
+    }
+}
 
 @layout(
-    pageTitle = Some(messages("passcodeform.title")),
+    pageTitle = Some(pageTitle),
     accessibilityStatementUrl = Some(journey.accessibilityStatementUrl),
     backUrl = journey.backUrl,
     serviceTitle = journey.serviceTitle,

@@ -54,7 +54,7 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
       result.status shouldBe OK
 
       val html = Jsoup.parse(result.body)
-      html.title shouldBe "What is your email address?"
+      html.title shouldBe "What is your email address? - Email Verification - GOV.UK"
 
       html.selectFirst(".hmrc-header__service-name").text         shouldBe "Service Name"
       html.selectFirst(".govuk-back-link").attr("href")           shouldBe "/back"
@@ -117,7 +117,7 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
 
         result.status shouldBe BAD_REQUEST
         val html = Jsoup.parse(result.body)
-        html.title                                shouldBe "What is your email address?"
+        html.title                                shouldBe "Error: What is your email address? - Email Verification - GOV.UK"
         html.getElementById("email-error").text() shouldBe "Error: Enter an email address in the correct format, like name@example.com"
       }
     }
@@ -341,7 +341,7 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
 
         result.status shouldBe OK
         val html = Jsoup.parse(result.body)
-        html.title shouldBe "Enter code to confirm your email address"
+        html.title shouldBe "Enter code to confirm your email address - Email Verification - GOV.UK"
 
         html.selectFirst(".hmrc-header__service-name").text         shouldBe "Service Name"
         html.selectFirst(".govuk-back-link").attr("href")           shouldBe "/back"
@@ -433,7 +433,7 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
         result.status shouldBe BAD_REQUEST
 
         val html = Jsoup.parse(result.body)
-        html.title                                   shouldBe "Enter code to confirm your email address"
+        html.title                                   shouldBe "Error: Enter code to confirm your email address - Email Verification - GOV.UK"
         html.getElementById("passcode-error").text() shouldBe "Error: Enter a valid security code."
       }
     }
@@ -471,7 +471,7 @@ class JourneyControllerWireMockSpec extends WireMockSpec {
         result.status shouldBe BAD_REQUEST
 
         val html = Jsoup.parse(result.body)
-        html.title                                   shouldBe "Enter code to confirm your email address"
+        html.title                                   shouldBe "Error: Enter code to confirm your email address - Email Verification - GOV.UK"
         html.getElementById("passcode-error").text() shouldBe "Error: Enter a valid security code."
       }
     }
