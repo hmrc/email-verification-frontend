@@ -2,18 +2,21 @@ service.name =
 service.homePageUrl =
 service.text =
 
-verify-email-address.error.heading=This link has expired
-verify-email-address.error.paragraph=For security reasons the link must be used within a time limit.
-continuebutton.label=Continue
-errorSummary.title=There is a problem
-emailform.title=What is your email address?
-emailform.heading=What is your email address?
-emailform.body=To confirm it is your email address we will send you a code.
-emailform.continuebutton=Continue
-emailform.error.invalidEmailFormat=Enter an email address in the correct format, like name@example.com
-emailform.input.label=Email address
+verify-email-address.error.heading   = This link has expired
+verify-email-address.error.paragraph = For security reasons the link must be used within a time limit.
+continuebutton.label                 = Continue
+errorSummary.title                   = There is a problem
 
-passcodeform.title       = Enter code to confirm your email address
+emailform.title                    = What is your email address? - Email Verification - GOV.UK
+emailform.error.title              = Error: What is your email address? - Email Verification - GOV.UK
+emailform.heading                  = What is your email address?
+emailform.body                     = To confirm it is your email address we will send you a code.
+emailform.continuebutton           = Continue
+emailform.error.invalidEmailFormat = Enter an email address in the correct format, like name@example.com
+emailform.input.label              = Email address
+
+passcodeform.title       = Enter code to confirm your email address - Email Verification - GOV.UK
+passcodeform.error.title = Error: Enter code to confirm your email address - Email Verification - GOV.UK
 passcodeform.heading     = Enter code to confirm your email address
 passcodeform.body        = We have sent a code to:
 passcodeform.body.new    = We have sent a new code to:

@@ -27,8 +27,16 @@
         journey: Option[Journey]
 )(implicit request: Request[_], messages: Messages)
 
+@pageTitle = @{
+    if(formData.hasErrors) {
+        messages("emailform.error.title")
+    } else {
+        messages("emailform.title")
+    }
+}
+
 @layout(
-    pageTitle = Some(messages("emailform.title")),
+    pageTitle = Some(pageTitle),
     accessibilityStatementUrl = journey.map(_.accessibilityStatementUrl),
     backUrl = journey.flatMap(_.backUrl),
     serviceTitle = journey.flatMap(_.serviceTitle),

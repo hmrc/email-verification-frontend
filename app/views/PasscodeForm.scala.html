@@ -31,6 +31,14 @@
 
 @(formData: Form[_])(implicit request: Request[_], messages: Messages)
 
+@pageTitle = @{
+    if(formData.hasErrors) {
+        messages("passcodeform.error.title")
+    } else {
+        messages("passcodeform.title")
+    }
+}
+
 @line2Complete = {
   @form(controllers.routes.EmailPasscodeController.submitEmailForm()) {
     @formInput(formData("email"),
@@ -48,7 +56,7 @@
   }
 }
 
-@layout(pageTitle = Some(messages("passcodeform.title"))){
+@layout(pageTitle = Some(pageTitle)){
   @errorSummary(formData)
   @heading("passcodeform.heading")
 
