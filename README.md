@@ -28,6 +28,10 @@ sm2 -stop EMAIL_VERIFICATION_FRONTEND
 sbt clean coverage test it/test coverageReport
 ```
 
+## External Integration test
+Run and update the external integration test as well.
+https://github.com/hmrc/email-verification-integration-tests
+
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")
