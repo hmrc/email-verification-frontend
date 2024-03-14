@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package test.emailverification
+package emailverification
 
 import java.util.{Base64, UUID}
 import com.github.tomakehurst.wiremock.client.WireMock._
