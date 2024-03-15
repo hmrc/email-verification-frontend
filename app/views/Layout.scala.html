@@ -18,15 +18,17 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import views.html.fragments.Head
 @import views.html.helper.CSPNonce
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, Banners, TemplateOverrides, ServiceURLs}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
 
 @this(
         appConfig: FrontendAppConfig,
-        govukLayout: HmrcLayout,
         head: Head,
         backLink: GovukBackLink,
         reportTechnicalIssue: HmrcReportTechnicalIssue,
         hmrcStandardHeader: HmrcStandardHeader,
-        hmrcStandardFooter: HmrcStandardFooter
+        hmrcStandardFooter: HmrcStandardFooter,
+        hmrcLayout: HmrcStandardPage
 )
 @(
         pageTitle: Option[String] = None,
@@ -40,15 +42,25 @@
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 
-    @govukLayout(
-        pageTitle = pageTitle,
-        additionalScriptsBlock = Some(scripts),
-        backLinkUrl = backUrl,
-        serviceName = serviceTitle,
-        accessibilityStatementUrl = accessibilityStatementUrl,
-        additionalHeadBlock = Option(head(headBlock)),
-        isWelshTranslationAvailable = true
-    ) {
+@hmrcLayout(
+HmrcStandardPageParams(
+serviceURLs = ServiceURLs(
+serviceUrl = None,
+signOutUrl = None,
+accessibilityStatementUrl = accessibilityStatementUrl
+),
+banners = Banners(
+displayHmrcBanner = false
+),
+templateOverrides = TemplateOverrides(
+additionalHeadBlock = Option(head(headBlock)),
+additionalScriptsBlock = Some(scripts),
+),
+serviceName = serviceTitle,
+pageTitle = pageTitle,
+isWelshTranslationAvailable = true,
+backLink = if (backUrl.isEmpty) None else Some(BackLink(href = backUrl.get))
+)) {
         @contentBlock
         @reportTechnicalIssue(ReportTechnicalIssue(deskproServiceName.getOrElse("email-verification-frontend"), language = if(messages.lang.language == "en") En else Cy))
     }
