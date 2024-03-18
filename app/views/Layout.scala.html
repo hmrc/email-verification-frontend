@@ -23,12 +23,12 @@
 
 @this(
         appConfig: FrontendAppConfig,
-        hmrcStandardFooter: HmrcStandardFooter,
         hmrcLayout: HmrcStandardPage,
         head: Head,
         backLink: GovukBackLink,
         reportTechnicalIssue: HmrcReportTechnicalIssue,
         hmrcStandardHeader: HmrcStandardHeader,
+        hmrcStandardFooter: HmrcStandardFooter
 )
 @(
         pageTitle: Option[String] = None,
@@ -44,11 +44,11 @@
 
 @hmrcLayout(
     HmrcStandardPageParams(
-serviceURLs = ServiceURLs(
+        serviceURLs = ServiceURLs(
             serviceUrl = None,
             signOutUrl = None,
             accessibilityStatementUrl = accessibilityStatementUrl
-),
+        ),
         banners = Banners(
             displayHmrcBanner = false
         ),
@@ -58,7 +58,7 @@ serviceURLs = ServiceURLs(
         ),
         serviceName = serviceTitle,
         pageTitle = pageTitle,
-isWelshTranslationAvailable = true,
+        isWelshTranslationAvailable = true,
         backLink = if (backUrl.isEmpty) None else Some(BackLink(href = backUrl.get))
     )) {
         @contentBlock
