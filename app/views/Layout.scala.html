@@ -23,12 +23,12 @@
 
 @this(
         appConfig: FrontendAppConfig,
+        hmrcLayout: HmrcStandardPage,
         head: Head,
         backLink: GovukBackLink,
         reportTechnicalIssue: HmrcReportTechnicalIssue,
         hmrcStandardHeader: HmrcStandardHeader,
-        hmrcStandardFooter: HmrcStandardFooter,
-        hmrcLayout: HmrcStandardPage
+        hmrcStandardFooter: HmrcStandardFooter
 )
 @(
         pageTitle: Option[String] = None,
@@ -43,24 +43,24 @@
 
 
 @hmrcLayout(
-HmrcStandardPageParams(
-serviceURLs = ServiceURLs(
-serviceUrl = None,
-signOutUrl = None,
-accessibilityStatementUrl = accessibilityStatementUrl
-),
-banners = Banners(
-displayHmrcBanner = false
-),
-templateOverrides = TemplateOverrides(
-additionalHeadBlock = Option(head(headBlock)),
-additionalScriptsBlock = Some(scripts),
-),
-serviceName = serviceTitle,
-pageTitle = pageTitle,
-isWelshTranslationAvailable = true,
-backLink = if (backUrl.isEmpty) None else Some(BackLink(href = backUrl.get))
-)) {
+    HmrcStandardPageParams(
+        serviceURLs = ServiceURLs(
+            serviceUrl = None,
+            signOutUrl = None,
+            accessibilityStatementUrl = accessibilityStatementUrl
+        ),
+        banners = Banners(
+            displayHmrcBanner = false
+        ),
+        templateOverrides = TemplateOverrides(
+            additionalHeadBlock = Option(head(headBlock)),
+            additionalScriptsBlock = Some(scripts),
+        ),
+        serviceName = serviceTitle,
+        pageTitle = pageTitle,
+        isWelshTranslationAvailable = true,
+        backLink = if (backUrl.isEmpty) None else Some(BackLink(href = backUrl.get))
+    )) {
         @contentBlock
         @reportTechnicalIssue(ReportTechnicalIssue(deskproServiceName.getOrElse("email-verification-frontend"), language = if(messages.lang.language == "en") En else Cy))
     }
