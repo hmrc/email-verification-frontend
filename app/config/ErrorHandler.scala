@@ -16,17 +16,25 @@
 
 package config
 
-import javax.inject.Inject
 import play.api.i18n.MessagesApi
-import play.api.mvc.Request
+import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.Views
 
-class ErrorHandler @Inject() (
-  views:           Views,
-  val messagesApi: MessagesApi
-) extends FrontendErrorHandler {
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    views.errorTemplate(pageTitle, heading, message)
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
+
+class ErrorHandler @Inject() (views: Views, val messagesApi: MessagesApi)(implicit val ec: ExecutionContext) extends FrontendErrorHandler {
+
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
+    Future.successful(
+      views.errorTemplate(
+        pageTitle,
+        heading,
+        message
+      )
+    )
+  }
+
 }

@@ -83,7 +83,7 @@ class EmailPasscodeController @Inject() (
             .recoverWith {
               case _: EmailPasscodeException.MissingSessionId =>
                 logger.warn(s"Missing sessionId. $forwardedFor")
-                Future.successful(Unauthorized(errorHandler.internalServerErrorTemplate))
+                errorHandler.internalServerErrorTemplate.map(Unauthorized(_))
               case _: EmailPasscodeException.MaxNewEmailsExceeded =>
                 logger.info(s"Max permitted number of emails reached. $forwardedFor")
                 Future.successful(Redirect(routes.EmailPasscodeController.showEmailLimitReached(RedirectUrl(emailForm.continue))))
@@ -92,7 +92,7 @@ class EmailPasscodeController @Inject() (
                 Future.successful(Redirect(routes.EmailPasscodeController.showEmailAlreadyVerified(RedirectUrl(emailForm.continue))))
               case e: EmailPasscodeException.EmailVerificationServerError =>
                 logger.error(s"Request to email-verification to send passcode to email $obfuscatedEmailAddress failed. $forwardedFor", e)
-                Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+                errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
             }
         }
       )
@@ -110,13 +110,12 @@ class EmailPasscodeController @Inject() (
             .verifyPasscode(passcodeForm.email, passcodeForm.passcode)
             .map { _ =>
               logger.info(s"Email passcode for $obfuscatedEmailAddress verified")
-
               Redirect(routes.EmailPasscodeController.showSuccess(RedirectUrl(passcodeForm.continue)))
             }
             .recoverWith {
               case _: EmailPasscodeException.MissingSessionId =>
                 logger.warn(s"Missing sessionId. $forwardedFor")
-                Future.successful(Unauthorized(errorHandler.internalServerErrorTemplate))
+                errorHandler.internalServerErrorTemplate.map(Unauthorized(_))
               case _: EmailPasscodeException.IncorrectPasscode =>
                 logger.info(s"Passcode supplied for email $obfuscatedEmailAddress was incorrect. $forwardedFor")
                 Future.successful(
@@ -133,7 +132,7 @@ class EmailPasscodeController @Inject() (
                 Future.successful(Redirect(routes.EmailPasscodeController.showPasscodeLimitReached(RedirectUrl(passcodeForm.continue))))
               case e: EmailPasscodeException.EmailVerificationServerError =>
                 logger.error(s"Request to email-verification to verify passcode for email $obfuscatedEmailAddress failed. $forwardedFor", e)
-                Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+                errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
             }
         }
       )
