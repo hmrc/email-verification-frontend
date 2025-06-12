@@ -32,11 +32,6 @@ lazy val microservice = Project("email-verification-frontend", file("."))
       "uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text"
     )
   )
-  .settings(
-    resolvers ++= Seq(
-      Resolver.jcenterRepo
-    )
-  )
   .settings(PlayKeys.playDefaultPort := 9890)
   .settings(ScoverageSettings())
   .settings(
