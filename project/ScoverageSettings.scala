@@ -12,7 +12,7 @@ object ScoverageSettings {
   )
 
   def apply(): Seq[Setting[?]] = Seq(
-    ScoverageKeys.coverageMinimumStmtTotal := 77,
+    ScoverageKeys.coverageMinimumStmtTotal := 80,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";")
