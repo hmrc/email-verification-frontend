@@ -4,7 +4,7 @@ import sbt.*
 object AppDependencies {
 
   private val bootstrapVersion = "9.13.0"
-  private val playFrontendHmrcVersion = "11.13.0"
+  private val playFrontendHmrcVersion = "12.6.0"
 
   private val compile = Seq(
     ws,
