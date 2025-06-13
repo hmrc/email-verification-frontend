@@ -1,25 +1,21 @@
+import sbt.Setting
 import scoverage.ScoverageKeys
 
 object ScoverageSettings {
-  def apply() =   Seq(
-    ScoverageKeys.coverageExcludedPackages := Seq(
-      "<empty>",
-      "Reverse*",
-      "models/.data/..*",
-      "view.*",
-      ".*standardError*.*",
-      ".*govuk_wrapper*.*",
-      ".*main_template*.*",
-      "uk.gov.hmrc.BuildInfo",
-      "com.kenshoo.play.metrics*",
-      "testOnlyDoNotUseInAppConf.*",
-      "uk.gov.hmrc",
-      "uk.gov.hmrc.emailverification.controllers.javascript*",
-      "app.*",
-      "prod.*"
-    ).mkString(";"),
-    ScoverageKeys.coverageMinimumStmtTotal := 79,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true
+
+  val excludedPackages: Seq[String] = Seq(
+    "<empty>",
+    "Reverse.*",
+    ".*BuildInfo.*",
+    ".*Routes.*",
+    ".*RoutesPrefix.*"
   )
+
+  def apply(): Seq[Setting[?]] = Seq(
+    ScoverageKeys.coverageMinimumStmtTotal := 80,
+    ScoverageKeys.coverageFailOnMinimum := true,
+    ScoverageKeys.coverageHighlighting := true,
+    ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";")
+  )
+
 }

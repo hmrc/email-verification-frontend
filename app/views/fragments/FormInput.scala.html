@@ -15,8 +15,10 @@
  *@
 
 @import play.api.data.Field
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
 
 @this(govukInput:GovukInput)
+
 
 @(formField: Field,
   inputType: String = "",
@@ -46,7 +48,7 @@
         ),
         hint = if(hint.isEmpty) None else Some(Hint(content=Text(hint))),
         errorMessage = formField.error.map(x => ErrorMessage(content = Text(messages(x.message)))),
-        formGroupClasses = formGroupClasses,
+        formGroup = FormGroup(classes = Some(formGroupClasses)),
         classes = classes,
         autocomplete = if(autocomplete.isEmpty) None else Some(autocomplete),
         pattern = if(pattern.isEmpty) None else Some(pattern),

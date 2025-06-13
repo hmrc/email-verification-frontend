@@ -17,48 +17,37 @@
 package connectors
 
 import config.FrontendAppConfig
-
-import javax.inject.{Inject, Singleton}
-import models.{EmailPasscodeException, Journey, PasscodeRequest, PasscodeVerificationRequest}
+import models._
 import play.api.Logging
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
-case class VerificationToken(token: String)
-
-object VerificationToken {
-  implicit val writes: Writes[VerificationToken] = Json.writes[VerificationToken]
-}
-
 @Singleton
-class EmailVerificationConnector @Inject() (
-  http:              HttpClient,
-  frontendAppConfig: FrontendAppConfig
-)(implicit ec: ExecutionContext)
-    extends Logging {
+class EmailVerificationConnector @Inject() (http: HttpClientV2, frontendAppConfig: FrontendAppConfig)(implicit ec: ExecutionContext) extends Logging {
   private lazy val serviceUrl = frontendAppConfig.emailUrl
 
-  def verifyEmailAddress(token: String)(implicit headerCarrier: HeaderCarrier): Future[Unit] =
+  def verifyEmailAddress(token: String)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     http
-      .POST[VerificationToken, Either[UpstreamErrorResponse, Unit]](s"$serviceUrl/email-verification/verified-email-addresses",
-                                                                    VerificationToken(token),
-                                                                    Nil
-                                                                   )
+      .post(url"$serviceUrl/email-verification/verified-email-addresses")
+      .withBody(Json.toJson(VerificationToken(token)))
+      .execute[Either[UpstreamErrorResponse, Unit]]
       .map {
         case Left(err) => throw err
         case Right(_)  => ()
       }
+  }
 
   def requestPasscode(email: String, lang: String)(implicit hc: HeaderCarrier): Future[Unit] = {
     http
-      .POST[PasscodeRequest, HttpResponse](
-        s"$serviceUrl/email-verification/request-passcode",
-        PasscodeRequest(email, "email-verification-frontend", lang)
-      )
+      .post(url"$serviceUrl/email-verification/request-passcode")
+      .withBody(Json.toJson(PasscodeRequest(email, "email-verification-frontend", lang)))
+      .execute[HttpResponse]
       .map {
         case r @ HttpResponse(201, _, _) => ()
         case r @ HttpResponse(401, _, _) => throw EmailPasscodeException.MissingSessionId(r.body)
@@ -70,10 +59,9 @@ class EmailVerificationConnector @Inject() (
 
   def verifyPasscode(email: String, passcode: String)(implicit hc: HeaderCarrier): Future[Unit] = {
     http
-      .POST[PasscodeVerificationRequest, HttpResponse](
-        s"$serviceUrl/email-verification/verify-passcode",
-        PasscodeVerificationRequest(email, passcode)
-      )
+      .post(url"$serviceUrl/email-verification/verify-passcode")
+      .withBody(Json.toJson(PasscodeVerificationRequest(email, passcode)))
+      .execute[HttpResponse]
       .map {
         case HttpResponse(201, _, _)     => ()
         case HttpResponse(204, _, _)     => ()
@@ -86,10 +74,9 @@ class EmailVerificationConnector @Inject() (
 
   def submitEmail(journeyId: String, email: String)(implicit hc: HeaderCarrier): Future[SubmitEmailResponse] = {
     http
-      .POST[JsValue, HttpResponse](
-        s"$serviceUrl/email-verification/journey/$journeyId/email",
-        Json.obj("email" -> email)
-      )
+      .post(url"$serviceUrl/email-verification/journey/$journeyId/email")
+      .withBody(Json.obj("email" -> email))
+      .execute[HttpResponse]
       .map { response =>
         Try(response.json) match {
           case Success(json) =>
@@ -101,22 +88,25 @@ class EmailVerificationConnector @Inject() (
   }
 
   def resendPasscode(journeyId: String)(implicit hc: HeaderCarrier): Future[ResendPasscodeResponse] = {
-    http.POSTEmpty[HttpResponse](s"$serviceUrl/email-verification/journey/$journeyId/resend-passcode").map { response =>
-      Try(response.json) match {
-        case Success(json) =>
-          json.as[ResendPasscodeResponse]
-        case Failure(_) =>
-          throw UpstreamErrorResponse(s"Expected POST /journey/$journeyId/resend-passcode to return JSON; got: ${response.body}", response.status)
+    http
+      .post(url"$serviceUrl/email-verification/journey/$journeyId/resend-passcode")
+      .withBody(Json.obj())
+      .execute[HttpResponse]
+      .map { response =>
+        Try(response.json) match {
+          case Success(json) =>
+            json.as[ResendPasscodeResponse]
+          case Failure(_) =>
+            throw UpstreamErrorResponse(s"Expected POST /journey/$journeyId/resend-passcode to return JSON; got: ${response.body}", response.status)
+        }
       }
-    }
   }
 
   def validatePasscode(journeyId: String, passcode: String)(implicit hc: HeaderCarrier): Future[ValidatePasscodeResponse] = {
     http
-      .POST[JsValue, HttpResponse](
-        s"$serviceUrl/email-verification/journey/$journeyId/passcode",
-        Json.obj("passcode" -> passcode)
-      )
+      .post(url"$serviceUrl/email-verification/journey/$journeyId/passcode")
+      .withBody(Json.obj("passcode" -> passcode))
+      .execute[HttpResponse]
       .map { response =>
         Try(response.json) match {
           case Success(json) =>
@@ -128,66 +118,8 @@ class EmailVerificationConnector @Inject() (
   }
 
   def getJourney(journeyId: String)(implicit hc: HeaderCarrier): Future[Option[Journey]] = {
-    http.GET[Option[Journey]](s"$serviceUrl/email-verification/journey/$journeyId")
+    http
+      .get(url"$serviceUrl/email-verification/journey/$journeyId")
+      .execute[Option[Journey]]
   }
-}
-
-sealed trait SubmitEmailResponse
-object SubmitEmailResponse {
-  case object Accepted                            extends SubmitEmailResponse
-  case object JourneyNotFound                     extends SubmitEmailResponse
-  case class TooManyAttempts(continueUrl: String) extends SubmitEmailResponse
-
-  private val tooManyAttemptsReads: Reads[TooManyAttempts] = Json.reads[TooManyAttempts]
-
-  implicit val reads: Reads[SubmitEmailResponse] = (json: JsValue) =>
-    (json \ "status").validate[String].flatMap {
-      case "accepted"        => JsSuccess(SubmitEmailResponse.Accepted)
-      case "journeyNotFound" => JsSuccess(SubmitEmailResponse.JourneyNotFound)
-      case "tooManyAttempts" => tooManyAttemptsReads.reads(json)
-      case other             => JsError(s"unexpected SubmitEmailResponse `status` $other")
-    }
-}
-
-sealed trait ValidatePasscodeResponse
-object ValidatePasscodeResponse {
-  case class Complete(continueUrl: String)        extends ValidatePasscodeResponse
-  case class IncorrectPasscode(journey: Journey)  extends ValidatePasscodeResponse
-  case class TooManyAttempts(continueUrl: String) extends ValidatePasscodeResponse
-  case object JourneyNotFound                     extends ValidatePasscodeResponse
-
-  private val completeReads:          Reads[Complete] = Json.reads[Complete]
-  private val incorrectPasscodeReads: Reads[IncorrectPasscode] = Json.reads[IncorrectPasscode]
-  private val tooManyAttemptsReads:   Reads[TooManyAttempts] = Json.reads[TooManyAttempts]
-
-  implicit val reads: Reads[ValidatePasscodeResponse] = (json: JsValue) =>
-    (json \ "status").validate[String].flatMap {
-      case "complete"          => completeReads.reads(json)
-      case "incorrectPasscode" => incorrectPasscodeReads.reads(json)
-      case "tooManyAttempts"   => tooManyAttemptsReads.reads(json)
-      case "journeyNotFound"   => JsSuccess(ValidatePasscodeResponse.JourneyNotFound)
-      case other               => JsError(s"unexpected ValidatePasscodeResponse `status` $other")
-    }
-}
-
-sealed trait ResendPasscodeResponse
-object ResendPasscodeResponse {
-  case object PasscodeResent                               extends ResendPasscodeResponse
-  case object JourneyNotFound                              extends ResendPasscodeResponse
-  case object NoEmailProvided                              extends ResendPasscodeResponse
-  case class TooManyAttemptsInSession(continueUrl: String) extends ResendPasscodeResponse
-  case class TooManyAttemptsForEmail(journey: Journey)     extends ResendPasscodeResponse
-
-  private val tooManyAttemptsInSessionReads: Reads[TooManyAttemptsInSession] = Json.reads[TooManyAttemptsInSession]
-  private val tooManyAttemptsForEmail:       Reads[TooManyAttemptsForEmail] = Json.reads[TooManyAttemptsForEmail]
-
-  implicit val reads: Reads[ResendPasscodeResponse] = (json: JsValue) =>
-    (json \ "status").validate[String].flatMap {
-      case "passcodeResent"           => JsSuccess(PasscodeResent)
-      case "tooManyAttemptsInSession" => tooManyAttemptsInSessionReads.reads(json)
-      case "tooManyAttemptsForEmail"  => tooManyAttemptsForEmail.reads(json)
-      case "journeyNotFound"          => JsSuccess(ResendPasscodeResponse.JourneyNotFound)
-      case "noEmailProvided"          => JsSuccess(NoEmailProvided)
-      case other                      => JsError(s"unexpected ResendPasscodeResponse `status` $other")
-    }
 }

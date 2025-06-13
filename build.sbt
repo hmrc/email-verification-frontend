@@ -2,7 +2,7 @@ import uk.gov.hmrc.DefaultBuildSettings
 import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings}
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "2.13.16"
 //ThisBuild / Test / fork := true //Required to prevent https://github.com/sbt/sbt/issues/4609
 ThisBuild / scalafmtOnCompile := true
 ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
@@ -30,11 +30,6 @@ lazy val microservice = Project("email-verification-frontend", file("."))
       "uk.gov.hmrc.govukfrontend.views.html.components._",
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
       "uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text"
-    )
-  )
-  .settings(
-    resolvers ++= Seq(
-      Resolver.jcenterRepo
     )
   )
   .settings(PlayKeys.playDefaultPort := 9890)

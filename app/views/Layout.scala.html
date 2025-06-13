@@ -39,7 +39,7 @@
         serviceTitle: Option[String] = None,
         additionalScripts: Option[Html] = None,
         headBlock: Option[Html] = None
-)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 
 @hmrcLayout(

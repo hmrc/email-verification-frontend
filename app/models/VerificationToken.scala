@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,10 @@
 
 package models
 
-import play.api.libs.json.{Json, Reads, Writes}
+import play.api.libs.json.{Json, Writes}
 
-case class Journey(
-  accessibilityStatementUrl: String,
-  deskproServiceName:        String,
-  enterEmailUrl:             Option[String],
-  backUrl:                   Option[String],
-  serviceTitle:              Option[String],
-  emailAddress:              Option[String]
-)
+case class VerificationToken(token: String)
 
-object Journey {
-  implicit val reads:  Reads[Journey] = Json.reads[Journey]
-  implicit val writes: Writes[Journey] = Json.writes[Journey]
+object VerificationToken {
+  implicit val writes: Writes[VerificationToken] = Json.writes[VerificationToken]
 }

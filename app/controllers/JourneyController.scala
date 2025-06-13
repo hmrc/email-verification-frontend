@@ -17,8 +17,8 @@
 package controllers
 
 import config.{ErrorHandler, FrontendAppConfig}
-import connectors.{EmailVerificationConnector, ResendPasscodeResponse, SubmitEmailResponse, ValidatePasscodeResponse}
-import models.EmailForm
+import connectors.EmailVerificationConnector
+import models.{EmailForm, ResendPasscodeResponse, SubmitEmailResponse, ValidatePasscodeResponse}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.Views
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class JourneyController @Inject() (
   emailVerificationConnector: EmailVerificationConnector,
@@ -41,17 +41,19 @@ class JourneyController @Inject() (
     extends FrontendController(cc) {
 
   def enterEmail(journeyId: String, continueUrl: RedirectUrl, origin: String): Action[AnyContent] = Action.async { implicit request =>
-    emailVerificationConnector.getJourney(journeyId).map {
+    emailVerificationConnector.getJourney(journeyId).flatMap {
       case Some(journey) =>
-        Ok(
-          views.emailForm(
-            EmailForm.form,
-            routes.JourneyController.submitEmail(journeyId, continueUrl, origin),
-            Some(journey)
+        Future.successful(
+          Ok(
+            views.emailForm(
+              EmailForm.form.fill(EmailForm("", continueUrl.unsafeValue)),
+              routes.JourneyController.submitEmail(journeyId, continueUrl, origin),
+              Some(journey)
+            )
           )
         )
       case None =>
-        NotFound(errorHandler.notFoundTemplate)
+        errorHandler.notFoundTemplate.map(NotFound(_))
     }
   }
 
@@ -60,65 +62,74 @@ class JourneyController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          emailVerificationConnector.getJourney(journeyId).map {
+          emailVerificationConnector.getJourney(journeyId).flatMap {
             case Some(journey) =>
-              BadRequest(views.emailForm(formWithErrors, routes.JourneyController.submitEmail(journeyId, continueUrl, origin), Some(journey)))
+              Future.successful(
+                BadRequest(views.emailForm(formWithErrors, routes.JourneyController.submitEmail(journeyId, continueUrl, origin), Some(journey)))
+              )
             case None =>
-              NotFound(errorHandler.notFoundTemplate)
+              errorHandler.notFoundTemplate.map(NotFound(_))
           },
         form =>
-          emailVerificationConnector.submitEmail(journeyId, form.email).map {
+          emailVerificationConnector.submitEmail(journeyId, form.email).flatMap {
             case SubmitEmailResponse.Accepted =>
-              Redirect(routes.JourneyController.enterPasscode(journeyId, continueUrl, origin, None))
+              Future.successful(
+                Redirect(routes.JourneyController.enterPasscode(journeyId, continueUrl, origin, None))
+              )
             case SubmitEmailResponse.JourneyNotFound =>
-              NotFound(errorHandler.notFoundTemplate)
+              errorHandler.notFoundTemplate.map(NotFound(_))
             case SubmitEmailResponse.TooManyAttempts(continueUrl) =>
               val validated = RedirectUrl(continueUrl)
                 .get(OnlyRelative | PermitAllOnDev(environment))
                 .url
-
-              Forbidden(views.emailLimitReached(validated))
+              Future.successful(
+                Forbidden(views.emailLimitReached(validated))
+              )
           }
       )
   }
 
   def enterPasscode(journeyId: String, continueUrl: RedirectUrl, origin: String, requestedNew: Option[Boolean]): Action[AnyContent] = Action.async {
     implicit request =>
-      emailVerificationConnector.getJourney(journeyId).map {
+      emailVerificationConnector.getJourney(journeyId).flatMap {
         case Some(journey) =>
-          Ok(
-            views.hybridPasscodeForm(
-              passcodeForm,
-              journeyId,
-              continueUrl,
-              origin,
-              journey.enterEmailUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url),
-              journey,
-              requestedNew.getOrElse(false)
+          Future.successful(
+            Ok(
+              views.hybridPasscodeForm(
+                passcodeForm,
+                journeyId,
+                continueUrl,
+                origin,
+                journey.enterEmailUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url),
+                journey,
+                requestedNew.getOrElse(false)
+              )
             )
           )
         case None =>
-          NotFound(errorHandler.notFoundTemplate)
+          errorHandler.notFoundTemplate.map(NotFound(_))
       }
   }
 
   def resendPasscode(journeyId: String, continueUrl: RedirectUrl, origin: String): Action[AnyContent] = Action.async { implicit request =>
 
-    emailVerificationConnector.resendPasscode(journeyId).map {
+    emailVerificationConnector.resendPasscode(journeyId).flatMap {
       case ResendPasscodeResponse.PasscodeResent =>
-        Redirect(routes.JourneyController.enterPasscode(journeyId, continueUrl, origin, Some(true)))
+        Future.successful(
+          Redirect(routes.JourneyController.enterPasscode(journeyId, continueUrl, origin, Some(true)))
+        )
       case ResendPasscodeResponse.TooManyAttemptsForEmail(journey) =>
         val validated = continueUrl.get(OnlyRelative).url
-        Redirect(validated)
+        Future.successful(Redirect(validated))
       case ResendPasscodeResponse.TooManyAttemptsInSession(continueUrl) =>
         val validated = RedirectUrl(continueUrl)
           .get(OnlyRelative | PermitAllOnDev(environment))
           .url
-        Redirect(validated)
+        Future.successful(Redirect(validated))
       case ResendPasscodeResponse.JourneyNotFound =>
-        NotFound(errorHandler.notFoundTemplate)
+        errorHandler.notFoundTemplate.map(NotFound(_))
       case ResendPasscodeResponse.NoEmailProvided =>
-        InternalServerError(errorHandler.internalServerErrorTemplate)
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
     }
   }
 
@@ -127,23 +138,25 @@ class JourneyController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          emailVerificationConnector.getJourney(journeyId).map {
+          emailVerificationConnector.getJourney(journeyId).flatMap {
             case Some(journey) =>
-              BadRequest(
-                views.hybridPasscodeForm(
-                  formWithErrors,
-                  journeyId,
-                  continueUrl,
-                  origin,
-                  journey.enterEmailUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url),
-                  journey
+              Future.successful(
+                BadRequest(
+                  views.hybridPasscodeForm(
+                    formWithErrors,
+                    journeyId,
+                    continueUrl,
+                    origin,
+                    journey.enterEmailUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url),
+                    journey
+                  )
                 )
               )
             case None =>
-              NotFound(errorHandler.notFoundTemplate)
+              errorHandler.notFoundTemplate.map(NotFound(_))
           },
         passcode =>
-          emailVerificationConnector.validatePasscode(journeyId, passcode).map {
+          emailVerificationConnector.validatePasscode(journeyId, passcode).flatMap {
             case ValidatePasscodeResponse.Complete(redirectUri) =>
               val isLocalDevMachine: Boolean = appConfig.isAppRunningOnLocalDevMachine
               val policy =
@@ -151,20 +164,22 @@ class JourneyController @Inject() (
                 else if (isLocalDevMachine) UnsafePermitAll
                 else OnlyRelative | PermitAllOnDev(environment)
               val validated = RedirectUrl(redirectUri).get(policy).url
-              Redirect(validated)
+              Future.successful(Redirect(validated))
             case ValidatePasscodeResponse.IncorrectPasscode(journey) =>
-              BadRequest(
-                views.hybridPasscodeForm(
-                  passcodeForm.withError("passcode", "passcodeform.error.wrongPasscode"),
-                  journeyId,
-                  continueUrl,
-                  origin,
-                  journey.enterEmailUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url),
-                  journey
+              Future.successful(
+                BadRequest(
+                  views.hybridPasscodeForm(
+                    passcodeForm.withError("passcode", "passcodeform.error.wrongPasscode"),
+                    journeyId,
+                    continueUrl,
+                    origin,
+                    journey.enterEmailUrl.getOrElse(routes.JourneyController.enterEmail(journeyId, continueUrl, origin).url),
+                    journey
+                  )
                 )
               )
             case ValidatePasscodeResponse.JourneyNotFound =>
-              NotFound(errorHandler.notFoundTemplate)
+              errorHandler.notFoundTemplate.map(NotFound(_))
             case ValidatePasscodeResponse.TooManyAttempts(continueUrl) =>
               val isLocalDevMachine: Boolean = appConfig.isAppRunningOnLocalDevMachine
               val policy =
@@ -173,7 +188,7 @@ class JourneyController @Inject() (
                 else OnlyRelative | PermitAllOnDev(environment)
               val validated = RedirectUrl(continueUrl).get(policy).url
 
-              Redirect(validated)
+              Future.successful(Redirect(validated))
           }
       )
   }
