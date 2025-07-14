@@ -17,6 +17,7 @@
 package models
 
 import play.api.libs.json.{Json, Reads, Writes}
+import play.api.mvc.RequestHeader
 
 case class Journey(
   accessibilityStatementUrl: String,
@@ -24,8 +25,25 @@ case class Journey(
   enterEmailUrl:             Option[String],
   backUrl:                   Option[String],
   serviceTitle:              Option[String],
-  emailAddress:              Option[String]
-)
+  emailAddress:              Option[String],
+  labels:                    Option[MessageLabels]
+) {
+
+  def serviceTitleMessage(implicit request: RequestHeader): Option[String] = {
+
+    val isWelsh = request.cookies.get("PLAY_LANG").map(_.value).contains("cy")
+    val welshTitle = labels.flatMap(_.cy.pageTitle)
+    val englishTitle = labels.flatMap(_.en.pageTitle)
+
+    if (isWelsh && welshTitle.isDefined) {
+      welshTitle
+    } else if (englishTitle.isDefined) {
+      englishTitle
+    } else {
+      serviceTitle
+    }
+  }
+}
 
 object Journey {
   implicit val reads:  Reads[Journey] = Json.reads[Journey]

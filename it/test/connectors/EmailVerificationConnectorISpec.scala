@@ -426,7 +426,8 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
           enterEmailUrl             = Some("http://example.com/enter-email"),
           backUrl                   = Some("http://example.com/back"),
           serviceTitle              = Some("Test Service Title"),
-          emailAddress              = Some("testemail@email.com")
+          emailAddress              = Some("testemail@email.com"),
+          labels                    = None
         )
 
         stubFor(
@@ -485,7 +486,8 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
           enterEmailUrl             = Some("http://example.com/enter-email"),
           backUrl                   = Some("http://example.com/back"),
           serviceTitle              = Some("Test Service Title"),
-          emailAddress              = Some("testemail@email.com")
+          emailAddress              = Some("testemail@email.com"),
+          labels                    = None
         )
 
         stubFor(
@@ -561,7 +563,8 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
           enterEmailUrl             = Some("http://example.com/enter-email"),
           backUrl                   = Some("http://example.com/back"),
           serviceTitle              = Some("Test Service Title"),
-          emailAddress              = Some("testemail@email.com")
+          emailAddress              = Some("testemail@email.com"),
+          labels                    = None
         )
 
         stubFor(

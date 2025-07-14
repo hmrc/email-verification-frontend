@@ -46,7 +46,7 @@ class EmailVerificationControllerSpec extends UnitSpec {
       val result: Future[Result] = controller.verify(encryptedAndEncodedToken)(FakeRequest())
 
       status(result)         shouldBe 303
-      redirectLocation(result) should contain("/error")
+      redirectLocation(result) should contain(routes.ErrorController.showErrorPage.url)
     }
   }
 
