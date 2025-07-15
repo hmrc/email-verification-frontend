@@ -6,12 +6,14 @@ verify-email-address.error.heading=This link has expired
 verify-email-address.error.paragraph=For security reasons the link must be used within a time limit.
 continuebutton.label=Yn eich blaen
 errorSummary.title=Mae problem wedi codi
+
 emailform.title=Beth yw’ch cyfeiriad e-bost? - Dilysu E-bost - GOV.UK
 emailform.error.title=Gwall: Beth yw’ch cyfeiriad e-bost? - Dilysu E-bost - GOV.UK
 emailform.heading=Beth yw’ch cyfeiriad e-bost?
 emailform.body=I gadarnhau mai’ch cyfeiriad e-bost chi yw hwn, byddwn yn anfon cod atoch
 emailform.continuebutton=Yn eich blaen
 emailform.error.invalidEmailFormat=Nodwch gyfeiriad e-bost yn y fformat cywir, megis enw@enghraifft.com
+emailform.input.label=Cyfeiriad e-bost
 
 passcodeform.title=Nodwch y cod i gadarnhau’r cyfeiriad e-bost - Dilysu E-bost - GOV.UK
 passcodeform.error.title=Gwall: Nodwch y cod i gadarnhau’r cyfeiriad e-bost - Dilysu E-bost - GOV.UK

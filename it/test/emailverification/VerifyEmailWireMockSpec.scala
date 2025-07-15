@@ -16,17 +16,19 @@
 
 package emailverification
 
-import java.util.{Base64, UUID}
 import com.github.tomakehurst.wiremock.client.WireMock._
-import play.api.http.HeaderNames
-import play.api.libs.json.Json
-import play.api.test.Injecting
-import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
-import uk.gov.hmrc.gg.test.WireMockSpec
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.prop.TableDrivenPropertyChecks._
+import play.api.http.HeaderNames
+import play.api.libs.json.Json
+import play.api.test.Helpers._
+import play.api.test.Injecting
+import support.IntegrationBaseSpec
+import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 
-class VerifyEmailWireMockSpec extends WireMockSpec with Injecting {
+import java.util.{Base64, UUID}
+
+class VerifyEmailWireMockSpec extends IntegrationBaseSpec with Injecting {
   private val continueUrl = "/continue-url"
   private def jsonToken(token: String) = Json
     .obj(

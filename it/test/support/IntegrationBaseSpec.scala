@@ -38,8 +38,8 @@ import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
-import play.api.Mode.Test
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.ws.{WSClient, WSRequest}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext
@@ -56,10 +56,18 @@ trait IntegrationBaseSpec
   implicit lazy val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  def serviceConfig: Map[String, Any] = Map.empty
+  def serviceConfig: Map[String, Any] = Map(
+    "microservice.services.email-verification.port"      -> WireMockHelper.wireMockPort,
+    "microservice.services.email-verification-stub.port" -> WireMockHelper.wireMockPort
+  )
+
+  private val csrfIgnoreFlags = Map(
+    "play.filters.csrf.header.bypassHeaders.X-Requested-With" -> "*",
+    "play.filters.csrf.header.bypassHeaders.Csrf-Token"       -> "nocheck"
+  )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(serviceConfig)
+    .configure(serviceConfig ++ csrfIgnoreFlags)
     .build()
 
   override def beforeAll(): Unit = {
@@ -71,5 +79,11 @@ trait IntegrationBaseSpec
     stopWireMock()
     super.afterAll()
   }
+
+  def wsClient: WSClient = app.injector.instanceOf[WSClient]
+
+  def resource(resource: String) = s"http://localhost:$port$resource"
+
+  def resourceRequest(url: String): WSRequest = wsClient.url(resource(url)).withHttpHeaders("Csrf-Token" -> "nocheck")
 
 }

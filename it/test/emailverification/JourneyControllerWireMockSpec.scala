@@ -16,15 +16,17 @@
 
 package emailverification
 
-import org.jsoup.Jsoup
-import uk.gov.hmrc.gg.test.WireMockSpec
 import com.github.tomakehurst.wiremock.client.WireMock._
+import org.jsoup.Jsoup
+import org.scalatest.OptionValues.convertOptionToValuable
 import play.api.libs.json.Json
+import play.api.test.Helpers._
+import support.IntegrationBaseSpec
 
 import java.util.UUID
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 
-class JourneyControllerWireMockSpec extends WireMockSpec {
+class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
 
   "GET /journey/:journeyId/email" should {
     "return 200 OK and the email form" in new Setup {

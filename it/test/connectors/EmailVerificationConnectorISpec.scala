@@ -23,13 +23,9 @@ import models._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.Json
-import support.{IntegrationBaseSpec, WireMockHelper}
+import support.IntegrationBaseSpec
 
 class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutures with IntegrationPatience {
-
-  override def serviceConfig: Map[String, Any] = Map(
-    "microservice.services.email-verification.port" -> WireMockHelper.wireMockPort
-  )
 
   class Test {
     lazy val appConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
@@ -426,7 +422,8 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
           enterEmailUrl             = Some("http://example.com/enter-email"),
           backUrl                   = Some("http://example.com/back"),
           serviceTitle              = Some("Test Service Title"),
-          emailAddress              = Some("testemail@email.com")
+          emailAddress              = Some("testemail@email.com"),
+          labels                    = None
         )
 
         stubFor(
@@ -485,7 +482,8 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
           enterEmailUrl             = Some("http://example.com/enter-email"),
           backUrl                   = Some("http://example.com/back"),
           serviceTitle              = Some("Test Service Title"),
-          emailAddress              = Some("testemail@email.com")
+          emailAddress              = Some("testemail@email.com"),
+          labels                    = None
         )
 
         stubFor(
@@ -561,7 +559,8 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
           enterEmailUrl             = Some("http://example.com/enter-email"),
           backUrl                   = Some("http://example.com/back"),
           serviceTitle              = Some("Test Service Title"),
-          emailAddress              = Some("testemail@email.com")
+          emailAddress              = Some("testemail@email.com"),
+          labels                    = None
         )
 
         stubFor(

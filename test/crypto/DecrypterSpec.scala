@@ -16,16 +16,16 @@
 
 package crypto
 
-import java.util.UUID
-
 import ch.qos.logback.classic.Level
 import com.typesafe.config.ConfigFactory
 import controllers.Token
 import org.scalatest.LoneElement
-import play.api.Configuration
+import play.api.{Configuration, Logger}
+import support.UnitSpec
 import uk.gov.hmrc.crypto.{Crypted, PlainText, SymmetricCryptoFactory}
-import uk.gov.hmrc.gg.test.{LogCapturing, UnitSpec}
+import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
 
+import java.util.UUID
 import scala.util.Success
 
 class DecrypterSpec extends UnitSpec with LogCapturing with LoneElement {
@@ -36,7 +36,7 @@ class DecrypterSpec extends UnitSpec with LogCapturing with LoneElement {
     }
 
     "add a warning logging when deserialization fails" in new Setup {
-      withCaptureOfLoggingFrom[Decrypter] { logs =>
+      withCaptureOfLoggingFrom(Logger(decrypter.getClass)) { logs =>
         decrypter.decryptAs[Token](Crypted("foobar")).isFailure shouldBe true
 
         val warnLog = logs.filter(_.getLevel == Level.WARN).loneElement

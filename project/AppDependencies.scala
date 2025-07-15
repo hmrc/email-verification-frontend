@@ -3,8 +3,8 @@ import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapVersion = "9.13.0"
-  private val playFrontendHmrcVersion = "12.6.0"
+  private val bootstrapVersion = "9.14.0"
+  private val playFrontendHmrcVersion = "12.7.0"
 
   private val compile = Seq(
     ws,
@@ -13,7 +13,6 @@ object AppDependencies {
   )
 
   val test: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"                  %% "government-gateway-test-play-30" % "6.0.0"          % Test,
     "uk.gov.hmrc"                  %% "bootstrap-test-play-30"          % bootstrapVersion % Test,
     "com.fasterxml.jackson.module" %% "jackson-module-scala"            % "2.19.0"         % Test,
     "org.scalacheck"               %% "scalacheck"                      % "1.18.1"         % Test,
