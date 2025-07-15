@@ -22,7 +22,7 @@ import org.apache.commons.codec.binary.Base64.encodeBase64String
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import uk.gov.hmrc.crypto.Crypted
-import uk.gov.hmrc.gg.test.UnitSpec
+import support.UnitSpec
 import uk.gov.hmrc.play.bootstrap.tools.Stubs
 
 import scala.concurrent.{ExecutionContext, Future}

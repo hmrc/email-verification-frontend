@@ -23,7 +23,7 @@ import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.{Call, Cookie}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import uk.gov.hmrc.gg.test.UnitSpec
+import support.UnitSpec
 import views.html.{EmailForm => EmailFormView}
 
 class EmailFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {

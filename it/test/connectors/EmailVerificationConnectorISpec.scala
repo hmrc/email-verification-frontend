@@ -23,13 +23,9 @@ import models._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.Json
-import support.{IntegrationBaseSpec, WireMockHelper}
+import support.IntegrationBaseSpec
 
 class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutures with IntegrationPatience {
-
-  override def serviceConfig: Map[String, Any] = Map(
-    "microservice.services.email-verification.port" -> WireMockHelper.wireMockPort
-  )
 
   class Test {
     lazy val appConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]

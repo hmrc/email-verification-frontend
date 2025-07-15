@@ -16,7 +16,6 @@
 
 package emailverification
 
-import java.util.UUID
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.FrontendAppConfig
@@ -27,13 +26,14 @@ import play.api.http.HeaderNames
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.DefaultWSCookie
+import play.api.test.Helpers._
 import play.api.test.Injecting
-import uk.gov.hmrc.gg.test.WireMockSpec
-import uk.gov.hmrc.play.it.SessionCookieEncryptionSupport
+import support.{IntegrationBaseSpec, SessionCookieEncryptionSupport}
 
+import java.util.UUID
 import scala.jdk.CollectionConverters._
 
-class EmailPasscodeWireMockSpec extends WireMockSpec with Injecting with SessionCookieEncryptionSupport with TableDrivenPropertyChecks {
+class EmailPasscodeWireMockSpec extends IntegrationBaseSpec with Injecting with SessionCookieEncryptionSupport with TableDrivenPropertyChecks {
 
   val messagesEn = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
   val messagesCy = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("cy")))
