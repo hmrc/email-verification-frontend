@@ -61,6 +61,7 @@ class EmailFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
 
         val document = Jsoup.parse(renderedView.body)
         document.select(".govuk-header__service-name").text() shouldBe "WelshTitle"
+        document.select("label[for=email]").text()            shouldBe "Cyfeiriad e-bost"
       }
     }
 
@@ -159,6 +160,7 @@ class EmailFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
 
         val document = Jsoup.parse(renderedView.body)
         document.select(".govuk-header__service-name").text() shouldBe "EnglishTitle"
+        document.select("label[for=email]").text()            shouldBe "Email address"
       }
     }
 
