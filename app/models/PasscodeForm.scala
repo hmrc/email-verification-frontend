@@ -16,17 +16,13 @@
 
 package models
 
-import play.api.data.Form
-import play.api.data.Forms.{mapping, text}
-
-case class PasscodeForm(email: String, passcode: String, continue: String)
+import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
 
 object PasscodeForm {
-  val form: Form[PasscodeForm] = Form(
-    mapping(
-      "email"    -> text,
-      "passcode" -> text.verifying("passcodeform.error.invalidFormat", _.matches("^[BCDFGHJKLMNPQRSTVWXYZ]{6}$")),
-      "continue" -> text
-    )(PasscodeForm.apply)(PasscodeForm.unapply)
+  val form: Form[String] = Form(
+    Forms.single(
+      "passcode" -> text.verifying("passcodeform.error.invalidFormat", _.matches("^[BCDFGHJKLMNPQRSTVWXYZ]{6}$"))
+    )
   )
 }

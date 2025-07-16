@@ -18,9 +18,7 @@ package controllers
 
 import config.{ErrorHandler, FrontendAppConfig}
 import connectors.EmailVerificationConnector
-import models.{EmailForm, ResendPasscodeResponse, SubmitEmailResponse, ValidatePasscodeResponse}
-import play.api.data.Forms.text
-import play.api.data.{Form, Forms}
+import models._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Environment, Mode}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
@@ -39,6 +37,8 @@ class JourneyController @Inject() (
   environment:                Environment
 )(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
     extends FrontendController(cc) {
+
+  private val passcodeForm = PasscodeForm.form
 
   def enterEmail(journeyId: String, continueUrl: RedirectUrl, origin: String): Action[AnyContent] = Action.async { implicit request =>
     emailVerificationConnector.getJourney(journeyId).flatMap {
@@ -192,10 +192,4 @@ class JourneyController @Inject() (
           }
       )
   }
-
-  private def passcodeForm: Form[String] = Form(
-    Forms.single(
-      "passcode" -> text.verifying("passcodeform.error.invalidFormat", _.matches("^[BCDFGHJKLMNPQRSTVWXYZ]{6}$"))
-    )
-  )
 }
