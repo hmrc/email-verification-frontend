@@ -16,32 +16,13 @@
 
 package views
 
-import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.mvc.Request
-import play.twirl.api.Html
-
 import javax.inject.Inject
-import scala.util.{Failure, Success, Try}
 
 class Views @Inject() (
-  val errorTemplate:        views.html.MessagePage,
-  val verifyError:          views.html.verify_error,
-  val emailForm:            views.html.EmailForm,
-  val passcodeForm:         views.html.PasscodeForm,
-  val hybridPasscodeForm:   views.html.HybridPasscodeForm,
-  val timeoutPage:          views.html.TimeoutPage,
-  val success:              views.html.Success,
-  val emailAlreadyVerified: views.html.EmailAlreadyVerified,
-  val emailLimitReached:    views.html.EmailLimitReached,
-  val passcodeLimitReached: views.html.PasscodeLimitReached
-) {
-  def render(view: String, form: Form[_])(implicit request: Request[_], messages: Messages): Try[Html] = {
-    view match {
-      case "passcodeForm" =>
-        Success(passcodeForm(form))
-      case _ =>
-        Failure(new IllegalArgumentException(s"Invalid view name: $view"))
-    }
-  }
-}
+  val errorTemplate:      views.html.MessagePage,
+  val verifyError:        views.html.verify_error,
+  val emailForm:          views.html.EmailForm,
+  val hybridPasscodeForm: views.html.HybridPasscodeForm,
+  val timeoutPage:        views.html.TimeoutPage,
+  val emailLimitReached:  views.html.EmailLimitReached
+)
