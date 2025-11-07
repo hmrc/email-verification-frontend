@@ -43,6 +43,7 @@ class EmailVerificationConnector @Inject() (http: HttpClientV2, frontendAppConfi
       }
   }
 
+  /* TODO only referenced in tests */
   def requestPasscode(email: String, lang: String)(implicit hc: HeaderCarrier): Future[Unit] = {
     http
       .post(url"$serviceUrl/email-verification/request-passcode")

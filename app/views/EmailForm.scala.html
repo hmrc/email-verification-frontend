@@ -40,7 +40,8 @@
     accessibilityStatementUrl = journey.map(_.accessibilityStatementUrl),
     backUrl = journey.flatMap(_.backUrl),
     serviceTitle = journey.flatMap(_.serviceTitleMessage),
-    deskproServiceName = journey.map(_.deskproServiceName)
+    deskproServiceName = journey.map(_.deskproServiceName),
+    overrideServiceNavigation = journey.exists(_.forceServiceNavigation)
 ) {
     @errorSummary(formData)
     @heading("emailform.heading")

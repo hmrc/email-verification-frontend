@@ -20,13 +20,14 @@ import play.api.libs.json.{Json, Reads, Writes}
 import play.api.mvc.RequestHeader
 
 case class Journey(
-  accessibilityStatementUrl: String,
-  deskproServiceName:        String,
-  enterEmailUrl:             Option[String],
-  backUrl:                   Option[String],
-  serviceTitle:              Option[String],
-  emailAddress:              Option[String],
-  labels:                    Option[MessageLabels]
+  accessibilityStatementUrl:    String,
+  deskproServiceName:           String,
+  enterEmailUrl:                Option[String],
+  backUrl:                      Option[String],
+  serviceTitle:                 Option[String],
+  emailAddress:                 Option[String],
+  labels:                       Option[MessageLabels],
+  useNewGovUkServiceNavigation: Boolean
 ) {
 
   def serviceTitleMessage(implicit request: RequestHeader): Option[String] = {
