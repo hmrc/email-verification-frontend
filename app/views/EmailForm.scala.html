@@ -14,12 +14,13 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
 @import views.html.Layout
 @import views.html.fragments.Heading
 @import views.html.fragments.ErrorSummary
 @import views.html.fragments.FormInput
 
-@this(form: FormWithCSRF, layout: Layout, heading: Heading, errorSummary: ErrorSummary, formInput: FormInput)
+@this(appConfig: FrontendAppConfig, form: FormWithCSRF, layout: Layout, heading: Heading, errorSummary: ErrorSummary, formInput: FormInput)
 
 @(
         formData: Form[_],
@@ -40,7 +41,8 @@
     accessibilityStatementUrl = journey.map(_.accessibilityStatementUrl),
     backUrl = journey.flatMap(_.backUrl),
     serviceTitle = journey.flatMap(_.serviceTitleMessage),
-    deskproServiceName = journey.map(_.deskproServiceName)
+    deskproServiceName = journey.map(_.deskproServiceName),
+    journey = journey,
 ) {
     @errorSummary(formData)
     @heading("emailform.heading")

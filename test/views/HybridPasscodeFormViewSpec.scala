@@ -57,7 +57,8 @@ class HybridPasscodeFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
                 en = MessageLabel(pageTitle = Some("EnglishTitle"), userFacingServiceName = Some("EnglishServiceName")),
                 cy = MessageLabel(pageTitle = Some("WelshTitle"), userFacingServiceName = Some("WelshServiceName"))
               )
-            )
+            ),
+            useNewGovUkServiceNavigation = false
           )
         )(FakeRequest().withCookies(Cookie("PLAY_LANG", "cy")), messages)
 
@@ -90,7 +91,8 @@ class HybridPasscodeFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
                   en = MessageLabel(pageTitle = Some("EnglishTitle"), userFacingServiceName = Some("EnglishServiceName")),
                   cy = MessageLabel(pageTitle = None, userFacingServiceName = None)
                 )
-              )
+              ),
+              useNewGovUkServiceNavigation = false
             )
           )(FakeRequest().withCookies(Cookie("PLAY_LANG", "cy")), messages)
 
@@ -121,7 +123,8 @@ class HybridPasscodeFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
                   en = MessageLabel(pageTitle = None, userFacingServiceName = None),
                   cy = MessageLabel(pageTitle = None, userFacingServiceName = None)
                 )
-              )
+              ),
+              useNewGovUkServiceNavigation = false
             )
           )(FakeRequest().withCookies(Cookie("PLAY_LANG", "cy")), messages)
 
@@ -158,7 +161,8 @@ class HybridPasscodeFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
                 en = MessageLabel(pageTitle = Some("EnglishTitle"), userFacingServiceName = Some("EnglishServiceName")),
                 cy = MessageLabel(pageTitle = Some("WelshTitle"), userFacingServiceName = Some("WelshServiceName"))
               )
-            )
+            ),
+            useNewGovUkServiceNavigation = false
           )
         )(FakeRequest().withCookies(Cookie("PLAY_LANG", "en")), messages)
 
@@ -178,13 +182,14 @@ class HybridPasscodeFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
           "origin",
           "enterEmailUrl",
           Journey(
-            accessibilityStatementUrl = "/a11y",
-            deskproServiceName        = "deskproName",
-            enterEmailUrl             = None,
-            backUrl                   = None,
-            serviceTitle              = Some("serviceTitle"),
-            emailAddress              = None,
-            labels                    = None
+            accessibilityStatementUrl    = "/a11y",
+            deskproServiceName           = "deskproName",
+            enterEmailUrl                = None,
+            backUrl                      = None,
+            serviceTitle                 = Some("serviceTitle"),
+            emailAddress                 = None,
+            labels                       = None,
+            useNewGovUkServiceNavigation = false
           )
         )(FakeRequest().withCookies(Cookie("PLAY_LANG", "en")), messages)
 

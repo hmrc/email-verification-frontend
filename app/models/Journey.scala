@@ -16,17 +16,19 @@
 
 package models
 
+import config.FrontendAppConfig
 import play.api.libs.json.{Json, Reads, Writes}
 import play.api.mvc.RequestHeader
 
 case class Journey(
-  accessibilityStatementUrl: String,
-  deskproServiceName:        String,
-  enterEmailUrl:             Option[String],
-  backUrl:                   Option[String],
-  serviceTitle:              Option[String],
-  emailAddress:              Option[String],
-  labels:                    Option[MessageLabels]
+  accessibilityStatementUrl:    String,
+  deskproServiceName:           String,
+  enterEmailUrl:                Option[String],
+  backUrl:                      Option[String],
+  serviceTitle:                 Option[String],
+  emailAddress:                 Option[String],
+  labels:                       Option[MessageLabels],
+  useNewGovUkServiceNavigation: Boolean
 ) {
 
   def serviceTitleMessage(implicit request: RequestHeader): Option[String] = {
@@ -43,6 +45,9 @@ case class Journey(
       serviceTitle
     }
   }
+
+  def disableServiceNavigation(appConfig: FrontendAppConfig): Boolean =
+    !appConfig.forceServiceNavigation(this)
 }
 
 object Journey {

@@ -16,6 +16,7 @@
 
 package config
 
+import models.Journey
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -33,6 +34,12 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val googleTagManagerId:          String = configuration.get[String]("google-tag-manager.id")
 
   lazy val emailUrl: String = servicesConfig.baseUrl("email-verification")
+
+  lazy val defaultForceServiceNavigation: Boolean =
+    configuration.getOptional[Boolean]("play-frontend-hmrc.forceServiceNavigation").getOrElse(false)
+
+  def forceServiceNavigation(journey: Journey): Boolean =
+    journey.useNewGovUkServiceNavigation && defaultForceServiceNavigation
 
   lazy val mdtpInternalDomains: Set[String] = servicesConfig.getString("mdtp.internalDomains").split(",").toSet
 
