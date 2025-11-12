@@ -58,17 +58,17 @@
             additionalHeadBlock = headBlock,
             additionalScriptsBlock = Some(scripts),
         ),
-        serviceName = if (!forceNavigation) serviceTitle else None,
+        serviceName = if (forceNavigation) None else serviceTitle,
         pageTitle = pageTitle,
-        isWelshTranslationAvailable = true,
+        isWelshTranslationAvailable = if (forceNavigation) false else true,
         backLink = if (backUrl.isEmpty) None else Some(BackLink(href = backUrl.get)),
         serviceNavigation = if (forceNavigation) {
-            None
-        } else {
             Some(
-                ServiceNavigation(serviceName = serviceTitle))
-            }
-
+                ServiceNavigation(serviceName = serviceTitle).withLanguageToggle()
+            )
+        } else {
+            None
+        }
     )) {
         @contentBlock
         @reportTechnicalIssue(ReportTechnicalIssue(deskproServiceName.getOrElse("email-verification-frontend"), language = if(messages.lang.language == "en") En else Cy))

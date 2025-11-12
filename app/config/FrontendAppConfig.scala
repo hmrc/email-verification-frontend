@@ -35,11 +35,11 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   lazy val emailUrl: String = servicesConfig.baseUrl("email-verification")
 
-  lazy val defaultForceServiceNavigation: Boolean =
-    configuration.getOptional[Boolean]("play-frontend-hmrc.forceServiceNavigation").getOrElse(false)
+  private lazy val serviceNavigationFeatureEnabled: Boolean =
+    configuration.getOptional[Boolean]("features.forceServiceNavigation").getOrElse(false)
 
   def forceServiceNavigation(journey: Journey): Boolean =
-    journey.useNewGovUkServiceNavigation && defaultForceServiceNavigation
+    serviceNavigationFeatureEnabled && journey.useNewGovUkServiceNavigation
 
   lazy val mdtpInternalDomains: Set[String] = servicesConfig.getString("mdtp.internalDomains").split(",").toSet
 
