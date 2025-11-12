@@ -36,11 +36,12 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
             okJson(
               Json
                 .obj(
-                  "enterEmailUrl"             -> "/enterEmail",
-                  "accessibilityStatementUrl" -> "/accessibility",
-                  "deskproServiceName"        -> "service-name",
-                  "backUrl"                   -> "/back",
-                  "serviceTitle"              -> "Service Name"
+                  "enterEmailUrl"                -> "/enterEmail",
+                  "accessibilityStatementUrl"    -> "/accessibility",
+                  "deskproServiceName"           -> "service-name",
+                  "backUrl"                      -> "/back",
+                  "serviceTitle"                 -> "Service Name",
+                  "useNewGovUkServiceNavigation" -> false
                 )
                 .toString
             )
@@ -53,6 +54,7 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
           .addQueryStringParameters("origin" -> "oranges")
           .get()
       )
+
       result.status shouldBe OK
 
       val html = Jsoup.parse(result.body)
@@ -98,11 +100,12 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
               okJson(
                 Json
                   .obj(
-                    "enterEmailUrl"             -> "/enterEmail",
-                    "accessibilityStatementUrl" -> "/accessibility",
-                    "deskproServiceName"        -> "service-name",
-                    "backUrl"                   -> "/back",
-                    "serviceTitle"              -> "Service Name"
+                    "enterEmailUrl"                -> "/enterEmail",
+                    "accessibilityStatementUrl"    -> "/accessibility",
+                    "deskproServiceName"           -> "service-name",
+                    "backUrl"                      -> "/back",
+                    "serviceTitle"                 -> "Service Name",
+                    "useNewGovUkServiceNavigation" -> false
                   )
                   .toString
               )
@@ -218,12 +221,13 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
                   .obj(
                     "status" -> "tooManyAttemptsForEmail",
                     "journey" -> Json.obj(
-                      "enterEmailUrl"             -> "/enterEmail",
-                      "accessibilityStatementUrl" -> "/accessibility",
-                      "deskproServiceName"        -> "service-name",
-                      "backUrl"                   -> "/back",
-                      "serviceTitle"              -> "Service Name",
-                      "emailAddress"              -> "some@email.com"
+                      "enterEmailUrl"                -> "/enterEmail",
+                      "accessibilityStatementUrl"    -> "/accessibility",
+                      "deskproServiceName"           -> "service-name",
+                      "backUrl"                      -> "/back",
+                      "serviceTitle"                 -> "Service Name",
+                      "emailAddress"                 -> "some@email.com",
+                      "useNewGovUkServiceNavigation" -> false
                     )
                   )
                   .toString
@@ -321,12 +325,13 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
               okJson(
                 Json
                   .obj(
-                    "enterEmailUrl"             -> "/enterEmail",
-                    "accessibilityStatementUrl" -> "/accessibility",
-                    "deskproServiceName"        -> "service-name",
-                    "backUrl"                   -> "/back",
-                    "serviceTitle"              -> "Service Name",
-                    "emailAddress"              -> "some@email.com"
+                    "enterEmailUrl"                -> "/enterEmail",
+                    "accessibilityStatementUrl"    -> "/accessibility",
+                    "deskproServiceName"           -> "service-name",
+                    "backUrl"                      -> "/back",
+                    "serviceTitle"                 -> "Service Name",
+                    "emailAddress"                 -> "some@email.com",
+                    "useNewGovUkServiceNavigation" -> false
                   )
                   .toString
               )
@@ -413,11 +418,12 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
               okJson(
                 Json
                   .obj(
-                    "enterEmailUrl"             -> "/enterEmail",
-                    "accessibilityStatementUrl" -> "/accessibility",
-                    "deskproServiceName"        -> "service-name",
-                    "backUrl"                   -> "/back",
-                    "serviceTitle"              -> "Service Name"
+                    "enterEmailUrl"                -> "/enterEmail",
+                    "accessibilityStatementUrl"    -> "/accessibility",
+                    "deskproServiceName"           -> "service-name",
+                    "backUrl"                      -> "/back",
+                    "serviceTitle"                 -> "Service Name",
+                    "useNewGovUkServiceNavigation" -> false
                   )
                   .toString
               )
@@ -450,11 +456,12 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
                   .obj(
                     "status" -> "incorrectPasscode",
                     "journey" -> Json.obj(
-                      "enterEmailUrl"             -> "/enterEmail",
-                      "accessibilityStatementUrl" -> "/accessibility",
-                      "deskproServiceName"        -> "service-name",
-                      "backUrl"                   -> "/back",
-                      "serviceTitle"              -> "Service Name"
+                      "enterEmailUrl"                -> "/enterEmail",
+                      "accessibilityStatementUrl"    -> "/accessibility",
+                      "deskproServiceName"           -> "service-name",
+                      "backUrl"                      -> "/back",
+                      "serviceTitle"                 -> "Service Name",
+                      "useNewGovUkServiceNavigation" -> false
                     )
                   )
                   .toString
