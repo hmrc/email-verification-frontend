@@ -424,7 +424,7 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
           serviceTitle                 = Some("Test Service Title"),
           emailAddress                 = Some("testemail@email.com"),
           labels                       = None,
-          useNewGovUkServiceNavigation = false
+          useNewGovUkServiceNavigation = Some(false)
         )
 
         stubFor(
@@ -485,7 +485,7 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
           serviceTitle                 = Some("Test Service Title"),
           emailAddress                 = Some("testemail@email.com"),
           labels                       = None,
-          useNewGovUkServiceNavigation = false
+          useNewGovUkServiceNavigation = Some(false)
         )
 
         stubFor(
@@ -563,7 +563,7 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
           serviceTitle                 = Some("Test Service Title"),
           emailAddress                 = Some("testemail@email.com"),
           labels                       = None,
-          useNewGovUkServiceNavigation = false
+          useNewGovUkServiceNavigation = Some(false)
         )
 
         stubFor(

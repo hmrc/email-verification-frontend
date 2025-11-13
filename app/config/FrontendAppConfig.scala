@@ -39,7 +39,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
     configuration.getOptional[Boolean]("features.forceServiceNavigation").getOrElse(false)
 
   def forceServiceNavigation(journey: Journey): Boolean =
-    serviceNavigationFeatureEnabled && journey.useNewGovUkServiceNavigation
+    serviceNavigationFeatureEnabled && journey.useNewGovUkServiceNavigation.getOrElse(false)
 
   lazy val mdtpInternalDomains: Set[String] = servicesConfig.getString("mdtp.internalDomains").split(",").toSet
 

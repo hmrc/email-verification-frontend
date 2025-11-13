@@ -55,7 +55,7 @@ class EmailFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
                   cy = MessageLabel(pageTitle = Some("WelshTitle"), userFacingServiceName = Some("WelshServiceName"))
                 )
               ),
-              useNewGovUkServiceNavigation = false
+              useNewGovUkServiceNavigation = Some(false)
             )
           )
         )(FakeRequest().withCookies(Cookie("PLAY_LANG", "cy")), messages)
@@ -89,7 +89,7 @@ class EmailFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
                     cy = MessageLabel(pageTitle = None, userFacingServiceName = None)
                   )
                 ),
-                useNewGovUkServiceNavigation = false
+                useNewGovUkServiceNavigation = Some(false)
               )
             )
           )(FakeRequest().withCookies(Cookie("PLAY_LANG", "cy")), messages)
@@ -120,7 +120,7 @@ class EmailFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
                     cy = MessageLabel(pageTitle = None, userFacingServiceName = None)
                   )
                 ),
-                useNewGovUkServiceNavigation = false
+                useNewGovUkServiceNavigation = Some(false)
               )
             )
           )(FakeRequest().withCookies(Cookie("PLAY_LANG", "cy")), messages)
@@ -157,7 +157,7 @@ class EmailFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
                   cy = MessageLabel(pageTitle = Some("WelshTitle"), userFacingServiceName = Some("WelshServiceName"))
                 )
               ),
-              useNewGovUkServiceNavigation = false
+              useNewGovUkServiceNavigation = Some(false)
             )
           )
         )(FakeRequest().withCookies(Cookie("PLAY_LANG", "en")), messages)
@@ -184,7 +184,7 @@ class EmailFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
               serviceTitle                 = Some("serviceTitle"),
               emailAddress                 = None,
               labels                       = None,
-              useNewGovUkServiceNavigation = false
+              useNewGovUkServiceNavigation = Some(false)
             )
           )
         )(FakeRequest().withCookies(Cookie("PLAY_LANG", "en")), messages)
