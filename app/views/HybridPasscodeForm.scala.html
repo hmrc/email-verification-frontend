@@ -75,7 +75,8 @@
     serviceTitle = journey.serviceTitleMessage,
     deskproServiceName = Some(journey.deskproServiceName),
     additionalScripts = Some(additionalScripts),
-    headBlock = Some(timeoutDialog)
+    headBlock = Some(timeoutDialog),
+    journey = Some(journey)
 ) {
     @errorSummary(formData)
     @heading("passcodeform.heading")

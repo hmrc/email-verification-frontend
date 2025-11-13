@@ -15,6 +15,8 @@
  *@
 
 @import config.FrontendAppConfig
+@import models.Journey
+@import uk.gov.hmrc.govukfrontend.views.Implicits.RichServiceNavigation
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
@@ -35,10 +37,13 @@
         deskproServiceName: Option[String] = None,
         serviceTitle: Option[String] = None,
         additionalScripts: Option[Html] = None,
-        headBlock: Option[Html] = None
+        headBlock: Option[Html] = None,
+        journey: Option[Journey] = None
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
-
+@forceNavigation = @{
+    journey.exists(appConfig.forceServiceNavigation)
+}
 @hmrcLayout(
     HmrcStandardPageParams(
         serviceURLs = ServiceURLs(
@@ -53,10 +58,17 @@
             additionalHeadBlock = headBlock,
             additionalScriptsBlock = Some(scripts),
         ),
-        serviceName = serviceTitle,
+        serviceName = if (forceNavigation) None else serviceTitle,
         pageTitle = pageTitle,
-        isWelshTranslationAvailable = true,
-        backLink = if (backUrl.isEmpty) None else Some(BackLink(href = backUrl.get))
+        isWelshTranslationAvailable = if (forceNavigation) false else true,
+        backLink = if (backUrl.isEmpty) None else Some(BackLink(href = backUrl.get)),
+        serviceNavigation = if (forceNavigation) {
+            Some(
+                ServiceNavigation(serviceName = serviceTitle).withLanguageToggle()
+            )
+        } else {
+            None
+        }
     )) {
         @contentBlock
         @reportTechnicalIssue(ReportTechnicalIssue(deskproServiceName.getOrElse("email-verification-frontend"), language = if(messages.lang.language == "en") En else Cy))

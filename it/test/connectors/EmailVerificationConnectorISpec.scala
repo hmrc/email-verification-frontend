@@ -417,13 +417,14 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
 
       "return ResendPasscodeResponse with TooManyAttemptsForEmail when the service indicates too many attempts for email" in new Test {
         val expectedJourney: Journey = Journey(
-          accessibilityStatementUrl = "http://example.com/accessibility",
-          deskproServiceName        = "Test Service",
-          enterEmailUrl             = Some("http://example.com/enter-email"),
-          backUrl                   = Some("http://example.com/back"),
-          serviceTitle              = Some("Test Service Title"),
-          emailAddress              = Some("testemail@email.com"),
-          labels                    = None
+          accessibilityStatementUrl    = "http://example.com/accessibility",
+          deskproServiceName           = "Test Service",
+          enterEmailUrl                = Some("http://example.com/enter-email"),
+          backUrl                      = Some("http://example.com/back"),
+          serviceTitle                 = Some("Test Service Title"),
+          emailAddress                 = Some("testemail@email.com"),
+          labels                       = None,
+          useNewGovUkServiceNavigation = Some(false)
         )
 
         stubFor(
@@ -477,13 +478,14 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
 
       "return ValidatePasscodeResponse.IncorrectPasscode when the passcode is incorrect" in new Test {
         val expectedJourney: Journey = Journey(
-          accessibilityStatementUrl = "http://example.com/accessibility",
-          deskproServiceName        = "Test Service",
-          enterEmailUrl             = Some("http://example.com/enter-email"),
-          backUrl                   = Some("http://example.com/back"),
-          serviceTitle              = Some("Test Service Title"),
-          emailAddress              = Some("testemail@email.com"),
-          labels                    = None
+          accessibilityStatementUrl    = "http://example.com/accessibility",
+          deskproServiceName           = "Test Service",
+          enterEmailUrl                = Some("http://example.com/enter-email"),
+          backUrl                      = Some("http://example.com/back"),
+          serviceTitle                 = Some("Test Service Title"),
+          emailAddress                 = Some("testemail@email.com"),
+          labels                       = None,
+          useNewGovUkServiceNavigation = Some(false)
         )
 
         stubFor(
@@ -554,13 +556,14 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
 
       "return Some(Journey) when the journey is found" in new Test {
         val expectedJourney: Journey = Journey(
-          accessibilityStatementUrl = "http://example.com/accessibility",
-          deskproServiceName        = "Test Service",
-          enterEmailUrl             = Some("http://example.com/enter-email"),
-          backUrl                   = Some("http://example.com/back"),
-          serviceTitle              = Some("Test Service Title"),
-          emailAddress              = Some("testemail@email.com"),
-          labels                    = None
+          accessibilityStatementUrl    = "http://example.com/accessibility",
+          deskproServiceName           = "Test Service",
+          enterEmailUrl                = Some("http://example.com/enter-email"),
+          backUrl                      = Some("http://example.com/back"),
+          serviceTitle                 = Some("Test Service Title"),
+          emailAddress                 = Some("testemail@email.com"),
+          labels                       = None,
+          useNewGovUkServiceNavigation = Some(false)
         )
 
         stubFor(
