@@ -16,7 +16,6 @@
 
 package models
 
-import config.FrontendAppConfig
 import play.api.libs.json.{Json, Reads, Writes}
 import play.api.mvc.RequestHeader
 
@@ -45,9 +44,6 @@ case class Journey(
       serviceTitle
     }
   }
-
-  def disableServiceNavigation(appConfig: FrontendAppConfig): Boolean =
-    !appConfig.forceServiceNavigation(this)
 }
 
 object Journey {
