@@ -58,35 +58,35 @@ class JourneyController @Inject() (
   }
 
   def submitEmail(journeyId: String, continueUrl: RedirectUrl, origin: String): Action[AnyContent] = Action.async { implicit request =>
-    EmailForm.form
-      .bindFromRequest()
-      .fold(
-        formWithErrors =>
-          emailVerificationConnector.getJourney(journeyId).flatMap {
-            case Some(journey) =>
+    emailVerificationConnector.getJourney(journeyId).flatMap {
+      case Some(journey) =>
+        EmailForm.form
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
               Future.successful(
                 BadRequest(views.emailForm(formWithErrors, routes.JourneyController.submitEmail(journeyId, continueUrl, origin), Some(journey)))
-              )
-            case None =>
-              errorHandler.notFoundTemplate.map(NotFound(_))
-          },
-        form =>
-          emailVerificationConnector.submitEmail(journeyId, form.email).flatMap {
-            case SubmitEmailResponse.Accepted =>
-              Future.successful(
-                Redirect(routes.JourneyController.enterPasscode(journeyId, continueUrl, origin, None))
-              )
-            case SubmitEmailResponse.JourneyNotFound =>
-              errorHandler.notFoundTemplate.map(NotFound(_))
-            case SubmitEmailResponse.TooManyAttempts(continueUrl) =>
-              val validated = RedirectUrl(continueUrl)
-                .get(OnlyRelative | PermitAllOnDev(environment))
-                .url
-              Future.successful(
-                Forbidden(views.emailLimitReached(validated))
-              )
-          }
-      )
+              ),
+            form =>
+              emailVerificationConnector.submitEmail(journeyId, form.email).flatMap {
+                case SubmitEmailResponse.Accepted =>
+                  Future.successful(
+                    Redirect(routes.JourneyController.enterPasscode(journeyId, continueUrl, origin, None))
+                  )
+                case SubmitEmailResponse.JourneyNotFound =>
+                  errorHandler.notFoundTemplate.map(NotFound(_))
+                case SubmitEmailResponse.TooManyAttempts(continueUrl) =>
+                  val validated = RedirectUrl(continueUrl)
+                    .get(OnlyRelative | PermitAllOnDev(environment))
+                    .url
+                  Future.successful(
+                    Forbidden(views.emailLimitReached(validated, Some(journey)))
+                  )
+              }
+          )
+      case None =>
+        errorHandler.notFoundTemplate.map(NotFound(_))
+    }
   }
 
   def enterPasscode(journeyId: String, continueUrl: RedirectUrl, origin: String, requestedNew: Option[Boolean]): Action[AnyContent] = Action.async {
