@@ -14,12 +14,16 @@
  * limitations under the License.
  *@
 
+@import models.Journey
+
 @this(errorTemplate: MessagePage)
 
-@()(implicit request: Request[_], MESSAGES: Messages)
+
+@(journey: Option[Journey] = None)(implicit request: Request[_], MESSAGES: Messages)
 
 @errorTemplate(
     title = Messages("verify-email-address.error.heading"),
     headingText = Messages("verify-email-address.error.heading"),
-    messageText = Messages("verify-email-address.error.paragraph")
-)
+    messageText = Messages("verify-email-address.error.paragraph"),
+    journey     = journey
+    )

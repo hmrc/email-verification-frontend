@@ -79,12 +79,17 @@ class JourneyController @Inject() (
             case SubmitEmailResponse.JourneyNotFound =>
               errorHandler.notFoundTemplate.map(NotFound(_))
             case SubmitEmailResponse.TooManyAttempts(continueUrl) =>
-              val validated = RedirectUrl(continueUrl)
-                .get(OnlyRelative | PermitAllOnDev(environment))
-                .url
-              Future.successful(
-                Forbidden(views.emailLimitReached(validated))
-              )
+              emailVerificationConnector.getJourney(journeyId).flatMap {
+                case Some(journey) =>
+                  val validated = RedirectUrl(continueUrl)
+                    .get(OnlyRelative | PermitAllOnDev(environment))
+                    .url
+                  Future.successful(
+                    Forbidden(views.emailLimitReached(validated, Some(journey)))
+                  )
+                case None =>
+                  errorHandler.notFoundTemplate.map(NotFound(_))
+              }
           }
       )
   }

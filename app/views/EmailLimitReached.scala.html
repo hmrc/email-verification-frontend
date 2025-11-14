@@ -15,15 +15,17 @@
  *@
 
 @import views.html.MessagePage
+@import models.Journey
 
 @this(messagePage:MessagePage)
 
-@(buttonUrl: String)(implicit request: Request[_], messages: Messages)
+@(buttonUrl: String, journey: Option[Journey] = None)(implicit request: Request[_], messages: Messages)
 
 @messagePage(
   title       = messages("error.emailsLimitExceeded.heading"),
   headingText = messages("error.emailsLimitExceeded.heading"),
   messageText = messages("error.emailsLimitExceeded.message"),
   buttonText  = messages("continuebutton.label"),
-  buttonUrl   = buttonUrl
+  buttonUrl   = buttonUrl,
+  journey     = journey
 )
