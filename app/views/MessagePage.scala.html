@@ -18,7 +18,7 @@
 @import views.html.fragments.Heading
 
 @this(layout: Layout, heading: Heading)
-@(title:String, headingText:String, messageText:String, buttonText:String="", buttonUrl:String="")(implicit request: RequestHeader, messages: Messages)
+@(title:String, headingText:String, messageText:String, buttonText:String="", buttonUrl:String="", journey: Option[models.Journey] = None)(implicit request: RequestHeader, messages: Messages)
 
 @mainContent = {
   @heading(headingText)
@@ -28,5 +28,5 @@
   }
 }
 
-@layout(journey = None, pageTitle = Some(title))(mainContent)
+@layout(journey = journey, pageTitle = Some(title))(mainContent)
 

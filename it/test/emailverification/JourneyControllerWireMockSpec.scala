@@ -74,6 +74,24 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
     "the email is successfully submitted to the backend" should {
       "return 303 See Other and redirect to the passcode entry page" in new Setup {
         stubFor(
+          get(s"/email-verification/journey/$journeyId")
+            .willReturn(
+              okJson(
+                Json
+                  .obj(
+                    "enterEmailUrl"                -> "/enterEmail",
+                    "accessibilityStatementUrl"    -> "/accessibility",
+                    "deskproServiceName"           -> "service-name",
+                    "backUrl"                      -> "/back",
+                    "serviceTitle"                 -> "Service Name",
+                    "useNewGovUkServiceNavigation" -> false
+                  )
+                  .toString
+              )
+            )
+        )
+
+        stubFor(
           post(s"/email-verification/journey/$journeyId/email")
             .withRequestBody(equalToJson(Json.obj("email" -> "aa@bb.cc").toString()))
             .willReturn(okJson(Json.obj("status" -> "accepted").toString))
@@ -130,6 +148,24 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
     "too many emails have been submitted in the session" should {
       "return 403 Forbidden and the Limit Reached page" in new Setup {
         stubFor(
+          get(s"/email-verification/journey/$journeyId")
+            .willReturn(
+              okJson(
+                Json
+                  .obj(
+                    "enterEmailUrl"                -> "/enterEmail",
+                    "accessibilityStatementUrl"    -> "/accessibility",
+                    "deskproServiceName"           -> "service-name",
+                    "backUrl"                      -> "/back",
+                    "serviceTitle"                 -> "Service Name",
+                    "useNewGovUkServiceNavigation" -> false
+                  )
+                  .toString
+              )
+            )
+        )
+
+        stubFor(
           post(s"/email-verification/journey/$journeyId/email")
             .withRequestBody(equalToJson(Json.obj("email" -> "aa@bb.cc").toString()))
             .willReturn(
@@ -162,17 +198,8 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
     "the journey ID is invalid" should {
       "return 404 Not Found" in new Setup {
         stubFor(
-          post(s"/email-verification/journey/$journeyId/email")
-            .withRequestBody(equalToJson(Json.obj("email" -> "aa@bb.cc").toString()))
-            .willReturn(
-              notFound().withBody(
-                Json
-                  .obj(
-                    "status" -> "journeyNotFound"
-                  )
-                  .toString
-              )
-            )
+          get(s"/email-verification/journey/$journeyId")
+            .willReturn(notFound())
         )
 
         val result = await(
