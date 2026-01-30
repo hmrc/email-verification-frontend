@@ -14,13 +14,19 @@
  * limitations under the License.
  *@
 
+@import play.api.libs.json.JsValue
+@import play.api.libs.json.Json
+
 @this(layout: Layout)
 
-@(redirectUrl: String)(implicit request: Request[_], messages: Messages)
+@(redirectUrl: String, passcodes: JsValue)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = Some("Email Verification Request Response")) {
     <h1 class="govuk-heading-xl">Email Verification Request Response</h1>
     <p class="govuk-body">
         Redirect URL : <a id="redirectUrl" href="@redirectUrl">@redirectUrl</a>
+    </p>
+    <p class="govuk-body">
+        Passcodes: <pre id="passcodes">@{Json.prettyPrint(passcodes)}</pre>
     </p>
 }

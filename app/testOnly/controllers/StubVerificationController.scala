@@ -69,8 +69,12 @@ class StubVerificationController @Inject() (
             .fold[Future[Result]](
               startFormWithErrors => Future.successful(BadRequest(views.start(startFormWithErrors))),
               validStartForm => {
-                connector.requestEmailVerification(VerifyEmailRequest.fromStartForm(creds.providerId, validStartForm)).map { redirectUrl =>
-                  Ok(views.verificationResponse(appConfig.selfUrl + redirectUrl))
+
+                for {
+                  redirectUrl <- connector.requestEmailVerification(VerifyEmailRequest.fromStartForm(creds.providerId, validStartForm))
+                  passcodes   <- connector.getTestOnlyPasscodes()
+                } yield {
+                  Ok(views.verificationResponse(appConfig.selfUrl + redirectUrl, passcodes))
                 }
               }
             )

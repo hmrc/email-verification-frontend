@@ -16,7 +16,7 @@
 
 package testOnly.connectors
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import testOnly.models.{VerificationStatusResponse, VerifyEmailRequest}
 import uk.gov.hmrc.http.HttpReads.Implicits.*
@@ -25,14 +25,12 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, Upstream
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.Inject
-import scala.annotation.nowarn
 import scala.concurrent.{ExecutionContext, Future}
 
 class TestOnlyEmailVerificationConnector @Inject() (httpClient: HttpClientV2, servicesConfig: ServicesConfig)(implicit ec: ExecutionContext) {
 
   private val baseUrl = servicesConfig.baseUrl("email-verification")
 
-  @nowarn
   def requestEmailVerification(verifyEmailRequest: VerifyEmailRequest)(implicit hc: HeaderCarrier): Future[String] =
     httpClient
       .post(url"$baseUrl/email-verification/verify-email")
@@ -50,5 +48,14 @@ class TestOnlyEmailVerificationConnector @Inject() (httpClient: HttpClientV2, se
     httpClient
       .get(url"$baseUrl/email-verification/verification-status/$credId")
       .execute[VerificationStatusResponse]
+
+  def getTestOnlyPasscodes()(implicit hc: HeaderCarrier): Future[JsValue] = {
+    httpClient
+      .get(url"$baseUrl/test-only/passcodes")
+      .execute[HttpResponse]
+      .map { response =>
+        response.json
+      }
+  }
 
 }
