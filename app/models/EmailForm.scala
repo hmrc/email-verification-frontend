@@ -21,6 +21,10 @@ import play.api.data.Forms.{mapping, text}
 
 case class EmailForm(email: String, continue: String)
 object EmailForm {
+
+  def unapply(model: EmailForm): Option[(String, String)] =
+    Some((model.email, model.continue))
+
   val form: Form[EmailForm] = Form(
     mapping(
       "email" -> text.verifying("emailform.error.invalidEmailFormat",

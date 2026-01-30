@@ -16,15 +16,16 @@
 
 package emailverification
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalatest.prop.TableDrivenPropertyChecks._
+import org.scalatest.prop.TableDrivenPropertyChecks.*
 import play.api.http.HeaderNames
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.api.test.Injecting
 import support.IntegrationBaseSpec
-import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
+import uk.gov.hmrc.crypto.PlainText
+import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.ApplicationCrypto
 
 import java.util.{Base64, UUID}
 

@@ -59,7 +59,7 @@ class EmailVerificationController @Inject() (
       _              <- emailVerificationConnector.verifyEmailAddress(decryptedToken.token)
     } yield Redirect(decryptedToken.continueUrl)
 
-    redirectToContinue.recover { case _ => Redirect(routes.ErrorController.showErrorPage) }
+    redirectToContinue.recover { case _ => Redirect(routes.ErrorController.showErrorPage()) }
   }
 
 }

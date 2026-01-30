@@ -19,7 +19,7 @@
 @(form: Form[_])(implicit messages: Messages)
 
 @if(form.hasErrors) {
-    @underlying(ErrorSummary(
+    @underlying(ErrorSummary.apply(
         title = Text(messages("errorSummary.title")),
         errorList = form.errors.map(err => ErrorLink(href = Some("#" + err.key), content = Text(messages(err.message, err.args))))
     ))

@@ -16,6 +16,8 @@
 
 package controllers
 
+import org.mockito.Mockito.*
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import connectors.EmailVerificationConnector
 import crypto.Decrypter
 import org.apache.commons.codec.binary.Base64.encodeBase64String
@@ -46,7 +48,7 @@ class EmailVerificationControllerSpec extends UnitSpec {
       val result: Future[Result] = controller.verify(encryptedAndEncodedToken)(FakeRequest())
 
       status(result)         shouldBe 303
-      redirectLocation(result) should contain(routes.ErrorController.showErrorPage.url)
+      redirectLocation(result) should contain(routes.ErrorController.showErrorPage().url)
     }
   }
 

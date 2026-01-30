@@ -453,6 +453,8 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
         val exception: Exception = intercept[Exception] {
           connector.resendPasscode(journeyId).futureValue
         }
+
+        exception.getMessage should include("Internal Server Error")
       }
     }
 

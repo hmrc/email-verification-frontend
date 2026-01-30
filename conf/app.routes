@@ -5,7 +5,7 @@ GET         /assets/*file                              controllers.Assets.versio
 ->          /hmrc-frontend                             hmrcfrontend.Routes
 
 GET         /verify                                    controllers.EmailVerificationController.verify(token : String)
-GET         /error                                     controllers.ErrorController.showErrorPage
+GET         /error                                     controllers.ErrorController.showErrorPage()
 
 GET         /journey/:journeyId/email                  controllers.JourneyController.enterEmail(journeyId, continueUrl: RedirectUrl, origin)
 POST        /journey/:journeyId/email                  controllers.JourneyController.submitEmail(journeyId, continueUrl: RedirectUrl, origin)
