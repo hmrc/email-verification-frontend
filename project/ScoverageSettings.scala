@@ -8,7 +8,8 @@ object ScoverageSettings {
     "Reverse.*",
     ".*BuildInfo.*",
     ".*Routes.*",
-    ".*RoutesPrefix.*"
+    ".*RoutesPrefix.*",
+    ".*testOnly.*"
   )
 
   def apply(): Seq[Setting[?]] = Seq(

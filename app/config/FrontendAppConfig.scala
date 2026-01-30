@@ -23,7 +23,11 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
+class FrontendAppConfig @Inject() (val configuration: Configuration, servicesConfig: ServicesConfig) {
+
+  val selfUrl: String =
+    configuration.getOptional[String]("platform.frontend.host") getOrElse
+      servicesConfig.baseUrl("email-verification-frontend")
 
   lazy val isAppRunningOnLocalDevMachine: Boolean =
     configuration

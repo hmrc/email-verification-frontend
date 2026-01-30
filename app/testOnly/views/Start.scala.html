@@ -1,0 +1,108 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
+@import testOnly.forms.StartForm
+@import views.html.Layout
+@import views.html.fragments.Heading
+@import views.html.fragments.ErrorSummary
+@import views.html.fragments.FormInput
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
+@import uk.gov.hmrc.govukfrontend.views.html.components.{Radios, Fieldset, Legend, Text, RadioItem}
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+
+@this(form: FormWithCSRF, layout: Layout, heading: Heading, errorSummary: ErrorSummary, formInput: FormInput, govukRadios: GovukRadios)
+
+@(formData: Form[StartForm])(implicit request: Request[_], messages: Messages)
+
+
+@mainContent = {
+
+@errorSummary(formData)
+@heading("Start Email Verification Journey")
+
+@form(testOnly.controllers.routes.StubVerificationController.submitVerificationRequest()) {
+
+ @formInput(
+  formField = formData("email"),
+  inputType = "text",
+  autocomplete = "email",
+  label = "Email Address To Verify (Optional)"
+ )
+ @formInput(
+  formField = formData("continueUrl"),
+  inputType = "text",
+  label = "Continue URL Once Verified"
+ )
+ @formInput(
+  formField = formData("origin"),
+  inputType = "text",
+  label = "Origin"
+ )
+ @formInput(
+  formField = formData("accessibilityStatementUrl"),
+  inputType = "text",
+  label = "Accessibility Statement URL (For use on standard passcode entry page)"
+ )
+ @formInput(
+  formField = formData("deskproServiceName"),
+  inputType = "text",
+  label = "Deskpro Service Name (For use on standard passcode entry page) (Optional)"
+ )
+ @formInput(
+  formField = formData("emailEntryUrl"),
+  inputType = "text",
+  label = "Email Entry Page URL (To correct email address used) (Optional)"
+ )
+ @formInput(
+  formField = formData("pageTitleEnLabel"),
+  inputType = "text",
+  label = "Page Title English Label (Optional)"
+ )
+ @govukRadios(Radios(
+  fieldset = Some(Fieldset(legend = Some(Legend(content = Text("New service navigation feature enabled?"), classes = "govuk-fieldset__legend--s", isPageHeading = false)))),
+  items = Seq(
+   RadioItem(
+    content = Text("True"),
+    value = Some("true"),
+    checked = formData("true").value.contains("true")
+   ),
+   RadioItem(
+    content = Text("False"),
+    value = Some("false"),
+    checked = formData("false").value.contains("false")
+   )
+  )
+ ).withFormField(formData("useNewGovUkServiceNavigation")))
+ @govukRadios(Radios(
+  fieldset = Some(Fieldset(legend = Some(Legend(content = Text("Which language?"), classes = "govuk-fieldset__legend--s", isPageHeading = false)))),
+  items = Seq(
+   RadioItem(
+    content = Text("English"),
+    value = Some("en"),
+    checked = true
+   ),
+   RadioItem(
+    content = Text("Welsh"),
+    value = Some("cy")
+   )
+  )
+ ).withFormField(formData("lang")))
+ <input class="govuk-button" type="submit" id="submit" value="Submit">
+}
+}
+
+@layout(pageTitle = Some(messages("startForm.title")))(mainContent)

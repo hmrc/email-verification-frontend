@@ -59,3 +59,18 @@ timeout-page.title=You have been timed out
 timeout-page.p1=We have timed you out because you did not do anything for 15 minutes. We did this to keep your information secure.
 timeout-page.button=Start again
 timeout-page.p2=You can <a href="https://www.gov.uk">return to GOV.UK</a> if you don''t want to start again.
+
+
+# ****** TestOnly Messages Start *******
+
+startForm.title=Start Email Verification Journey
+startForm.error.invalidEmailFormat=Email address format invalid
+startform.error.missingContinueUrl=Continue URL is missing
+startform.error.missingOrigin=Origin is missing
+startform.error.missingAccessibilityStatementUrl=Accessibility Statement URL is missing
+startform.error.missingServiceNavigation=Select one of the service navigation options
+startform.error.missingLang=Select one of the language
+
+errorSummary.title=Form Error
+
+# ****** TestOnly Messages End *******
