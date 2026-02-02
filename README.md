@@ -28,6 +28,14 @@ sm2 -stop EMAIL_VERIFICATION_FRONTEND
 sbt clean coverage test it/test coverageReport
 ```
 
+### TestOnly Routing:
+
+This service has some test only routes available to support initiating and running an email-verification journey
+
+The testOnly route: `/email-verification/test-only/showStartForm` can be used as the entry point to start an email verification journey.
+
+This provides you with a form that you can complete and submit to mimick the handoff from a client service to the email-verification-frontend.
+
 ## External Integration test
 Run and update the external integration test as well.
 https://github.com/hmrc/email-verification-integration-tests

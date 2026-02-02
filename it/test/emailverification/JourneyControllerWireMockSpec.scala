@@ -16,11 +16,12 @@
 
 package emailverification
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.jsoup.Jsoup
 import org.scalatest.OptionValues.convertOptionToValuable
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.libs.ws.writeableOf_urlEncodedForm
+import play.api.test.Helpers.*
 import support.IntegrationBaseSpec
 
 import java.util.UUID

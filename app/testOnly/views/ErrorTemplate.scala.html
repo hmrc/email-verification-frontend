@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,11 @@
  * limitations under the License.
  *@
 
-@this(underlying: GovukErrorSummary)
+@this(layout: Layout)
 
-@(form: Form[_])(implicit messages: Messages)
+@(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader, messages: Messages)
 
-@if(form.hasErrors) {
-    @underlying(ErrorSummary.apply(
-        title = Text(messages("errorSummary.title")),
-        errorList = form.errors.map(err => ErrorLink(href = Some("#" + err.key), content = Text(messages(err.message, err.args))))
-    ))
+@layout(pageTitle = Some(pageTitle)) {
+    <h1 class="govuk-heading-xl">@messages(heading)</h1>
+    <p class="govuk-body">@messages(message)</p>
 }

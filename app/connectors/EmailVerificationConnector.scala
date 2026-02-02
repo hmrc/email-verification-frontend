@@ -27,6 +27,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, Upstream
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
+import play.api.libs.ws.writeableOf_JsValue
 
 @Singleton
 class EmailVerificationConnector @Inject() (http: HttpClientV2, frontendAppConfig: FrontendAppConfig)(implicit ec: ExecutionContext) extends Logging {
@@ -49,7 +50,7 @@ class EmailVerificationConnector @Inject() (http: HttpClientV2, frontendAppConfi
       .withBody(Json.toJson(PasscodeRequest(email, "email-verification-frontend", lang)))
       .execute[HttpResponse]
       .map {
-        case r @ HttpResponse(201, _, _) => ()
+        case HttpResponse(201, _, _)     => ()
         case r @ HttpResponse(401, _, _) => throw EmailPasscodeException.MissingSessionId(r.body)
         case r @ HttpResponse(403, _, _) => throw EmailPasscodeException.MaxNewEmailsExceeded(r.body)
         case r @ HttpResponse(409, _, _) => throw EmailPasscodeException.EmailAlreadyVerified(r.body)

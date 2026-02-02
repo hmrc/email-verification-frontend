@@ -1,5 +1,5 @@
-@*
- * Copyright 2023 HM Revenue & Customs
+/*
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(underlying: GovukErrorSummary)
+package testOnly.models
 
-@(form: Form[_])(implicit messages: Messages)
+import play.api.libs.json.{Json, Reads}
 
-@if(form.hasErrors) {
-    @underlying(ErrorSummary.apply(
-        title = Text(messages("errorSummary.title")),
-        errorList = form.errors.map(err => ErrorLink(href = Some("#" + err.key), content = Text(messages(err.message, err.args))))
-    ))
+case class CompletedEmail(
+  emailAddress: String,
+  verified:     Boolean,
+  locked:       Boolean
+)
+
+object CompletedEmail {
+  implicit val reads: Reads[CompletedEmail] = Json.reads[CompletedEmail]
 }

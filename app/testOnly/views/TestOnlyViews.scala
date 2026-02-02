@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(underlying: GovukErrorSummary)
+package testOnly.views
 
-@(form: Form[_])(implicit messages: Messages)
+import javax.inject.Inject
 
-@if(form.hasErrors) {
-    @underlying(ErrorSummary.apply(
-        title = Text(messages("errorSummary.title")),
-        errorList = form.errors.map(err => ErrorLink(href = Some("#" + err.key), content = Text(messages(err.message, err.args))))
-    ))
-}
+class TestOnlyViews @Inject() (
+  val start:                testOnly.views.html.Start,
+  val status:               testOnly.views.html.Status,
+  val verificationResponse: testOnly.views.html.VerificationRequestResponse,
+  val error:                testOnly.views.html.ErrorTemplate
+)

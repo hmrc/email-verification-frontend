@@ -11,3 +11,7 @@
 
 # Add all the application routes to the prod.routes file
 ->         /                          prod.Routes
+
+GET        /email-verification/test-only/showStartForm              testOnly.controllers.StubVerificationController.showStartForm()
+POST       /email-verification/test-only/submitVerificationRequest  testOnly.controllers.StubVerificationController.submitVerificationRequest()
+GET        /email-verification/test-only/checkStatus                testOnly.controllers.StubVerificationController.checkStatus()
