@@ -25,37 +25,37 @@ class PasscodeFormSpec extends UnitSpec {
     "bind successfully for a valid uppercase passcode" in {
       val result = PasscodeForm.form.bind(Map("passcode" -> "BCDFGH"))
       result.errors shouldBe empty
-      result.value shouldBe Some("BCDFGH")
+      result.value  shouldBe Some("BCDFGH")
     }
 
     "bind successfully and uppercase a lowercase passcode" in {
       val result = PasscodeForm.form.bind(Map("passcode" -> "bcdfgh"))
       result.errors shouldBe empty
-      result.value shouldBe Some("BCDFGH")
+      result.value  shouldBe Some("BCDFGH")
     }
 
     "bind successfully and uppercase a mixed case passcode" in {
       val result = PasscodeForm.form.bind(Map("passcode" -> "BcDfGh"))
       result.errors shouldBe empty
-      result.value shouldBe Some("BCDFGH")
+      result.value  shouldBe Some("BCDFGH")
     }
 
     "bind successfully and remove spaces from a passcode" in {
       val result = PasscodeForm.form.bind(Map("passcode" -> "BCD FGH"))
       result.errors shouldBe empty
-      result.value shouldBe Some("BCDFGH")
+      result.value  shouldBe Some("BCDFGH")
     }
 
     "bind successfully and remove multiple spaces from a passcode" in {
       val result = PasscodeForm.form.bind(Map("passcode" -> "B C D F G H"))
       result.errors shouldBe empty
-      result.value shouldBe Some("BCDFGH")
+      result.value  shouldBe Some("BCDFGH")
     }
 
     "bind successfully for a lowercase passcode containing spaces" in {
       val result = PasscodeForm.form.bind(Map("passcode" -> "bcd fgh"))
       result.errors shouldBe empty
-      result.value shouldBe Some("BCDFGH")
+      result.value  shouldBe Some("BCDFGH")
     }
 
     "reject a passcode that is too short" in {
@@ -89,4 +89,3 @@ class PasscodeFormSpec extends UnitSpec {
     }
   }
 }
-
