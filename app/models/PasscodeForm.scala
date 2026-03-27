@@ -22,7 +22,10 @@ import play.api.data.{Form, Forms}
 object PasscodeForm {
   val form: Form[String] = Form(
     Forms.single(
-      "passcode" -> text.verifying("passcodeform.error.invalidFormat", _.matches("^[BCDFGHJKLMNPQRSTVWXYZ]{6}$"))
+      "passcode" ->
+        text
+          .transform[String](_.replaceAll(" ", "").toUpperCase, identity)
+          .verifying("passcodeform.error.invalidFormat", _.matches("^[BCDFGHJKLMNPQRSTVWXYZ]{6}$"))
     )
   )
 }
