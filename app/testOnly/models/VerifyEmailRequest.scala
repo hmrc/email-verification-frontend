@@ -27,8 +27,7 @@ case class VerifyEmailRequest(
   accessibilityStatementUrl:    String,
   email:                        Option[Email],
   labels:                       Option[EmailLabels],
-  lang:                         String,
-  useNewGovUkServiceNavigation: Boolean
+  lang:                         String
 )
 
 case class Email(address: String, enterUrl: String)
@@ -54,8 +53,7 @@ object VerifyEmailRequest {
       accessibilityStatementUrl = startForm.accessibilityStatementUrl,
       email                     = startForm.email.map(Email(_, startForm.emailEntryUrl.getOrElse(""))),
       labels                    = Some(EmailLabels(en = EmailLabel(startForm.pageTitleEnLabel, Some("Team Signature")), cy = EmailLabel(None, None))),
-      lang                      = startForm.lang,
-      useNewGovUkServiceNavigation = startForm.useNewGovUkServiceNavigation
+      lang                      = startForm.lang
     )
   }
 }

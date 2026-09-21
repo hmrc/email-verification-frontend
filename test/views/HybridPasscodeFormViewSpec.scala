@@ -31,6 +31,9 @@ class HybridPasscodeFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
 
   val view: HybridPasscodeFormView = app.injector.instanceOf[HybridPasscodeFormView]
 
+  private def serviceNameText(document: org.jsoup.nodes.Document): String =
+    document.select(".govuk-service-navigation__service-name, .govuk-header__service-name").text()
+
   "when being rendered in Welsh" when {
 
     implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("cy")))
@@ -57,13 +60,12 @@ class HybridPasscodeFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
                 en = MessageLabel(pageTitle = Some("EnglishTitle"), userFacingServiceName = Some("EnglishServiceName")),
                 cy = MessageLabel(pageTitle = Some("WelshTitle"), userFacingServiceName = Some("WelshServiceName"))
               )
-            ),
-            useNewGovUkServiceNavigation = Some(false)
+            )
           )
         )(FakeRequest().withCookies(Cookie("PLAY_LANG", "cy")), messages)
 
         val document = Jsoup.parse(renderedView.body)
-        document.select(".govuk-header__service-name").text() shouldBe "WelshTitle"
+        serviceNameText(document) shouldBe "WelshTitle"
       }
     }
 
@@ -91,13 +93,12 @@ class HybridPasscodeFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
                   en = MessageLabel(pageTitle = Some("EnglishTitle"), userFacingServiceName = Some("EnglishServiceName")),
                   cy = MessageLabel(pageTitle = None, userFacingServiceName = None)
                 )
-              ),
-              useNewGovUkServiceNavigation = Some(false)
+              )
             )
           )(FakeRequest().withCookies(Cookie("PLAY_LANG", "cy")), messages)
 
           val document = Jsoup.parse(renderedView.body)
-          document.select(".govuk-header__service-name").text() shouldBe "EnglishTitle"
+          serviceNameText(document) shouldBe "EnglishTitle"
         }
       }
 
@@ -123,13 +124,12 @@ class HybridPasscodeFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
                   en = MessageLabel(pageTitle = None, userFacingServiceName = None),
                   cy = MessageLabel(pageTitle = None, userFacingServiceName = None)
                 )
-              ),
-              useNewGovUkServiceNavigation = Some(false)
+              )
             )
           )(FakeRequest().withCookies(Cookie("PLAY_LANG", "cy")), messages)
 
           val document = Jsoup.parse(renderedView.body)
-          document.select(".govuk-header__service-name").text() shouldBe "serviceTitle"
+          serviceNameText(document) shouldBe "serviceTitle"
         }
       }
     }
@@ -161,13 +161,12 @@ class HybridPasscodeFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
                 en = MessageLabel(pageTitle = Some("EnglishTitle"), userFacingServiceName = Some("EnglishServiceName")),
                 cy = MessageLabel(pageTitle = Some("WelshTitle"), userFacingServiceName = Some("WelshServiceName"))
               )
-            ),
-            useNewGovUkServiceNavigation = Some(false)
+            )
           )
         )(FakeRequest().withCookies(Cookie("PLAY_LANG", "en")), messages)
 
         val document = Jsoup.parse(renderedView.body)
-        document.select(".govuk-header__service-name").text() shouldBe "EnglishTitle"
+        serviceNameText(document) shouldBe "EnglishTitle"
       }
     }
 
@@ -188,13 +187,12 @@ class HybridPasscodeFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
             backUrl                      = None,
             serviceTitle                 = Some("serviceTitle"),
             emailAddress                 = None,
-            labels                       = None,
-            useNewGovUkServiceNavigation = Some(false)
+            labels                       = None
           )
         )(FakeRequest().withCookies(Cookie("PLAY_LANG", "en")), messages)
 
         val document = Jsoup.parse(renderedView.body)
-        document.select(".govuk-header__service-name").text() shouldBe "serviceTitle"
+        serviceNameText(document) shouldBe "serviceTitle"
       }
     }
   }

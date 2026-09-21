@@ -17,7 +17,7 @@
 package testOnly.forms
 
 import play.api.data.Form
-import play.api.data.Forms.{mapping, optional, text}
+import play.api.data.Forms.{mapping, text}
 
 case class StartForm(email:                        Option[String],
                      continueUrl:                  String,
@@ -26,8 +26,7 @@ case class StartForm(email:                        Option[String],
                      deskproServiceName:           Option[String],
                      emailEntryUrl:                Option[String],
                      pageTitleEnLabel:             Option[String],
-                     lang:                         String,
-                     useNewGovUkServiceNavigation: Boolean
+                     lang:                         String
                     ) {}
 object StartForm {
 
@@ -38,8 +37,7 @@ object StartForm {
             deskproServiceName:           String,
             emailEntryUrl:                String,
             pageTitleEnLabel:             String,
-            lang:                         String,
-            useNewGovUkServiceNavigation: Boolean
+            lang:                         String
            ): StartForm = {
     new StartForm(
       if (email.trim.isEmpty) None else Some(email.trim),
@@ -49,12 +47,11 @@ object StartForm {
       if (deskproServiceName.trim.isEmpty) None else Some(deskproServiceName.trim),
       if (emailEntryUrl.trim.isEmpty) None else Some(emailEntryUrl.trim),
       if (pageTitleEnLabel.trim.isEmpty) None else Some(pageTitleEnLabel.trim),
-      lang,
-      useNewGovUkServiceNavigation
+      lang
     )
   }
 
-  def unapply(startForm: StartForm): Option[(String, String, String, String, String, String, String, String, Boolean)] = {
+  def unapply(startForm: StartForm): Option[(String, String, String, String, String, String, String, String)] = {
     Some(
       (startForm.email.getOrElse(""),
        startForm.continueUrl,
@@ -63,8 +60,7 @@ object StartForm {
        startForm.deskproServiceName.getOrElse(""),
        startForm.emailEntryUrl.getOrElse(""),
        startForm.pageTitleEnLabel.getOrElse(""),
-       startForm.lang,
-       startForm.useNewGovUkServiceNavigation
+       startForm.lang
       )
     )
   }
@@ -81,10 +77,7 @@ object StartForm {
         "deskproServiceName"        -> text,
         "emailEntryUrl"             -> text,
         "pageTitleEnLabel"          -> text,
-        "lang"                      -> text.verifying("startform.error.missingLang", _.trim.nonEmpty),
-        "useNewGovUkServiceNavigation" -> optional(text)
-          .verifying("startform.error.missingServiceNavigation", _.isDefined)
-          .transform[Boolean](_.contains("true"), b => if (b) Some("true") else Some("false"))
+        "lang"                      -> text.verifying("startform.error.missingLang", _.trim.nonEmpty)
       )(StartForm.apply)(StartForm.unapply)
     )
   }
