@@ -29,6 +29,9 @@ import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
 
+  private def serviceNameText(html: org.jsoup.nodes.Document): String =
+    html.select(".govuk-service-navigation__service-name, .govuk-header__service-name").text()
+
   "GET /journey/:journeyId/email" should {
     "return 200 OK and the email form" in new Setup {
       stubFor(
@@ -41,8 +44,7 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
                   "accessibilityStatementUrl"    -> "/accessibility",
                   "deskproServiceName"           -> "service-name",
                   "backUrl"                      -> "/back",
-                  "serviceTitle"                 -> "Service Name",
-                  "useNewGovUkServiceNavigation" -> false
+                  "serviceTitle"                 -> "Service Name"
                 )
                 .toString
             )
@@ -61,9 +63,9 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
       val html = Jsoup.parse(result.body)
       html.title shouldBe "What is your email address? - Email Verification - GOV.UK"
 
-      html.selectFirst(".govuk-header__service-name").text        shouldBe "Service Name"
+      serviceNameText(html)                                      shouldBe "Service Name"
       html.selectFirst(".govuk-back-link").attr("href")           shouldBe "/back"
-      html.selectFirst(".hmrc-report-technical-issue").attr("href") should endWith("service=service-name")
+      html.selectFirst(".hmrc-report-technical-issue").attr("href") should include("service=service-name")
 
       val a11yLink = html.select(".govuk-footer__link").asScala.find(_.text == "Accessibility statement")
       a11yLink                    shouldBe defined
@@ -84,8 +86,7 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
                     "accessibilityStatementUrl"    -> "/accessibility",
                     "deskproServiceName"           -> "service-name",
                     "backUrl"                      -> "/back",
-                    "serviceTitle"                 -> "Service Name",
-                    "useNewGovUkServiceNavigation" -> false
+                    "serviceTitle"                 -> "Service Name"
                   )
                   .toString
               )
@@ -123,8 +124,7 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
                     "accessibilityStatementUrl"    -> "/accessibility",
                     "deskproServiceName"           -> "service-name",
                     "backUrl"                      -> "/back",
-                    "serviceTitle"                 -> "Service Name",
-                    "useNewGovUkServiceNavigation" -> false
+                    "serviceTitle"                 -> "Service Name"
                   )
                   .toString
               )
@@ -158,8 +158,7 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
                     "accessibilityStatementUrl"    -> "/accessibility",
                     "deskproServiceName"           -> "service-name",
                     "backUrl"                      -> "/back",
-                    "serviceTitle"                 -> "Service Name",
-                    "useNewGovUkServiceNavigation" -> false
+                    "serviceTitle"                 -> "Service Name"
                   )
                   .toString
               )
@@ -254,8 +253,7 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
                       "deskproServiceName"           -> "service-name",
                       "backUrl"                      -> "/back",
                       "serviceTitle"                 -> "Service Name",
-                      "emailAddress"                 -> "some@email.com",
-                      "useNewGovUkServiceNavigation" -> false
+                      "emailAddress"                 -> "some@email.com"
                     )
                   )
                   .toString
@@ -358,8 +356,7 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
                     "deskproServiceName"           -> "service-name",
                     "backUrl"                      -> "/back",
                     "serviceTitle"                 -> "Service Name",
-                    "emailAddress"                 -> "some@email.com",
-                    "useNewGovUkServiceNavigation" -> false
+                    "emailAddress"                 -> "some@email.com"
                   )
                   .toString
               )
@@ -378,9 +375,9 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
         val html = Jsoup.parse(result.body)
         html.title shouldBe "Enter code to confirm your email address - Email Verification - GOV.UK"
 
-        html.selectFirst(".govuk-header__service-name").text        shouldBe "Service Name"
+        serviceNameText(html)                                      shouldBe "Service Name"
         html.selectFirst(".govuk-back-link").attr("href")           shouldBe "/back"
-        html.selectFirst(".hmrc-report-technical-issue").attr("href") should endWith("service=service-name")
+        html.selectFirst(".hmrc-report-technical-issue").attr("href") should include("service=service-name")
         html.selectFirst("#email-address").text.trim                shouldBe "some@email.com"
 
         val a11yLink = html.select(".govuk-footer__link").asScala.find(_.text == "Accessibility statement")
@@ -450,8 +447,7 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
                     "accessibilityStatementUrl"    -> "/accessibility",
                     "deskproServiceName"           -> "service-name",
                     "backUrl"                      -> "/back",
-                    "serviceTitle"                 -> "Service Name",
-                    "useNewGovUkServiceNavigation" -> false
+                    "serviceTitle"                 -> "Service Name"
                   )
                   .toString
               )
@@ -488,8 +484,7 @@ class JourneyControllerWireMockSpec extends IntegrationBaseSpec {
                       "accessibilityStatementUrl"    -> "/accessibility",
                       "deskproServiceName"           -> "service-name",
                       "backUrl"                      -> "/back",
-                      "serviceTitle"                 -> "Service Name",
-                      "useNewGovUkServiceNavigation" -> false
+                      "serviceTitle"                 -> "Service Name"
                     )
                   )
                   .toString

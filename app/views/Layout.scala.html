@@ -41,9 +41,6 @@
         journey: Option[Journey] = None
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
-@forceNavigation = @{
-    journey.exists(appConfig.forceServiceNavigation)
-}
 @hmrcLayout(
     HmrcStandardPageParams(
         serviceURLs = ServiceURLs(
@@ -58,17 +55,14 @@
             additionalHeadBlock = headBlock,
             additionalScriptsBlock = Some(scripts),
         ),
-        serviceName = if (forceNavigation) None else serviceTitle,
+        serviceName = None,
         pageTitle = pageTitle,
-        isWelshTranslationAvailable = if (forceNavigation) false else true,
+        isWelshTranslationAvailable = false,
         backLink = if (backUrl.isEmpty) None else Some(BackLink(href = backUrl.get)),
-        serviceNavigation = if (forceNavigation) {
+        serviceNavigation =
             Some(
                 ServiceNavigation(serviceName = serviceTitle).withLanguageToggle()
             )
-        } else {
-            None
-        }
     )) {
         @contentBlock
         @reportTechnicalIssue(ReportTechnicalIssue(deskproServiceName.getOrElse("email-verification-frontend"), language = if(messages.lang.language == "en") En else Cy))

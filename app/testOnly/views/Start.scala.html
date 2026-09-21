@@ -73,21 +73,6 @@
   label = "Page Title English Label (Optional)"
  )
  @govukRadios(Radios(
-  fieldset = Some(Fieldset(legend = Some(Legend(content = Text("New service navigation feature enabled?"), classes = "govuk-fieldset__legend--s", isPageHeading = false)))),
-  items = Seq(
-   RadioItem(
-    content = Text("True"),
-    value = Some("true"),
-    checked = formData("true").value.contains("true")
-   ),
-   RadioItem(
-    content = Text("False"),
-    value = Some("false"),
-    checked = formData("false").value.contains("false")
-   )
-  )
- ).withFormField(formData("useNewGovUkServiceNavigation")))
- @govukRadios(Radios(
   fieldset = Some(Fieldset(legend = Some(Legend(content = Text("Which language?"), classes = "govuk-fieldset__legend--s", isPageHeading = false)))),
   items = Seq(
    RadioItem(

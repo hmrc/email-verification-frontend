@@ -423,8 +423,7 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
           backUrl                      = Some("http://example.com/back"),
           serviceTitle                 = Some("Test Service Title"),
           emailAddress                 = Some("testemail@email.com"),
-          labels                       = None,
-          useNewGovUkServiceNavigation = Some(false)
+          labels                       = None
         )
 
         stubFor(
@@ -486,8 +485,7 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
           backUrl                      = Some("http://example.com/back"),
           serviceTitle                 = Some("Test Service Title"),
           emailAddress                 = Some("testemail@email.com"),
-          labels                       = None,
-          useNewGovUkServiceNavigation = Some(false)
+          labels                       = None
         )
 
         stubFor(
@@ -564,8 +562,7 @@ class EmailVerificationConnectorISpec extends IntegrationBaseSpec with ScalaFutu
           backUrl                      = Some("http://example.com/back"),
           serviceTitle                 = Some("Test Service Title"),
           emailAddress                 = Some("testemail@email.com"),
-          labels                       = None,
-          useNewGovUkServiceNavigation = Some(false)
+          labels                       = None
         )
 
         stubFor(
