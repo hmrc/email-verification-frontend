@@ -1,6 +1,8 @@
 service.name =
 service.homePageUrl =
 service.text =
+phaseBannerHtml = Mae hwn yn wasanaeth newydd. Bydd eich <a href="$link" class="govuk-link">adborth</a> yn ein helpu i'w wella.
+phaseBannerHtmlNoLink = Mae hwn yn wasanaeth newydd.
 
 verify-email-address.error.heading=This link has expired
 verify-email-address.error.paragraph=For security reasons the link must be used within a time limit.
