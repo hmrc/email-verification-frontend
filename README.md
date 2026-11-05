@@ -30,6 +30,7 @@ POST /email-verification/verify-email
   "credId": "a-credential-id",
   "continueUrl": "/your-service/continue",
   "origin": "your-service-name",
+  "serviceUrl": "https://your-service.service.gov.uk",
   "deskproServiceName": "your-service-name",
   "accessibilityStatementUrl": "/accessibility-statement/your-service",
   "email": {
@@ -55,6 +56,7 @@ POST /email-verification/verify-email
 | `credId` | Yes | The user's credential ID |
 | `continueUrl` | Yes | Where to redirect the user after successful verification |
 | `origin` | Yes | Your service identifier |
+| `serviceUrl` | No | Homepage URL linked from the service name in the service navigation |
 | `deskproServiceName` | No | Service name used for the 'Get help' link |
 | `accessibilityStatementUrl` | Yes | URL to your service's accessibility statement |
 | `email.address` | No | Pre-populate the email address field |

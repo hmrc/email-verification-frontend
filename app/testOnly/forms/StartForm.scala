@@ -26,7 +26,8 @@ case class StartForm(email:                        Option[String],
                      deskproServiceName:           Option[String],
                      emailEntryUrl:                Option[String],
                      pageTitleEnLabel:             Option[String],
-                     lang:                         String
+                     lang:                         String,
+                     serviceUrl:                   Option[String] = None
                     ) {}
 object StartForm {
 
@@ -37,7 +38,8 @@ object StartForm {
             deskproServiceName:           String,
             emailEntryUrl:                String,
             pageTitleEnLabel:             String,
-            lang:                         String
+            lang:                      String,
+            serviceUrl:                String
            ): StartForm = {
     new StartForm(
       if (email.trim.isEmpty) None else Some(email.trim),
@@ -47,11 +49,12 @@ object StartForm {
       if (deskproServiceName.trim.isEmpty) None else Some(deskproServiceName.trim),
       if (emailEntryUrl.trim.isEmpty) None else Some(emailEntryUrl.trim),
       if (pageTitleEnLabel.trim.isEmpty) None else Some(pageTitleEnLabel.trim),
-      lang
+      lang,
+      if (serviceUrl.trim.isEmpty) None else Some(serviceUrl.trim)
     )
   }
 
-  def unapply(startForm: StartForm): Option[(String, String, String, String, String, String, String, String)] = {
+  def unapply(startForm: StartForm): Option[(String, String, String, String, String, String, String, String, String)] = {
     Some(
       (startForm.email.getOrElse(""),
        startForm.continueUrl,
@@ -60,7 +63,8 @@ object StartForm {
        startForm.deskproServiceName.getOrElse(""),
        startForm.emailEntryUrl.getOrElse(""),
        startForm.pageTitleEnLabel.getOrElse(""),
-       startForm.lang
+       startForm.lang,
+       startForm.serviceUrl.getOrElse("")
       )
     )
   }
@@ -77,7 +81,8 @@ object StartForm {
         "deskproServiceName"        -> text,
         "emailEntryUrl"             -> text,
         "pageTitleEnLabel"          -> text,
-        "lang"                      -> text.verifying("startform.error.missingLang", _.trim.nonEmpty)
+        "lang"                      -> text.verifying("startform.error.missingLang", _.trim.nonEmpty),
+        "serviceUrl"                -> text
       )(StartForm.apply)(StartForm.unapply)
     )
   }
