@@ -166,6 +166,31 @@ class EmailFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
       document.select(".hmrc-banner").size() shouldBe 1
     }
 
+    "render the configured beta phase banner" in {
+      val renderedView: Html = view(
+        EmailForm.form,
+        Call("POST", "/submit"),
+        Some(
+          Journey(
+            accessibilityStatementUrl = "/a11y",
+            deskproServiceName = "deskproName",
+            enterEmailUrl = None,
+            backUrl = None,
+            serviceTitle = Some("serviceTitle"),
+            emailAddress = None,
+            labels = None,
+            showPhaseBanner = Some(true),
+            alphaPhase = Some(false),
+            phaseFeedbackLink = Some("/feedback")
+          )
+        )
+      )(FakeRequest(), messages)
+
+      val document = Jsoup.parse(renderedView.body)
+      document.select(".govuk-phase-banner__content__tag").text() shouldBe "Beta"
+      document.select(".govuk-phase-banner a").attr("href") shouldBe "/feedback"
+    }
+
 
     "if a message exists in the 'labels' from the Journey response" should {
 

@@ -1,7 +1,6 @@
 service.name =
 service.homePageUrl =
 service.text =
-phaseBannerHtml = This is a new service. Your <a href="$link" class="govuk-link">feedback</a> will help us improve it.
 phaseBannerHtmlNoLink = This is a new service.
 
 verify-email-address.error.heading   = This link has expired

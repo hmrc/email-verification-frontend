@@ -16,12 +16,12 @@
 
 @import config.FrontendAppConfig
 @import models.Journey
-@import play.twirl.api.HtmlFormat
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichServiceNavigation
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.phasebanner.PhaseBanner
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
+@import uk.gov.hmrc.hmrcfrontend.views.config.{StandardAlphaBanner, StandardBetaBanner}
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
 
@@ -31,7 +31,9 @@
         backLink: GovukBackLink,
         reportTechnicalIssue: HmrcReportTechnicalIssue,
         hmrcStandardHeader: HmrcStandardHeader,
-        hmrcStandardFooter: HmrcStandardFooter
+        hmrcStandardFooter: HmrcStandardFooter,
+        standardAlphaBanner: StandardAlphaBanner,
+        standardBetaBanner: StandardBetaBanner
 )
 @(
         pageTitle: Option[String] = None,
@@ -47,15 +49,16 @@
 
 @phaseBanner = @{
     journey.filter(_.showPhaseBanner.contains(true)).map { journey =>
-        val phase = if (journey.alphaPhase.contains(true)) "Alpha" else "Beta"
-        val content = journey.phaseFeedbackLink match {
-            case Some(feedbackLink) => HtmlContent(messages("phaseBannerHtml").replace("$link", HtmlFormat.escape(feedbackLink).body))
-            case None => Text(messages("phaseBannerHtmlNoLink"))
+        journey.phaseFeedbackLink match {
+            case Some(feedbackLink) if journey.alphaPhase.contains(true) => standardAlphaBanner(url = feedbackLink)
+            case Some(feedbackLink) => standardBetaBanner(url = feedbackLink)
+            case None =>
+                val phase = if (journey.alphaPhase.contains(true)) "Alpha" else "Beta"
+                PhaseBanner(
+                    tag = Some(Tag(content = Text(phase))),
+                    content = Text(messages("phaseBannerHtmlNoLink"))
+                )
         }
-        PhaseBanner(
-            tag = Some(Tag(content = Text(phase))),
-            content = content
-        )
     }
 }
 
