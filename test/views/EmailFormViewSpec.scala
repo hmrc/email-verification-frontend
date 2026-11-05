@@ -135,6 +135,59 @@ class EmailFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
   "when being rendered in English" should {
 
     implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
+    "render the configured phase and HMRC banners" in {
+      val renderedView: Html = view(
+        EmailForm.form,
+        Call("POST", "/submit"),
+        Some(
+          Journey(
+            accessibilityStatementUrl = "/a11y",
+            deskproServiceName = "deskproName",
+            enterEmailUrl = None,
+            backUrl = None,
+            serviceTitle = Some("serviceTitle"),
+            emailAddress = None,
+            labels = None,
+            showPhaseBanner = Some(true),
+            alphaPhase = Some(true),
+            phaseFeedbackLink = Some("/feedback?source=email&step=verify"),
+            includeHMRCBranding = Some(true)
+          )
+        )
+      )(FakeRequest(), messages)
+
+      val document = Jsoup.parse(renderedView.body)
+      document.select(".govuk-phase-banner").size() shouldBe 1
+      document.select(".govuk-phase-banner__content__tag").text() shouldBe "Alpha"
+      document.select(".govuk-phase-banner a").attr("href") shouldBe "/feedback?source=email&step=verify"
+      document.select(".hmrc-banner").size() shouldBe 1
+    }
+
+    "render the configured beta phase banner" in {
+      val renderedView: Html = view(
+        EmailForm.form,
+        Call("POST", "/submit"),
+        Some(
+          Journey(
+            accessibilityStatementUrl = "/a11y",
+            deskproServiceName = "deskproName",
+            enterEmailUrl = None,
+            backUrl = None,
+            serviceTitle = Some("serviceTitle"),
+            emailAddress = None,
+            labels = None,
+            showPhaseBanner = Some(true),
+            alphaPhase = Some(false),
+            phaseFeedbackLink = Some("/feedback")
+          )
+        )
+      )(FakeRequest(), messages)
+
+      val document = Jsoup.parse(renderedView.body)
+      document.select(".govuk-phase-banner__content__tag").text() shouldBe "Beta"
+      document.select(".govuk-phase-banner a").attr("href") shouldBe "/feedback"
+    }
+
 
     "if a message exists in the 'labels' from the Journey response" should {
 

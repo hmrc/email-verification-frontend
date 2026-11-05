@@ -16,8 +16,12 @@
 
 @import config.FrontendAppConfig
 @import models.Journey
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichServiceNavigation
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.phasebanner.PhaseBanner
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
+@import uk.gov.hmrc.hmrcfrontend.views.config.{StandardAlphaBanner, StandardBetaBanner}
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
 
@@ -27,7 +31,9 @@
         backLink: GovukBackLink,
         reportTechnicalIssue: HmrcReportTechnicalIssue,
         hmrcStandardHeader: HmrcStandardHeader,
-        hmrcStandardFooter: HmrcStandardFooter
+        hmrcStandardFooter: HmrcStandardFooter,
+        standardAlphaBanner: StandardAlphaBanner,
+        standardBetaBanner: StandardBetaBanner
 )
 @(
         pageTitle: Option[String] = None,
@@ -41,6 +47,21 @@
         journey: Option[Journey] = None
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
+@phaseBanner = @{
+    journey.filter(_.showPhaseBanner.contains(true)).map { journey =>
+        journey.phaseFeedbackLink match {
+            case Some(feedbackLink) if journey.alphaPhase.contains(true) => standardAlphaBanner(url = feedbackLink)
+            case Some(feedbackLink) => standardBetaBanner(url = feedbackLink)
+            case None =>
+                val phase = if (journey.alphaPhase.contains(true)) "Alpha" else "Beta"
+                PhaseBanner(
+                    tag = Some(Tag(content = Text(phase))),
+                    content = Text(messages("phaseBannerHtmlNoLink"))
+                )
+        }
+    }
+}
+
 @hmrcLayout(
     HmrcStandardPageParams(
         serviceURLs = ServiceURLs(
@@ -49,7 +70,8 @@
             accessibilityStatementUrl = accessibilityStatementUrl
         ),
         banners = Banners(
-            displayHmrcBanner = false
+            displayHmrcBanner = journey.flatMap(_.includeHMRCBranding).getOrElse(false),
+            phaseBanner = phaseBanner
         ),
         templateOverrides = TemplateOverrides(
             additionalHeadBlock = headBlock,

@@ -26,7 +26,11 @@ case class Journey(
   backUrl:                      Option[String],
   serviceTitle:                 Option[String],
   emailAddress:                 Option[String],
-  labels:                       Option[MessageLabels]
+  labels:                       Option[MessageLabels],
+  showPhaseBanner:              Option[Boolean] = None,
+  alphaPhase:                   Option[Boolean] = None,
+  phaseFeedbackLink:            Option[String] = None,
+  includeHMRCBranding:          Option[Boolean] = None
 ) {
 
   def serviceTitleMessage(implicit request: RequestHeader): Option[String] = {

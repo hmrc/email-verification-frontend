@@ -1,6 +1,7 @@
 service.name =
 service.homePageUrl =
 service.text =
+phaseBannerHtmlNoLink = Mae hwn yn wasanaeth newydd.
 
 verify-email-address.error.heading=This link has expired
 verify-email-address.error.paragraph=For security reasons the link must be used within a time limit.

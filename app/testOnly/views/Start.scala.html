@@ -72,6 +72,28 @@
   inputType = "text",
   label = "Page Title English Label (Optional)"
  )
+ @formInput(
+  formField = formData("phaseFeedbackLink"),
+  inputType = "text",
+  label = "Phase Banner Feedback Link (Optional)"
+ )
+ <fieldset class="govuk-fieldset">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Phase banner options</legend>
+  <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+   <div class="govuk-checkboxes__item">
+    <input class="govuk-checkboxes__input" id="showPhaseBanner" name="showPhaseBanner" type="checkbox" value="true" @if(formData("showPhaseBanner").value.contains("true")) { checked="checked" }>
+    <label class="govuk-label govuk-checkboxes__label" for="showPhaseBanner">Show phase banner</label>
+   </div>
+   <div class="govuk-checkboxes__item">
+    <input class="govuk-checkboxes__input" id="alphaPhase" name="alphaPhase" type="checkbox" value="true" @if(formData("alphaPhase").value.contains("true")) { checked="checked" }>
+    <label class="govuk-label govuk-checkboxes__label" for="alphaPhase">Alpha phase (leave unchecked for Beta)</label>
+   </div>
+   <div class="govuk-checkboxes__item">
+    <input class="govuk-checkboxes__input" id="includeHMRCBranding" name="includeHMRCBranding" type="checkbox" value="true" @if(formData("includeHMRCBranding").value.contains("true")) { checked="checked" }>
+    <label class="govuk-label govuk-checkboxes__label" for="includeHMRCBranding">Include HMRC branding</label>
+   </div>
+  </div>
+ </fieldset>
  @govukRadios(Radios(
   fieldset = Some(Fieldset(legend = Some(Legend(content = Text("Which language?"), classes = "govuk-fieldset__legend--s", isPageHeading = false)))),
   items = Seq(
