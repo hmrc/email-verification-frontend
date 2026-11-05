@@ -53,6 +53,11 @@
   label = "Origin"
  )
  @formInput(
+  formField = formData("serviceUrl"),
+  inputType = "url",
+  label = "Service Homepage URL (Optional)"
+ )
+ @formInput(
   formField = formData("accessibilityStatementUrl"),
   inputType = "text",
   label = "Accessibility Statement URL (For use on standard passcode entry page)"

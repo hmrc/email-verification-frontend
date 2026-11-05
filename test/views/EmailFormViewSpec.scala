@@ -33,6 +33,9 @@ class EmailFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
   private def serviceNameText(document: org.jsoup.nodes.Document): String =
     document.select(".govuk-service-navigation__service-name, .govuk-header__service-name").text()
 
+  private def serviceNameLink(document: org.jsoup.nodes.Document) =
+    document.select(".govuk-service-navigation__service-name[href], .govuk-service-navigation__service-name a")
+
   "when being rendered in Welsh" when {
 
     implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("cy")))
@@ -150,6 +153,7 @@ class EmailFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
               enterEmailUrl             = None,
               backUrl                   = None,
               serviceTitle              = Some("serviceTitle"),
+              serviceUrl                = Some("https://service.example.gov.uk"),
               emailAddress              = None,
               labels = Some(
                 MessageLabels(
@@ -163,6 +167,7 @@ class EmailFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
 
         val document = Jsoup.parse(renderedView.body)
         serviceNameText(document) shouldBe "EnglishTitle"
+        serviceNameLink(document).attr("href") shouldBe "https://service.example.gov.uk"
         document.select("label[for=email]").text() shouldBe "Email address"
       }
     }
@@ -189,6 +194,7 @@ class EmailFormViewSpec extends UnitSpec with GuiceOneAppPerSuite {
 
         val document = Jsoup.parse(renderedView.body)
         serviceNameText(document) shouldBe "serviceTitle"
+        serviceNameLink(document).isEmpty shouldBe true
       }
     }
   }
