@@ -16,7 +16,6 @@
 
 @import config.FrontendAppConfig
 @import models.Journey
-@import uk.gov.hmrc.govukfrontend.views.Implicits.RichServiceNavigation
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
@@ -44,7 +43,7 @@
 @hmrcLayout(
     HmrcStandardPageParams(
         serviceURLs = ServiceURLs(
-            serviceUrl = None,
+            serviceUrl = journey.flatMap(_.serviceUrl),
             signOutUrl = None,
             accessibilityStatementUrl = accessibilityStatementUrl
         ),
@@ -55,14 +54,10 @@
             additionalHeadBlock = headBlock,
             additionalScriptsBlock = Some(scripts),
         ),
-        serviceName = None,
+        serviceName = serviceTitle,
         pageTitle = pageTitle,
-        isWelshTranslationAvailable = false,
-        backLink = if (backUrl.isEmpty) None else Some(BackLink(href = backUrl.get)),
-        serviceNavigation =
-            Some(
-                ServiceNavigation(serviceName = serviceTitle).withLanguageToggle()
-            )
+        isWelshTranslationAvailable = true,
+        backLink = if (backUrl.isEmpty) None else Some(BackLink(href = backUrl.get))
     )) {
         @contentBlock
         @reportTechnicalIssue(ReportTechnicalIssue(deskproServiceName.getOrElse("email-verification-frontend"), language = if(messages.lang.language == "en") En else Cy))

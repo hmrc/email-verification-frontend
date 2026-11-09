@@ -26,7 +26,8 @@ case class Journey(
   backUrl:                      Option[String],
   serviceTitle:                 Option[String],
   emailAddress:                 Option[String],
-  labels:                       Option[MessageLabels]
+  labels:                       Option[MessageLabels],
+  serviceUrl:                   Option[String] = None
 ) {
 
   def serviceTitleMessage(implicit request: RequestHeader): Option[String] = {
