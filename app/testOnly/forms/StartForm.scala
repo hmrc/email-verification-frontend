@@ -66,8 +66,7 @@ object StartForm {
     )
   }
 
-  def unapply(startForm: StartForm): Option[(String, String, String, String, String, String, String, String, String)] = {
-  def unapply(startForm: StartForm): Option[(String, String, String, String, String, String, String, String, Boolean, Boolean, String, Boolean)] = {
+  def unapply(startForm: StartForm): Option[(String, String, String, String, String, String, String, String, String, Boolean, Boolean, String, Boolean)] = {
     Some(
       (startForm.email.getOrElse(""),
        startForm.continueUrl,
@@ -78,10 +77,10 @@ object StartForm {
        startForm.pageTitleEnLabel.getOrElse(""),
        startForm.lang,
        startForm.serviceUrl.getOrElse(""),
-      startForm.showPhaseBanner,
-      startForm.alphaPhase,
-      startForm.phaseFeedbackLink.getOrElse(""),
-      startForm.includeHMRCBranding
+       startForm.showPhaseBanner,
+       startForm.alphaPhase,
+       startForm.phaseFeedbackLink.getOrElse(""),
+       startForm.includeHMRCBranding
       )
     )
   }

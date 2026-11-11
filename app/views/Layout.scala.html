@@ -83,7 +83,7 @@
         backLink = if (backUrl.isEmpty) None else Some(BackLink(href = backUrl.get)),
         serviceNavigation =
             Some(
-                ServiceNavigation(serviceName = serviceTitle).withLanguageToggle()
+                ServiceNavigation(serviceName = serviceTitle, serviceUrl = journey.flatMap(_.serviceUrl)).withLanguageToggle()
             )
     )) {
         @contentBlock
