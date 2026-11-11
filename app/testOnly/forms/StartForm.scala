@@ -17,7 +17,7 @@
 package testOnly.forms
 
 import play.api.data.Form
-import play.api.data.Forms.{mapping, text}
+import play.api.data.Forms.{boolean, mapping, text}
 
 case class StartForm(email:                        Option[String],
                      continueUrl:                  String,
@@ -27,7 +27,11 @@ case class StartForm(email:                        Option[String],
                      emailEntryUrl:                Option[String],
                      pageTitleEnLabel:             Option[String],
                      lang:                         String,
-                     serviceUrl:                   Option[String] = None
+                     serviceUrl:                   Option[String] = None,
+                     showPhaseBanner:              Boolean,
+                     alphaPhase:                   Boolean,
+                     phaseFeedbackLink:            Option[String],
+                     includeHMRCBranding:          Boolean
                     ) {}
 object StartForm {
 
@@ -38,8 +42,12 @@ object StartForm {
             deskproServiceName:           String,
             emailEntryUrl:                String,
             pageTitleEnLabel:             String,
-            lang:                      String,
-            serviceUrl:                String
+            lang:                         String,
+            serviceUrl:                   String,
+            showPhaseBanner:              Boolean,
+            alphaPhase:                   Boolean,
+            phaseFeedbackLink:            String,
+            includeHMRCBranding:          Boolean
            ): StartForm = {
     new StartForm(
       if (email.trim.isEmpty) None else Some(email.trim),
@@ -50,11 +58,15 @@ object StartForm {
       if (emailEntryUrl.trim.isEmpty) None else Some(emailEntryUrl.trim),
       if (pageTitleEnLabel.trim.isEmpty) None else Some(pageTitleEnLabel.trim),
       lang,
-      if (serviceUrl.trim.isEmpty) None else Some(serviceUrl.trim)
+      if (serviceUrl.trim.isEmpty) None else Some(serviceUrl.trim),
+      showPhaseBanner,
+      alphaPhase,
+      if (phaseFeedbackLink.trim.isEmpty) None else Some(phaseFeedbackLink.trim),
+      includeHMRCBranding
     )
   }
 
-  def unapply(startForm: StartForm): Option[(String, String, String, String, String, String, String, String, String)] = {
+  def unapply(startForm: StartForm): Option[(String, String, String, String, String, String, String, String, String, Boolean, Boolean, String, Boolean)] = {
     Some(
       (startForm.email.getOrElse(""),
        startForm.continueUrl,
@@ -64,7 +76,11 @@ object StartForm {
        startForm.emailEntryUrl.getOrElse(""),
        startForm.pageTitleEnLabel.getOrElse(""),
        startForm.lang,
-       startForm.serviceUrl.getOrElse("")
+       startForm.serviceUrl.getOrElse(""),
+       startForm.showPhaseBanner,
+       startForm.alphaPhase,
+       startForm.phaseFeedbackLink.getOrElse(""),
+       startForm.includeHMRCBranding
       )
     )
   }
@@ -82,7 +98,11 @@ object StartForm {
         "emailEntryUrl"             -> text,
         "pageTitleEnLabel"          -> text,
         "lang"                      -> text.verifying("startform.error.missingLang", _.trim.nonEmpty),
-        "serviceUrl"                -> text
+        "serviceUrl"                -> text,
+        "showPhaseBanner"           -> boolean,
+        "alphaPhase"                -> boolean,
+        "phaseFeedbackLink"         -> text,
+        "includeHMRCBranding"       -> boolean
       )(StartForm.apply)(StartForm.unapply)
     )
   }
